@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Google</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="container fade-in">
+    <form id="loginForm" class="login-form">
+      <h2>Login</h2>
+      <div class="input-group">
+        <label for="emailLogin">Email</label>
+        <input type="email" id="emailLogin" name="emailLogin" required autocomplete="username">
+      </div>
+      <div class="input-group">
+        <label for="passwordLogin">Password</label>
+        <input type="password" id="passwordLogin" name="passwordLogin" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn">Login</button>
+      <div class="divider"><span>atau</span></div>
+      <div id="googleSignInButton" class="btn google-btn" style="width:100%; padding:0;"></div>
+      <p style="text-align:center; margin-top:10px;">
+        <a href="register.html" class="small-btn">Daftar Akun</a>
+      </p>
+    </form>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

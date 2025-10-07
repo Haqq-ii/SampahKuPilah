@@ -1,0 +1,142 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: linear-gradient(135deg, #3e2723 0%, #212121 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  background: rgba(44, 40, 36, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  padding: 32px 24px;
+  max-width: 350px;
+  width: 100%;
+  margin: auto;
+  animation: fadeIn 1s;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-form h2 {
+  color: #d7ccc8;
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.input-group {
+  margin-bottom: 18px;
+}
+.input-group label {
+  color: #bdbdbd;
+  font-size: 15px;
+  margin-bottom: 6px;
+  display: block;
+}
+.input-group input {
+  width: 100%;
+  padding: 10px 1px;
+  border-radius: 8px;
+  border: 1px solid #616161;
+  background: #212121;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-group input:focus {
+  border-color: #8d6e63;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: #6d4c41;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #4e342e;
+}
+.google-btn {
+  background: #212121;
+  color: #fff;
+  border: 1px solid #8d6e63;
+  margin-top: 0;
+}
+.google-btn:hover {
+  background: #424242;
+}
+.divider {
+  text-align: center;
+  margin: 18px 0 10px 0;
+  color: #ffffff;
+  font-size: 13px;
+  position: relative;
+}
+.divider span {
+  background: #2c2824;
+  padding: 0 10px;
+  position: relative;
+  z-index: 1;
+}
+.divider:before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: #616161;
+  z-index: 0;
+}
+
+.welcome-box {
+  text-align: center;
+  padding: 32px 0;
+}
+.welcome-box h2 {
+  color: #d7ccc8;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 18px 8px;
+    max-width: 95vw;
+  }
+  .login-form h2, .welcome-box h2 {
+    font-size: 18px;
+  }
+  .btn {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
+.small-btn {
+  font-size: 13px;
+  color: #d7ccc8;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.small-btn:hover {
+  color: #fff;
+}

@@ -1,0 +1,63 @@
+[
+  {
+    "email": "zaki@gmail.com",
+    "password": "jaki"
+  },
+  {
+    "iss": "https://accounts.google.com",
+    "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "sub": "100473204324767781470",
+    "email": "haqqimuzakki1@gmail.com",
+    "email_verified": true,
+    "nbf": 1759321209,
+    "name": "Haqqi Muzakki",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocIjYL18xW77Z6rFFZFki0r-qoGySTT9NpcN4zIl3bDzov8bug=s96-c",
+    "given_name": "Haqqi",
+    "family_name": "Muzakki",
+    "iat": 1759321509,
+    "exp": 1759325109,
+    "jti": "b65732f5a1cf2a5549a7d779842be73533a3e76b"
+  },
+  {
+    "iss": "https://accounts.google.com",
+    "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "sub": "100473204324767781470",
+    "email": "haqqimuzakki1@gmail.com",
+    "email_verified": true,
+    "nbf": 1759333033,
+    "name": "Haqqi Muzakki",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocIjYL18xW77Z6rFFZFki0r-qoGySTT9NpcN4zIl3bDzov8bug=s96-c",
+    "given_name": "Haqqi",
+    "family_name": "Muzakki",
+    "iat": 1759333333,
+    "exp": 1759336933,
+    "jti": "32282ea8d9177e420892d36db2a57812cc2bc916"
+  },
+  {
+    "email": "muzaki@gmail.com",
+    "password": "muzaki"
+  },
+  {
+    "email": "sayahaqqi@gmail.com",
+    "password": "haqqi"
+  },
+  {
+    "iss": "https://accounts.google.com",
+    "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "sub": "101167249457281911126",
+    "hd": "students.uii.ac.id",
+    "email": "24523206@students.uii.ac.id",
+    "email_verified": true,
+    "nbf": 1759846484,
+    "name": "NIKO ADITYA ALANSYAH -",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocK8oSxXKum3e7uCH91I-wlWVBwx894KjnpCE2dYZMLYfBU0FA=s96-c",
+    "given_name": "NIKO ADITYA ALANSYAH",
+    "family_name": "-",
+    "iat": 1759846784,
+    "exp": 1759850384,
+    "jti": "fcda2306d79bf3bf36f0b237af550162761b071c"
+  }
+]

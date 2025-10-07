@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container welcome-box">
+    <h2>Selamat datang, <span id="userName"></span>!</h2>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name') || 'User';
+    document.getElementById('userName').textContent = name;
+  </script>
+</body>
+</html>
