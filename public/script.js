@@ -1,12 +1,25 @@
+const USER_STORAGE_KEY = 'sampahKuPilahUser';
+function persistUserSession(profile) {
+  if (!profile || !profile.email) return;
+  const normalized = {
+    email: profile.email,
+    name: profile.name || profile.email.split('@')[0]
+  };
+  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(normalized));
+}
 document.addEventListener('DOMContentLoaded', function() {
   // --- Login manual ---
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
+    const existingSession = localStorage.getItem(USER_STORAGE_KEY);
+    if (existingSession) {
+      window.location.href = 'index.html';
+      return;
+    }
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       const email = document.getElementById('emailLogin').value;
       const password = document.getElementById('passwordLogin').value;
-
       try {
         const res = await fetch('/register', { // bisa diganti /login jika ingin validasi
           method: 'POST',
@@ -15,7 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         const data = await res.json();
         if (res.ok) {
-          window.location.href = 'welcome.html?name=' + encodeURIComponent(email);
+          persistUserSession({ email });
+          window.location.href = 'index.html';
         } else {
           alert(data.message);
         }
@@ -34,10 +48,13 @@ document.addEventListener('DOMContentLoaded', function() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(user)
     }).then(() => {
-      window.location.href = 'welcome.html?name=' + encodeURIComponent(user.name || user.email);
+      persistUserSession({
+        email: user.email,
+        name: user.name || user.given_name || user.family_name || user.email
+      });
+      window.location.href = 'index.html';
     });
   }
-
   function parseJwt(token) {
     try {
       const base64Url = token.split('.')[1];

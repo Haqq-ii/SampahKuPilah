@@ -1,12 +1,15 @@
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoDetect - Daftar Akun</title>
+  <title>EcoDetect - Login</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="login-body">
   <!-- Background Effects -->
@@ -14,7 +17,6 @@
     <div class="bg-particles"></div>
     <div class="bg-grid"></div>
   </div>
-
   <!-- Header -->
   <header class="login-header">
     <div class="logo-section">
@@ -23,53 +25,49 @@
     </div>
     <p class="tagline">Sistem Deteksi Sampah Real-time</p>
   </header>
-
   <!-- Main Content -->
   <main class="login-main">
     <div class="container login-container fade-in">
       <div class="form-header">
-        <h2><i class="fas fa-user-plus"></i> Daftar Akun</h2>
-        <p>Buat akun baru untuk memulai deteksi sampah</p>
+        <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+        <p>Masuk ke akun Anda untuk mengakses dashboard</p>
       </div>
       
-      <form id="registerForm" class="login-form">
+      <form id="loginForm" class="login-form">
         <div class="input-group">
-          <label for="email">
+          <label for="emailLogin">
             <i class="fas fa-envelope"></i> Email
           </label>
-          <input type="email" id="email" name="email" required placeholder="Masukkan email Anda">
+          <input type="email" id="emailLogin" name="emailLogin" required autocomplete="username" placeholder="Masukkan email Anda">
         </div>
         
         <div class="input-group">
-          <label for="password">
+          <label for="passwordLogin">
             <i class="fas fa-lock"></i> Password
           </label>
-          <input type="password" id="password" name="password" required placeholder="Masukkan password Anda">
-        </div>
-        
-        <div class="input-group">
-          <label for="confirmPassword">
-            <i class="fas fa-lock"></i> Konfirmasi Password
-          </label>
-          <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Konfirmasi password Anda">
+          <input type="password" id="passwordLogin" name="passwordLogin" required autocomplete="current-password" placeholder="Masukkan password Anda">
         </div>
         
         <button type="submit" class="btn login-btn">
-          <i class="fas fa-user-plus"></i> Daftar
+          <i class="fas fa-sign-in-alt"></i> Login
         </button>
         
+        <div class="divider">
+          <span>atau</span>
+        </div>
+        
+        <div id="googleSignInButton" class="btn google-btn" style="width:100%; padding:0;"></div>
+        
         <div class="form-footer">
-          <p>Sudah punya akun? <a href="login.html" class="small-btn">Login Sekarang</a></p>
+          <p>Belum punya akun? <a href="register.html" class="small-btn">Daftar Sekarang</a></p>
         </div>
       </form>
     </div>
   </main>
-
   <!-- Footer -->
   <footer class="login-footer">
     <p>&copy; 2024 EcoDetect. All rights reserved.</p>
   </footer>
-
-  <script src="register.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

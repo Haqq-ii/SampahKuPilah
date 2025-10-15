@@ -140,12 +140,27 @@
 
   <script src="camera-detection.js"></script>
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const name = urlParams.get('name') || 'User';
-    document.getElementById('userName').textContent = name;
-
+    const USER_STORAGE_KEY = 'sampahKuPilahUser';
+    function readSession() {
+      try {
+        const raw = localStorage.getItem(USER_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('Gagal membaca sesi:', err);
+        localStorage.removeItem(USER_STORAGE_KEY);
+        return null;
+      }
+    }
+    const session = readSession();
+    if (!session) {
+      window.location.href = 'login.html';
+    } else {
+      const displayName = session.name || session.email || 'User';
+      document.getElementById('userName').textContent = displayName;
+    }
     function logout() {
       if (confirm('Apakah Anda yakin ingin keluar?')) {
+        localStorage.removeItem(USER_STORAGE_KEY);
         window.location.href = 'index.html';
       }
     }
