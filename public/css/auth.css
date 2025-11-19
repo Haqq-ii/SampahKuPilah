@@ -1,0 +1,745 @@
+/* ============================================
+   AUTH.CSS - Login & Register Pages
+   ============================================
+   Note: Color tokens are defined in common.css
+   This file uses those tokens for consistency.
+   ============================================ */
+
+/* ============================================
+   PAGE BODY
+   ============================================ */
+.login-body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-primary);
+  /* Background dibuat mirip katalog: terang & lembut */
+  background: radial-gradient(
+      circle at 20% 15%,
+      rgba(155, 220, 155, 0.35) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(125, 200, 170, 0.28) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 65% 70%,
+      rgba(76, 175, 80, 0.22) 0%,
+      transparent 55%
+    ),
+    var(--gradient-light-vertical);
+  color: var(--neutral-800);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Matikan efek grid neon gelap */
+.login-body::before,
+.login-body::after {
+  content: none;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.login-header {
+  text-align: center;
+  padding: var(--spacing-8) 0;
+  position: relative;
+  z-index: 2;
+}
+
+.login-header .logo-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+}
+
+.login-header .logo-icon {
+  font-size: var(--font-size-4xl);
+  color: var(--eco-green-deep);
+  text-shadow: 0 0 12px rgba(76, 175, 80, 0.25);
+  animation: none;
+}
+
+.login-header h1 {
+  margin: 0;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--eco-green-deep);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  text-shadow: 0 2px 6px rgba(76, 175, 80, 0.25);
+  animation: none;
+}
+
+.login-header .tagline {
+  color: var(--neutral-600);
+  font-size: var(--font-size-sm);
+  text-shadow: none;
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.login-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  position: relative;
+  z-index: 2;
+}
+
+.login-container {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: var(--spacing-5);
+  box-shadow: var(--shadow-eco-soft);
+  backdrop-filter: blur(12px);
+  border: var(--border-eco-green);
+  position: relative;
+  overflow: hidden;
+  max-width: 400px;
+  width: 100%;
+  margin: var(--spacing-8);
+  padding: 0;
+  animation: fadeIn 1s;
+}
+
+/* Haluskan efek garis & partikel */
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(76, 175, 80, 0.6),
+    transparent
+  );
+  animation: none;
+}
+
+.login-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      rgba(76, 175, 80, 0.04) 1px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(76, 175, 80, 0.04) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px, 32px 32px;
+  animation: none;
+  pointer-events: none;
+}
+
+/* ============================================
+   FORM COMPONENTS
+   ============================================ */
+.form-header {
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+  padding: var(--spacing-8) var(--spacing-6) 0;
+  position: relative;
+  z-index: 2;
+}
+
+.form-header h2 {
+  color: var(--eco-green-deep);
+  margin: 0 0 var(--spacing-2) 0;
+  font-weight: var(--font-weight-semibold);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  text-shadow: 0 2px 6px rgba(76, 175, 80, 0.25);
+  animation: none;
+}
+
+.form-header h2 i {
+  color: var(--eco-green-deep);
+  text-shadow: none;
+  margin-right: var(--spacing-2);
+}
+
+.form-header p {
+  color: var(--neutral-600);
+  font-size: var(--font-size-sm);
+  text-shadow: none;
+}
+
+.login-form {
+  position: relative;
+  z-index: 2;
+  padding: var(--spacing-8) var(--spacing-6) var(--spacing-10);
+}
+
+/* header h2 di dalam form (kalau ada) — seragamkan */
+.login-form h2 {
+  color: var(--eco-green-deep);
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+  font-weight: var(--font-weight-semibold);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  text-shadow: 0 2px 6px rgba(76, 175, 80, 0.25);
+  animation: none;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.login-btn {
+  background: linear-gradient(135deg, var(--eco-green), var(--eco-green-deep));
+  border: 1px solid rgba(76, 175, 80, 0.65);
+  color: var(--color-white);
+  box-shadow: 0 12px 26px rgba(76, 175, 80, 0.35);
+}
+
+.login-btn:hover {
+  background: linear-gradient(
+    135deg,
+    var(--eco-green-soft),
+    var(--eco-green-deep)
+  );
+  box-shadow: 0 16px 32px rgba(76, 175, 80, 0.4);
+}
+
+.google-btn {
+  background: var(--color-white);
+  color: var(--neutral-800);
+  border: 1px solid rgba(159, 168, 218, 0.6);
+  margin-top: 0;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 10px 22px rgba(158, 158, 158, 0.18);
+}
+
+.google-btn:hover {
+  background: #f3f5ff;
+  border-color: rgba(120, 144, 196, 0.9);
+  box-shadow: 0 12px 26px rgba(120, 144, 196, 0.3);
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: var(--spacing-6);
+  position: relative;
+  z-index: 2;
+}
+
+.form-footer p {
+  color: var(--neutral-600);
+  font-size: var(--font-size-sm);
+  text-shadow: none;
+}
+
+/* ============================================
+   PASSWORD TOGGLE
+   ============================================ */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 3rem;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--neutral-400);
+  cursor: pointer;
+  padding: var(--spacing-3) var(--spacing-4);
+  transition: all 0.3s ease;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-password:hover {
+  color: var(--eco-green-deep);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.toggle-password:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.toggle-password i {
+  font-size: var(--font-size-base);
+  transition: all 0.3s ease;
+  text-shadow: none;
+}
+
+/* ============================================
+   FORM OPTIONS (Forgot Password Link)
+   ============================================ */
+.form-options {
+  display: flex;
+  justify-content: flex-end;
+  margin: -0.5rem 0 1rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.forgot-password-link {
+  color: var(--eco-green-deep);
+  font-size: var(--font-size-xs);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  text-shadow: none;
+}
+
+.forgot-password-link:hover {
+  color: var(--eco-green-darker);
+  transform: translateX(-1px);
+}
+
+.forgot-password-link i {
+  font-size: var(--font-size-xs);
+}
+
+/* ============================================
+   MESSAGE BOXES
+   ============================================ */
+.message-box {
+  padding: var(--spacing-4) var(--spacing-5);
+  border-radius: var(--spacing-3);
+  margin-bottom: var(--spacing-6);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  position: relative;
+  z-index: 2;
+  animation: slideIn 0.5s ease-out;
+}
+
+.message-box i {
+  font-size: var(--font-size-xl);
+}
+
+.message-box p {
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
+
+.success-message {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.4);
+  color: var(--eco-green-deep);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.18);
+}
+
+.success-message i {
+  color: var(--eco-green);
+  text-shadow: none;
+}
+
+.error-message {
+  background: rgba(255, 82, 82, 0.09);
+  border: 1px solid rgba(244, 67, 54, 0.4);
+  color: #d32f2f;
+  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.18);
+}
+
+.error-message i {
+  color: var(--color-red);
+  text-shadow: none;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.login-footer {
+  text-align: center;
+  padding: var(--spacing-4) 0 var(--spacing-8);
+  color: var(--neutral-600);
+  font-size: var(--font-size-xs);
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   LEGACY SUPPORT
+   ============================================ */
+/* Disesuaikan supaya juga mengikuti background katalog-style */
+body:not(.dashboard-body) {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-primary);
+  background: radial-gradient(
+      circle at 20% 15%,
+      rgba(155, 220, 155, 0.35) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(125, 200, 170, 0.28) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 65% 70%,
+      rgba(76, 175, 80, 0.22) 0%,
+      transparent 55%
+    ),
+    var(--gradient-light-vertical);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body:not(.dashboard-body)::before,
+body:not(.dashboard-body)::after {
+  content: none;
+}
+
+.welcome-box {
+  text-align: center;
+  padding: var(--spacing-8) 0;
+}
+
+.welcome-box h2 {
+  color: var(--neutral-800);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+/* ============================================
+   REFINEMENT: Modern & elegan untuk login
+   ============================================ */
+
+.logo-icon-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.12),
+    rgba(139, 195, 74, 0.18)
+  );
+  box-shadow: 0 10px 22px rgba(76, 175, 80, 0.25);
+}
+
+.logo-text h1 {
+  font-size: 1.7rem;
+  margin: 0;
+}
+
+.logo-text .tagline {
+  margin-top: 0.25rem;
+}
+
+/* Input group styling agar lebih clean */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-5);
+}
+
+.input-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--neutral-600);
+}
+
+.input-label-icon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  background: rgba(76, 175, 80, 0.09);
+  color: var(--eco-green-deep);
+  font-size: 0.75rem;
+}
+
+.input-group input {
+  border-radius: var(--spacing-3);
+  border: 1px solid rgba(76, 175, 80, 0.25);
+  padding: var(--spacing-3) var(--spacing-3);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--neutral-800);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.input-group input::placeholder {
+  color: rgba(143, 164, 139, 0.8);
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: rgba(76, 175, 80, 0.7);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.15);
+  background: var(--color-white);
+}
+
+/* Divider lebih halus */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin: var(--spacing-6) 0 var(--spacing-5);
+  color: var(--neutral-400);
+  font-size: var(--font-size-xs);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(158, 179, 155, 0.7),
+    transparent
+  );
+}
+
+/* Tombol kecil & link bawah */
+.small-btn {
+  font-weight: var(--font-weight-semibold);
+  color: var(--eco-green-deep);
+  text-decoration: none;
+  padding-bottom: var(--spacing-1);
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.small-btn:hover {
+  color: var(--eco-green-darker);
+  border-color: var(--eco-green-darker);
+}
+
+.back-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin-top: var(--spacing-3);
+  font-size: var(--font-size-xs);
+  color: var(--neutral-600);
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.back-home-link i {
+  font-size: var(--font-size-xs);
+}
+
+.back-home-link:hover {
+  color: var(--eco-green-deep);
+  transform: translateX(-2px);
+}
+/* ============================================
+   FIX PERMINTAAN PENGGUNA
+   ============================================ */
+
+/* input full width */
+.input-group input,
+.password-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* hilangkan ikon label */
+.input-group label {
+  display: block;
+  font-weight: 600;
+  color: var(--neutral-800);
+}
+
+/* password wrapper full width */
+.password-wrapper {
+  width: 100%;
+}
+
+/* tombol toggle password */
+.toggle-password {
+  color: var(--neutral-600);
+}
+
+/* hapus divider */
+.divider {
+  display: none !important;
+}
+
+/* ratakan semua jarak */
+.input-group {
+  margin-bottom: var(--spacing-5);
+}
+
+/* google btn spacing */
+.google-btn {
+  margin-top: var(--spacing-4);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 480px) {
+  .login-form h2,
+  .welcome-box h2 {
+    font-size: var(--font-size-lg);
+  }
+
+  .toggle-password {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .toggle-password i {
+    font-size: var(--font-size-sm);
+  }
+
+  .password-wrapper input {
+    padding-right: var(--spacing-10);
+  }
+
+  .forgot-password-link {
+    font-size: var(--font-size-xs);
+  }
+
+  .message-box {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .message-box i {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* ============================================
+   PASSWORD STRENGTH INDICATOR
+   ============================================ */
+.password-strength {
+  margin-top: var(--spacing-3);
+  padding: var(--spacing-3);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--spacing-2);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.strength-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--neutral-200);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: var(--spacing-2);
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--color-red);
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.strength-fill.weak {
+  width: 25%;
+  background: var(--color-red);
+}
+
+.strength-fill.medium {
+  width: 50%;
+  background: var(--color-yellow);
+}
+
+.strength-fill.strong {
+  width: 75%;
+  background: var(--eco-green);
+}
+
+.strength-fill.very-strong {
+  width: 100%;
+  background: var(--eco-green-deep);
+}
+
+.strength-text {
+  margin: 0 0 var(--spacing-2) 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--neutral-600);
+}
+
+.strength-requirements {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.strength-requirements li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-xs);
+  color: var(--neutral-600);
+  transition: color 0.2s ease;
+}
+
+.strength-requirements li i {
+  font-size: 8px;
+  color: var(--neutral-400);
+  transition: color 0.2s ease;
+}
+
+.strength-requirements li.valid {
+  color: var(--eco-green-deep);
+}
+
+.strength-requirements li.valid i {
+  color: var(--eco-green);
+}
+
+.strength-requirements li.valid i::before {
+  content: "\f058"; /* fa-check-circle */
+}
+
+.strength-requirements li.invalid i::before {
+  content: "\f111"; /* fa-circle */
+}

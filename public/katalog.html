@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Katalog Daur Ulang Lokal ♻️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/katalog.css" />
+  </head>
+  <body class="catalog-body">
+    <div class="catalog-background" aria-hidden="true"></div>
+    <header class="catalog-header">
+      <div class="header-inner">
+        <a class="back-link" href="index.html">&larr; Kembali ke Beranda</a>
+        <h1>Katalog Daur Ulang Lokal ♻️</h1>
+        <p class="header-description">
+          Temukan produk kreatif ramah lingkungan dari pelaku UMKM lokal. Dukung
+          ekonomi sirkular dengan memilih produk hasil daur ulang terbaik.
+        </p>
+      </div>
+    </header>
+
+    <main class="catalog-main">
+      <section class="videos-section" aria-labelledby="videosTitle">
+        <div class="section-heading">
+          <h2 id="videosTitle">
+            🎥 Video Tutorial Sesuai Sampah Terakhir Anda
+          </h2>
+          <p>
+            Kami menyesuaikan rekomendasi video daur ulang berdasarkan 10
+            deteksi terakhir Anda.
+          </p>
+        </div>
+        <form class="video-search" id="videoSearchForm">
+          <label class="visually-hidden" for="videoSearchInput"
+            >Cari video tutorial daur ulang</label
+          >
+          <div class="video-search-field">
+            <span aria-hidden="true">🔎</span>
+            <input
+              type="search"
+              id="videoSearchInput"
+              name="videoSearch"
+              placeholder="Cari video daur ulang (contoh: motor dari korek api)"
+              autocomplete="off"
+            />
+            <button type="submit" id="videoSearchButton">Cari</button>
+          </div>
+        </form>
+        <div id="videosGrid" class="videos-grid" aria-live="polite"></div>
+        <div id="videosFallback" class="videos-fallback hidden"></div>
+      </section>
+    </main>
+
+    <script src="js/notification.js"></script>
+    <script src="katalog.js" defer></script>
+  </body>
+</html>

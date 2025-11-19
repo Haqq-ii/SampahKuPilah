@@ -1,169 +1,225 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Deteksi Sampah</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body class="dashboard-body">
-  <!-- Header -->
-  <header class="dashboard-header">
-    <div class="header-content">
-      <div class="logo-section">
-        <i class="fas fa-recycle logo-icon"></i>
-        <h1>EcoDetect</h1>
-      </div>
-      <div class="user-info">
-        <span>Selamat datang, <strong id="userName">User</strong></span>
-        <button class="logout-btn" onclick="logout()">
-          <i class="fas fa-sign-out-alt"></i>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Dashboard -->
-  <main class="dashboard-main">
-    <!-- Camera Section -->
-    <section class="camera-section">
-      <div class="camera-container">
-        <div class="camera-header">
-          <h2><i class="fas fa-video"></i> Kamera Deteksi</h2>
-          <div class="camera-controls">
-            <button id="startCamera" class="control-btn start-btn">
-              <i class="fas fa-play"></i> Mulai
-            </button>
-            <button id="stopCamera" class="control-btn stop-btn" disabled>
-              <i class="fas fa-stop"></i> Stop
-            </button>
-          </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Deteksi Sampah</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-background" aria-hidden="true"></div>
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="logo-section">
+          <i class="fas fa-recycle logo-icon"></i>
+          <h1>SampahKuPilah</h1>
         </div>
-        <div class="video-container">
-          <video id="cameraFeed" autoplay muted playsinline></video>
-          <div class="detection-overlay">
-            <div class="scan-line"></div>
-            <div class="crosshair"></div>
-          </div>
-          <div class="camera-placeholder">
-            <i class="fas fa-camera fa-3x"></i>
-            <p>Klik "Mulai" untuk mengaktifkan kamera</p>
-          </div>
+        <div class="user-info">
+          <span>Selamat datang, <strong id="userName">User</strong></span>
+          <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
         </div>
       </div>
-    </section>
+    </header>
 
-    <!-- Detection Results -->
-    <section class="results-section">
-      <div class="results-container">
-        <h2><i class="fas fa-search"></i> Hasil Deteksi</h2>
-        
-        <!-- Current Detection -->
-        <div class="current-detection">
-          <div class="detection-card">
-            <div class="detection-image">
-              <i class="fas fa-question-circle"></i>
+    <!-- Main Dashboard -->
+    <main class="dashboard-main">
+      <!-- Camera Section -->
+      <section class="camera-section">
+        <div class="camera-container">
+          <div class="camera-header">
+            <h2><i class="fas fa-video"></i> Kamera Deteksi</h2>
+            <div class="camera-controls">
+              <button id="startCamera" class="control-btn start-btn">
+                <i class="fas fa-play"></i> Mulai
+              </button>
+              <button id="stopCamera" class="control-btn stop-btn" disabled>
+                <i class="fas fa-stop"></i> Stop
+              </button>
+              <button id="scanOnce" class="control-btn scan-btn" disabled>
+                <i class="fas fa-camera"></i> Scan Sekali
+              </button>
+              <button id="uploadPhoto" class="control-btn upload-btn">
+                <i class="fas fa-upload"></i> Upload Foto
+              </button>
+              <input type="file" id="photoInput" accept="image/*" style="display: none;" />
             </div>
-            <div class="detection-info">
-              <h3 id="detectedName">Belum ada deteksi</h3>
-              <div class="detection-details">
-                <span class="detection-type" id="detectedType">-</span>
-                <span class="detection-confidence" id="detectedConfidence">-</span>
+          </div>
+          <div class="video-container">
+            <video id="cameraFeed" autoplay muted playsinline></video>
+            <div class="detection-overlay">
+              <div class="scan-line"></div>
+              <div class="crosshair"></div>
+            </div>
+            <div class="camera-placeholder">
+              <i class="fas fa-camera fa-3x"></i>
+              <p>Klik "Mulai" untuk mengaktifkan kamera</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detection Results -->
+      <section class="results-section">
+        <div class="results-container">
+          <h2><i class="fas fa-search"></i> Hasil Deteksi</h2>
+
+          <!-- Current Detection -->
+          <div class="current-detection">
+            <div class="detection-card">
+              <div class="detection-image">
+                <i class="fas fa-question-circle"></i>
+              </div>
+              <div class="detection-info">
+                <h3 id="detectedName">Belum ada deteksi</h3>
+                <div class="detection-details">
+                  <span class="detection-type" id="detectedType">-</span>
+                  <span class="detection-confidence" id="detectedConfidence"
+                    >-</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Waste Bin Recommendation -->
+          <div class="bin-recommendation">
+            <h3>
+              <i class="fas fa-trash-alt"></i> Tong Sampah yang Disarankan
+            </h3>
+            <div class="bin-container" id="recommendedBin">
+              <div class="bin-placeholder">
+                <i class="fas fa-info-circle"></i>
+                <p>Belum ada rekomendasi</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Detections -->
+          <div class="recent-detections">
+            <h3><i class="fas fa-history"></i> Deteksi Terbaru</h3>
+            <div class="detection-history" id="detectionHistory">
+              <div class="no-history">
+                <i class="fas fa-clock"></i>
+                <p>Belum ada riwayat deteksi</p>
               </div>
             </div>
           </div>
         </div>
+      </section>
+    </main>
 
-        <!-- Waste Bin Recommendation -->
-        <div class="bin-recommendation">
-          <h3><i class="fas fa-trash-alt"></i> Tong Sampah yang Disarankan</h3>
-          <div class="bin-container" id="recommendedBin">
-            <div class="bin-placeholder">
-              <i class="fas fa-info-circle"></i>
-              <p>Belum ada rekomendasi</p>
-            </div>
-          </div>
+    <!-- Waste Bins Templates (Hidden) -->
+    <template id="organicBin">
+      <div class="waste-bin organic">
+        <div class="bin-icon">
+          <i class="fas fa-leaf"></i>
         </div>
-
-        <!-- Recent Detections -->
-        <div class="recent-detections">
-          <h3><i class="fas fa-history"></i> Deteksi Terbaru</h3>
-          <div class="detection-history" id="detectionHistory">
-            <div class="no-history">
-              <i class="fas fa-clock"></i>
-              <p>Belum ada riwayat deteksi</p>
-            </div>
-          </div>
+        <div class="bin-info">
+          <h4>Tong Sampah Organik</h4>
+          <p>Untuk sampah yang dapat terurai</p>
         </div>
       </div>
-    </section>
-  </main>
+    </template>
 
-  <!-- Waste Bins Templates (Hidden) -->
-  <template id="organicBin">
-    <div class="waste-bin organic">
-      <div class="bin-icon">
-        <i class="fas fa-leaf"></i>
+    <template id="inorganicBin">
+      <div class="waste-bin inorganic">
+        <div class="bin-icon">
+          <i class="fas fa-recycle"></i>
+        </div>
+        <div class="bin-info">
+          <h4>Tong Sampah Anorganik</h4>
+          <p>Untuk sampah yang dapat didaur ulang</p>
+        </div>
       </div>
-      <div class="bin-info">
-        <h4>Tong Sampah Organik</h4>
-        <p>Untuk sampah yang dapat terurai</p>
-      </div>
-    </div>
-  </template>
+    </template>
 
-  <template id="inorganicBin">
-    <div class="waste-bin inorganic">
-      <div class="bin-icon">
-        <i class="fas fa-recycle"></i>
+    <template id="hazardousBin">
+      <div class="waste-bin hazardous">
+        <div class="bin-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="bin-info">
+          <h4>Tong Sampah B3</h4>
+          <p>Untuk sampah berbahaya dan beracun</p>
+        </div>
       </div>
-      <div class="bin-info">
-        <h4>Tong Sampah Anorganik</h4>
-        <p>Untuk sampah yang dapat didaur ulang</p>
-      </div>
-    </div>
-  </template>
+    </template>
 
-  <template id="hazardousBin">
-    <div class="waste-bin hazardous">
-      <div class="bin-icon">
-        <i class="fas fa-exclamation-triangle"></i>
+    <template id="paperBin">
+      <div class="waste-bin paper">
+        <div class="bin-icon">
+          <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="bin-info">
+          <h4>Tong Sampah Kertas</h4>
+          <p>Untuk sampah kertas yang dapat didaur ulang</p>
+        </div>
       </div>
-      <div class="bin-info">
-        <h4>Tong Sampah B3</h4>
-        <p>Untuk sampah berbahaya dan beracun</p>
-      </div>
-    </div>
-  </template>
+    </template>
 
-  <script src="camera-detection.js"></script>
-  <script>
-    const USER_STORAGE_KEY = 'sampahKuPilahUser';
-    function readSession() {
-      try {
-        const raw = localStorage.getItem(USER_STORAGE_KEY);
-        return raw ? JSON.parse(raw) : null;
-      } catch (err) {
-        console.warn('Gagal membaca sesi:', err);
-        localStorage.removeItem(USER_STORAGE_KEY);
-        return null;
+    <template id="residualBin">
+      <div class="waste-bin residual">
+        <div class="bin-icon">
+          <i class="fas fa-trash"></i>
+        </div>
+        <div class="bin-info">
+          <h4>Tong Sampah Residu</h4>
+          <p>Untuk sampah yang tidak dapat didaur ulang</p>
+        </div>
+      </div>
+    </template>
+
+    <template id="unknownBin">
+      <div class="waste-bin unknown">
+        <div class="bin-icon">
+          <i class="fas fa-question-circle"></i>
+        </div>
+        <div class="bin-info">
+          <h4>Tidak Dikenali</h4>
+          <p>Coba posisi yang berbeda atau perbaiki pencahayaan</p>
+        </div>
+      </div>
+    </template>
+
+    <script src="js/notification.js"></script>
+    <script src="camera-detection.js"></script>
+    <script>
+      const USER_STORAGE_KEY = "sampahKuPilahUser";
+      function readSession() {
+        try {
+          const raw = localStorage.getItem(USER_STORAGE_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch (err) {
+          console.warn("Gagal membaca sesi:", err);
+          localStorage.removeItem(USER_STORAGE_KEY);
+          return null;
+        }
       }
-    }
-    const session = readSession();
-    if (!session) {
-      window.location.href = 'login.html';
-    } else {
-      const displayName = session.name || session.email || 'User';
-      document.getElementById('userName').textContent = displayName;
-    }
-    function logout() {
-      if (confirm('Apakah Anda yakin ingin keluar?')) {
-        localStorage.removeItem(USER_STORAGE_KEY);
-        window.location.href = 'index.html';
+      const session = readSession();
+      if (!session) {
+        window.location.href = "login.html";
+      } else {
+        const displayName = session.name || session.email || "User";
+        document.getElementById("userName").textContent = displayName;
       }
-    }
-  </script>
-</body>
+      function logout() {
+        if (confirm("Apakah Anda yakin ingin keluar?")) {
+          localStorage.removeItem(USER_STORAGE_KEY);
+          window.location.href = "index.html";
+        }
+      }
+    </script>
+  </body>
 </html>

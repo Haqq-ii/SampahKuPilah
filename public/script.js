@@ -3,7 +3,8 @@ function persistUserSession(profile) {
   if (!profile || !profile.email) return;
   const normalized = {
     email: profile.email,
-    name: profile.name || profile.email.split('@')[0]
+    name: profile.name || profile.email.split('@')[0],
+    picture: profile.picture || null
   };
   localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(normalized));
 }
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const email = document.getElementById('emailLogin').value;
       const password = document.getElementById('passwordLogin').value;
       try {
-        const res = await fetch('/register', { // bisa diganti /login jika ingin validasi
+        const res = await fetch('/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -29,13 +30,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const data = await res.json();
         if (res.ok) {
           persistUserSession({ email });
-          window.location.href = 'index.html';
+          if (window.notification) {
+            window.notification.success("Login berhasil! Mengalihkan...");
+          }
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 500);
         } else {
-          alert(data.message);
+          if (window.notification) {
+            window.notification.error(data.message || "Email atau password salah");
+          } else {
+            alert(data.message);
+          }
         }
       } catch (err) {
         console.error(err);
-        alert('Terjadi kesalahan server');
+        if (window.notification) {
+          window.notification.error('Terjadi kesalahan server. Silakan coba lagi.');
+        } else {
+          alert('Terjadi kesalahan server');
+        }
       }
     });
   }
@@ -50,7 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }).then(() => {
       persistUserSession({
         email: user.email,
-        name: user.name || user.given_name || user.family_name || user.email
+        name: user.name || user.given_name || user.family_name || user.email,
+        picture: user.picture || null
       });
       window.location.href = 'index.html';
     });

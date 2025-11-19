@@ -1,239 +1,310 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SampahKuPilah - Bersama Pilah Sampah</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body class="landing-body">
-  <div class="landing-background">
-    <div class="landing-gradient"></div>
-    <div class="landing-orbs"></div>
-  </div>
-  <header class="landing-header">
-    <nav class="landing-nav">
-      <div class="nav-brand">
-        <span class="brand-icon"><i class="fas fa-leaf"></i></span>
-        <span class="brand-name">SampahKuPilah</span>
-      </div>
-      <div class="nav-actions">
-        <a href="login.html" class="nav-link" data-auth="guest" id="loginLink">Login</a>
-        <a href="register.html" class="nav-button" data-auth="guest" id="signupLink">Sign Up</a>
-        <button type="button" class="nav-link hidden" data-auth="user" id="logoutButton">Log Out</button>
-        <a href="#download" class="nav-button hidden" data-auth="user" id="downloadLink">Download App</a>
-      </div>
-    </nav>
-    <section class="hero">
-      <div class="hero-content">
-        <p class="hero-label">Solusi Pintar untuk Pengelolaan Sampah</p>
-        <h1>Mengenal, memilah, dan mengelola sampah lebih mudah bersama <span>SampahKuPilah</span>.</h1>
-        <p class="hero-description">
-          Platform deteksi sampah berbasis AI yang membantu Anda memilah sampah secara otomatis, memberikan insight lingkungan, dan membuat bumi lebih bersih.
-        </p>
-        <div class="hero-actions">
-          <a href="login.html" class="primary-action" id="startDetectionBtn">Mulai Deteksi</a>
-          <a href="#fitur" class="secondary-action">Pelajari Fitur</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SampahKuPilah - Deteksi Sampah & Video Daur Ulang</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/landing.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="landing-body">
+    <div class="landing-background">
+      <div class="landing-gradient"></div>
+      <div class="landing-orbs"></div>
+    </div>
+
+    <header class="landing-header">
+      <nav class="landing-nav">
+        <div class="nav-brand">
+          <span class="brand-icon"><i class="fas fa-leaf"></i></span>
+          <span class="brand-name">SampahKuPilah</span>
         </div>
-        <div class="hero-stats">
-          <div class="stat-card">
-            <span class="stat-value">+500</span>
-            <span class="stat-label">Foto sampah dianalisis</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">92%</span>
-            <span class="stat-label">Akurasi deteksi rata-rata</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">24/7</span>
-            <span class="stat-label">Monitoring real-time</span>
-          </div>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="visual-card main-card">
-          <div class="card-header">
-            <span class="badge badge-green">AI Classifier</span>
-            <i class="fas fa-ellipsis-h"></i>
-          </div>
-          <div class="card-content">
-            <div class="preview-image">
-              <div class="preview-overlay"></div>
-              <i class="fas fa-recycle"></i>
+        <div class="nav-actions">
+          <a href="login.html" class="nav-link" data-auth="guest" id="loginLink"
+            >Login</a
+          >
+          <a
+            href="register.html"
+            class="nav-button"
+            data-auth="guest"
+            id="signupLink"
+            >Sign Up</a
+          >
+          <a
+            href="profile.html"
+            class="nav-avatar hidden"
+            data-auth="user"
+            id="profileAvatar"
+            aria-label="Profil Saya"
+          >
+            <div class="avatar-circle" id="avatarCircle">
+              <span class="avatar-initials" id="avatarInitials"></span>
+              <img class="avatar-image hidden" id="avatarImage" alt="Avatar" />
             </div>
-            <div class="preview-detail">
-              <h3>Sampah Anorganik</h3>
-              <p>Plastik & kaleng terdeteksi dengan tingkat keyakinan 94%.</p>
-              <div class="confidence-bar">
-                <span class="confidence-fill"></span>
-              </div>
+          </a>
+          <!-- Link download app dihapus karena di luar scope proyek -->
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div class="hero-content">
+          <p class="hero-label">Deteksi Sampah & Video Daur Ulang</p>
+          <h1>
+            Deteksi kategori sampah dan temukan
+            <span>video tutorial daur ulang</span> yang sesuai.
+          </h1>
+          <p class="hero-description">
+            SampahKuPilah membantu Anda mengenali jenis sampah (organik,
+            plastik, kertas, logam, dan lainnya) lalu menyarankan video tutorial
+            pemanfaatan daur ulang yang relevan agar sampah bisa diubah menjadi
+            sesuatu yang lebih bermanfaat.
+          </p>
+          <div class="hero-actions">
+            <a href="login.html" class="primary-action" id="startDetectionBtn"
+              >Mulai Deteksi Sampah</a
+            >
+            <a href="#fitur" class="secondary-action">Lihat Alur Kerja</a>
+            <a href="katalog.html" class="catalog-action"
+              >🎥 Video Tutorial Daur Ulang</a
+            >
+          </div>
+          <div class="hero-stats">
+            <div class="stat-card">
+              <span class="stat-value">+500</span>
+              <span class="stat-label">Foto sampah terdeteksi</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">5+</span>
+              <span class="stat-label">Kategori sampah dikenali</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">🎥</span>
+              <span class="stat-label"
+                >Video tutorial direkomendasikan otomatis</span
+              >
             </div>
           </div>
         </div>
-        <div class="visual-card secondary-card">
-          <div class="secondary-content">
-            <h4>Insight Harian</h4>
-            <ul>
-              <li><i class="fas fa-check"></i> Volume sampah turun 18%</li>
-              <li><i class="fas fa-check"></i> 45kg sampah organik terolah</li>
-              <li><i class="fas fa-check"></i> 32 relawan aktif</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-  </header>
-  <main class="landing-main">
-    <section class="features" id="fitur">
-      <div class="section-heading">
-        <p class="section-label">Kenapa Memilih Kami?</p>
-        <h2>Fitur unggulan untuk mendukung aksi peduli lingkungan Anda</h2>
-      </div>
-      <div class="feature-grid">
-        <article class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-camera-retro"></i>
-          </div>
-          <h3>Deteksi Instan</h3>
-          <p>Gunakan kamera ponsel untuk mendeteksi jenis sampah secara cepat dengan rekomendasi pemilahan.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <h3>Analitik Cerdas</h3>
-          <p>Pantau statistik pengelolaan sampah harian, mingguan, hingga bulanan untuk evaluasi keberlanjutan.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-users"></i>
-          </div>
-          <h3>Kolaborasi Komunitas</h3>
-          <p>Gabung dengan komunitas lokal untuk berbagi tips, jadwal bank sampah, dan kegiatan peduli lingkungan.</p>
-        </article>
-      </div>
-    </section>
-    <section class="workflow">
-      <div class="workflow-content">
-        <h2>Alur kerja sederhana yang memaksimalkan dampak sosial</h2>
-        <p>Setiap langkah dibuat mudah sehingga siapa pun dapat ikut ambil bagian dalam memelihara kebersihan lingkungan.</p>
-        <div class="workflow-steps">
-          <div class="step">
-            <span class="step-number">1</span>
-            <h3>Ambil Foto</h3>
-            <p>Deteksi otomatis jenis sampah cukup dengan satu klik kamera.</p>
-          </div>
-          <div class="step">
-            <span class="step-number">2</span>
-            <h3>Dapatkan Insight</h3>
-            <p>Terima rekomendasi pemilahan dan tips pengelolaan dalam hitungan detik.</p>
-          </div>
-          <div class="step">
-            <span class="step-number">3</span>
-            <h3>Bagikan Dampak</h3>
-            <p>Laporkan kontribusi Anda dan motivasi komunitas untuk ikut bergerak.</p>
-          </div>
-        </div>
-      </div>
-      <div class="workflow-visual">
-        <div class="glow-card">
-          <span class="badge badge-purple">Realtime Tracking</span>
-          <h3>"SampahKuPilah membantu kami menurunkan sampah ke TPS sebesar 28% dalam 3 bulan."</h3>
-          <p>- Dinas Kebersihan Kota Bandung</p>
-        </div>
-        <div class="glow-card secondary">
-          <h4>Kontribusi Mingguan</h4>
-          <div class="contribution-metric">
-            <strong>1.247</strong>
-            <span>Kg sampah berhasil dipilah</span>
-          </div>
-          <div class="mini-bars">
-            <span style="--value:85%"></span>
-            <span style="--value:72%"></span>
-            <span style="--value:95%"></span>
-            <span style="--value:63%"></span>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="download-section" id="download">
-      <div class="download-card">
-        <div class="download-content">
-          <p class="section-label">Aplikasi Mobile</p>
-          <h2>Unduh versi aplikasi dan mulai memilah sampah dari mana pun.</h2>
-          <p>Mode offline, notifikasi pengambilan sampah terjadwal, dan integrasi kamera langsung dari ponsel Anda.</p>
-          <div class="download-actions">
-            <a href="#" class="primary-action outlined" aria-disabled="true">Segera Hadir</a>
-            <span class="beta-tag">Versi Beta</span>
-          </div>
-        </div>
-        <div class="download-visual">
-          <div class="phone-mockup">
-            <div class="mockup-screen">
-              <div class="mockup-header">
-                <span class="badge badge-green">AI Live</span>
-                <span class="signal-dot"></span>
-              </div>
-              <div class="mockup-body">
+
+        <div class="hero-visual">
+          <div class="visual-card main-card">
+            <div class="card-header">
+              <span class="badge badge-green">AI Classifier</span>
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <div class="card-content">
+              <div class="preview-image">
+                <div class="preview-overlay"></div>
                 <i class="fas fa-recycle"></i>
-                <p>Deteksi Real-time</p>
               </div>
-              <div class="mockup-footer">
-                <span class="pill pill-active"></span>
-                <span class="pill"></span>
-                <span class="pill"></span>
+              <div class="preview-detail">
+                <h3>Sampah Plastik</h3>
+                <p>
+                  Botol plastik terdeteksi sebagai sampah anorganik dan sistem
+                  menyarankan video membuat pot tanaman dari botol bekas.
+                </p>
+                <div class="confidence-bar">
+                  <span class="confidence-fill"></span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  </main>
-  <footer class="landing-footer">
-    <p>&copy; 2024 SampahKuPilah. Dibangun untuk bumi yang lebih bersih.</p>
-  </footer>
-  <button type="button" id="aiChatToggle" class="ai-chat-toggle" aria-haspopup="dialog" aria-expanded="false">
-    <i class="fas fa-comments"></i>
-    <span>AI Chat</span>
-  </button>
-  <div id="aiChatOverlay" class="ai-chat-overlay" aria-hidden="true">
-    <aside class="ai-chat-panel" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
-      <header class="ai-chat-header">
-        <div class="ai-chat-title" id="aiChatTitle">
-          <i class="fas fa-robot"></i>
-          <span>Asisten AI</span>
-        </div>
-        <button type="button" class="ai-chat-close" id="aiChatClose" aria-label="Tutup panel chat">
-          <i class="fas fa-times"></i>
-        </button>
-      </header>
-      <section class="ai-chat-messages" id="aiChatMessages" aria-live="polite">
-        <div class="ai-chat-message ai-chat-message--assistant">
-          <p>Halo! Saya asisten AI kamu. Tanyakan apa saja seputar pengelolaan sampah.</p>
+
+          <div class="visual-card secondary-card">
+            <div class="secondary-content">
+              <h4>Contoh Rekomendasi</h4>
+              <ul>
+                <li>
+                  <i class="fas fa-check"></i> Plastik → ide kerajinan &
+                  penyimpanan rumah tangga
+                </li>
+                <li>
+                  <i class="fas fa-check"></i> Kertas → tutorial membuat kotak,
+                  dekorasi, dan kerajinan lain
+                </li>
+                <li>
+                  <i class="fas fa-check"></i> Kaleng & logam → inspirasi pot
+                  dan hiasan dinding
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
-      <form class="ai-chat-form" id="aiChatForm" aria-label="Kirim pesan ke asisten AI">
-        <input
-          type="text"
-          id="aiChatInput"
-          name="message"
-          placeholder="Ketik pertanyaanmu di sini..."
-          autocomplete="off"
-          required
-          aria-required="true"
-        />
-        <button type="submit" id="aiChatSubmit">
-          <span>Kirim</span>
-          <i class="fas fa-paper-plane"></i>
-        </button>
-      </form>
-      <p class="ai-chat-footnote">
-        Ganti placeholder API key pada berkas <code>landing.js</code> agar chat dapat digunakan.
+    </header>
+
+    <main class="landing-main">
+      <section class="features" id="fitur">
+        <div class="section-heading">
+          <p class="section-label">Fitur Utama</p>
+          <h2>Deteksi kategori sampah & rekomendasi video daur ulang</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-camera-retro"></i>
+            </div>
+            <h3>Deteksi Kategori Sampah</h3>
+            <p>
+              Ambil foto atau unggah gambar sampah. Sistem akan
+              mengklasifikasikan ke kategori seperti organik, plastik, kertas,
+              logam, dan lain-lain.
+            </p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-play-circle"></i>
+            </div>
+            <h3>Video Tutorial Daur Ulang</h3>
+            <p>
+              Setelah terdeteksi, Anda mendapatkan rekomendasi video tutorial
+              daur ulang yang relevan sehingga lebih mudah memanfaatkan kembali
+              sampah tersebut.
+            </p>
+          </article>
+          <!-- Fitur Analitik Cerdas & Kolaborasi Komunitas dihapus agar sesuai scope -->
+        </div>
+      </section>
+
+      <section class="workflow">
+        <div class="workflow-content">
+          <h2>Alur kerja sederhana: dari deteksi hingga video panduan</h2>
+          <p>
+            Hanya dengan beberapa langkah, Anda bisa mengetahui kategori sampah
+            dan langsung melihat cara memanfaatkannya melalui video tutorial
+            yang sesuai.
+          </p>
+          <div class="workflow-steps">
+            <div class="step">
+              <span class="step-number">1</span>
+              <h3>Deteksi Sampah</h3>
+              <p>
+                Ambil foto atau unggah gambar sampah ke sistem SampahKuPilah.
+              </p>
+            </div>
+            <div class="step">
+              <span class="step-number">2</span>
+              <h3>Kenali Kategori</h3>
+              <p>
+                Sistem mengenali apakah sampah termasuk organik, plastik,
+                kertas, logam, atau kategori lainnya.
+              </p>
+            </div>
+            <div class="step">
+              <span class="step-number">3</span>
+              <h3>Tonton Video Tutorial</h3>
+              <p>
+                Anda mendapatkan rekomendasi video tutorial daur ulang yang
+                sesuai dengan kategori sampah dan dapat langsung
+                mempraktikkannya.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="workflow-visual">
+          <div class="glow-card">
+            <span class="badge badge-purple">Deteksi & Tutorial</span>
+            <h3>
+              "Setiap kali kami memindai sampah, sistem langsung menampilkan
+              kategori dan video cara mendaur ulangnya."
+            </h3>
+            <p>- Pengguna SampahKuPilah</p>
+          </div>
+          <!-- Kartu Kontribusi Mingguan dihapus karena fokus ke statistik dampak -->
+        </div>
+      </section>
+
+      <!-- Section download app dihapus karena di luar topik deteksi + video -->
+    </main>
+
+    <footer class="landing-footer">
+      <p>
+        &copy; 2024 SampahKuPilah. Fokus pada deteksi sampah & edukasi daur
+        ulang.
       </p>
-    </aside>
-  </div>
-  <script src="landing.js"></script>
-</body>
+    </footer>
+
+    <!-- AI Chatbot tetap ada -->
+    <button
+      type="button"
+      id="aiChatToggle"
+      class="ai-chat-toggle"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+    >
+      <i class="fas fa-comments"></i>
+      <span>AI Chat</span>
+    </button>
+
+    <div id="aiChatOverlay" class="ai-chat-overlay" aria-hidden="true">
+      <aside
+        class="ai-chat-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="aiChatTitle"
+      >
+        <header class="ai-chat-header">
+          <div class="ai-chat-title" id="aiChatTitle">
+            <i class="fas fa-robot"></i>
+            <span>Asisten AI</span>
+          </div>
+          <button
+            type="button"
+            class="ai-chat-close"
+            id="aiChatClose"
+            aria-label="Tutup panel chat"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </header>
+        <section
+          class="ai-chat-messages"
+          id="aiChatMessages"
+          aria-live="polite"
+        >
+          <div class="ai-chat-message ai-chat-message--assistant">
+            <p>
+              Halo! Saya asisten AI kamu. Tanyakan apa saja seputar deteksi
+              sampah atau ide daur ulang.
+            </p>
+          </div>
+        </section>
+        <form
+          class="ai-chat-form"
+          id="aiChatForm"
+          aria-label="Kirim pesan ke asisten AI"
+        >
+          <input
+            type="text"
+            id="aiChatInput"
+            name="message"
+            placeholder="Ketik pertanyaanmu di sini..."
+            autocomplete="off"
+            required
+            aria-required="true"
+          />
+          <button type="submit" id="aiChatSubmit">
+            <span>Kirim</span>
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+        <p class="ai-chat-footnote">
+          Ganti placeholder API key pada berkas <code>landing.js</code> agar
+          chat dapat digunakan penuh.
+        </p>
+      </aside>
+    </div>
+
+    <script src="js/notification.js"></script>
+    <script src="landing.js"></script>
+  </body>
 </html>

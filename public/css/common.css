@@ -1,0 +1,531 @@
+/* ============================================
+   COMMON.CSS - Shared Styles for All Pages
+   ============================================ */
+
+/* ============================================
+   CSS VARIABLES - DESIGN TOKENS
+   ============================================ */
+:root {
+  /* ============================================
+     SPACING SCALE (8px base)
+     ============================================ */
+  --spacing-1: 0.25rem;   /* 4px */
+  --spacing-2: 0.5rem;    /* 8px */
+  --spacing-3: 0.75rem;   /* 12px */
+  --spacing-4: 1rem;      /* 16px */
+  --spacing-5: 1.25rem;   /* 20px */
+  --spacing-6: 1.5rem;    /* 24px */
+  --spacing-7: 1.75rem;   /* 28px */
+  --spacing-8: 2rem;      /* 32px */
+  --spacing-9: 2.25rem;   /* 36px */
+  --spacing-10: 2.5rem;   /* 40px */
+  --spacing-12: 3rem;     /* 48px */
+  --spacing-16: 4rem;     /* 64px */
+  --spacing-20: 5rem;     /* 80px */
+
+  /* ============================================
+     TYPOGRAPHY SCALE
+     ============================================ */
+  --font-primary: "Montserrat", Arial, sans-serif;
+  
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.7;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ============================================
+     COLORS - PRIMARY (Neon/Futuristic Theme)
+     ============================================ */
+  --color-cyan: #00ffff;
+  --color-magenta: #ff00ff;
+  --color-yellow: #ffff00;
+  --color-green: #00ff88;
+  --color-green-light: #69f0ae;
+  --color-green-dark: #00cc66;
+  --color-blue: #42a5f5;
+  --color-blue-dark: #0066cc;
+  --color-red: #ff4444;
+  --color-red-dark: #cc3333;
+  --color-white: #ffffff;
+  --color-dark: #0a0a0f;
+  --color-black: #000000;
+  --color-gray-100: #f4f7ff;
+  --color-gray-200: #cbd8ff;
+  --color-gray-300: #9db2ff;
+  --color-gray-400: #888888;
+  --color-gray-500: #666666;
+  --color-gray-600: #cccccc;
+  --color-gray-700: #1a1a1a;
+  
+  /* ============================================
+     COLORS - ECO GREEN (Auth/Katalog Theme)
+     ============================================ */
+  --eco-green: #4caf50;
+  --eco-green-soft: #9bdc9b;
+  --eco-green-deep: #2e7d32;
+  --eco-green-darker: #1b5e20;
+  
+  /* ============================================
+     COLORS - NEUTRAL (Light Theme)
+     ============================================ */
+  --neutral-0: #ffffff;
+  --neutral-25: #f9fbf9;
+  --neutral-75: #eef4ef;
+  --neutral-200: #c8d6ce;
+  --neutral-400: #8aa094;
+  --neutral-600: #4f6459;
+  --neutral-700: #2f3d36;
+  --neutral-800: #2f3d36;
+  
+  /* ============================================
+     BACKGROUNDS
+     ============================================ */
+  --bg-dark-base: #05060f;
+  --bg-dark-overlay: rgba(0, 0, 0, 0.3);
+  --bg-dark-overlay-strong: rgba(0, 0, 0, 0.4);
+  --bg-light-base: #f4fbf4;
+  --bg-light-gradient-start: #f4fbf4;
+  --bg-light-gradient-mid: #eef5f0;
+  --bg-light-gradient-end: #e2efe7;
+  
+  /* ============================================
+     GRADIENTS
+     ============================================ */
+  /* Futuristic Theme */
+  --gradient-radial-1: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%);
+  --gradient-radial-2: radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+  --gradient-radial-3: radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+  --gradient-linear-dark: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0f 100%);
+  
+  /* Light Theme */
+  --gradient-light-vertical: linear-gradient(180deg, var(--bg-light-gradient-start) 0%, var(--bg-light-gradient-mid) 45%, var(--bg-light-gradient-end) 100%);
+  
+  /* ============================================
+     PATTERNS & EFFECTS
+     ============================================ */
+  --pattern-grid: linear-gradient(45deg, transparent 48%, rgba(0, 255, 255, 0.03) 49%, rgba(0, 255, 255, 0.03) 51%, transparent 52%),
+                  linear-gradient(-45deg, transparent 48%, rgba(255, 0, 255, 0.03) 49%, rgba(255, 0, 255, 0.03) 51%, transparent 52%);
+  --glow-ambient: radial-gradient(circle at 25% 25%, rgba(0, 255, 255, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 75% 75%, rgba(255, 0, 255, 0.03) 0%, transparent 50%);
+  
+  /* ============================================
+     BORDERS
+     ============================================ */
+  --border-cyan: 1px solid rgba(0, 255, 255, 0.3);
+  --border-magenta: 1px solid rgba(255, 0, 255, 0.3);
+  --border-eco-green: 1px solid rgba(76, 175, 80, 0.18);
+  
+  /* ============================================
+     SHADOWS
+     ============================================ */
+  --shadow-cyan: 0 8px 32px rgba(0, 255, 255, 0.1), 0 0 50px rgba(255, 0, 255, 0.05);
+  --shadow-green: 0 4px 15px rgba(0, 255, 136, 0.3), 0 0 20px rgba(0, 255, 136, 0.2);
+  --shadow-eco-soft: 0 18px 32px rgba(46, 125, 50, 0.14);
+  --shadow-eco-hover: 0 24px 44px rgba(46, 125, 50, 0.18);
+  
+  /* ============================================
+     BACKDROP
+     ============================================ */
+  --backdrop-blur: blur(20px) saturate(180%);
+}
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(60px, 60px); }
+}
+
+@keyframes ambientGlow {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes neonPulse {
+  from {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4);
+  }
+  to {
+    text-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 30px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6);
+  }
+}
+
+@keyframes scanLine {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+@keyframes hologramScan {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+@keyframes hologramGlow {
+  0%, 100% { left: -100%; }
+  50% { left: 100%; }
+}
+
+@keyframes crosshairPulse {
+  0%, 100% {
+    border-color: rgba(0, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
+  }
+  50% {
+    border-color: rgba(255, 0, 255, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.4);
+  }
+}
+
+@keyframes crosshairPulseLight {
+  0%, 100% {
+    border-color: rgba(76, 175, 80, 0.6);
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.4), 0 0 16px rgba(76, 175, 80, 0.2);
+  }
+  50% {
+    border-color: rgba(76, 175, 80, 0.9);
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.6), 0 0 20px rgba(76, 175, 80, 0.3);
+  }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-50%) translateX(-100%); }
+  100% { transform: translateY(-50%) translateX(100%); }
+}
+
+@keyframes binGlow {
+  0%, 100% { left: -100%; }
+  50% { left: 100%; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2), 0 0 10px rgba(0, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(0, 255, 255, 0.2), 0 0 30px rgba(0, 255, 255, 0.1);
+  }
+}
+
+@keyframes particleFloat {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+@keyframes floatOrbs {
+  0% {
+    transform: translateY(-20px) scale(1);
+  }
+  100% {
+    transform: translateY(30px) scale(1.05);
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================================
+   SHARED BACKGROUND PATTERNS
+   ============================================ */
+.futuristic-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--pattern-grid);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+  animation: gridMove 20s linear infinite;
+}
+
+.ambient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--glow-ambient);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientGlow 8s ease-in-out infinite alternate;
+}
+
+/* ============================================
+   SHARED FORM STYLES
+   ============================================ */
+.input-group {
+  margin-bottom: var(--spacing-6);
+}
+
+.input-group label {
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-2);
+  display: block;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  position: relative;
+  z-index: 2;
+}
+
+.input-group label i {
+  margin-right: var(--spacing-2);
+  color: var(--color-cyan);
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
+}
+
+.input-group input {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-1);
+  border-radius: var(--spacing-3);
+  border: var(--border-cyan);
+  background: var(--bg-dark-overlay);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  outline: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 2;
+}
+
+.input-group input:focus {
+  border-color: rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3), 0 0 25px rgba(0, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.input-group input.error {
+  border-color: var(--color-red);
+  box-shadow: 0 0 15px rgba(255, 68, 68, 0.3), 0 0 25px rgba(255, 68, 68, 0.1);
+  background: rgba(255, 68, 68, 0.1);
+}
+
+.input-group input.error:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 15px rgba(255, 68, 68, 0.5), 0 0 25px rgba(255, 68, 68, 0.2);
+}
+
+/* ============================================
+   SHARED BUTTON STYLES
+   ============================================ */
+.btn,
+.start-btn,
+.stop-btn,
+.logout-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn::before,
+.start-btn::before,
+.stop-btn::before,
+.logout-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before,
+.start-btn:hover:not(:disabled)::before,
+.stop-btn:hover:not(:disabled)::before,
+.logout-btn:hover::before {
+  left: 100%;
+}
+
+.btn {
+  width: 100%;
+  padding: var(--spacing-3);
+  background: linear-gradient(45deg, var(--color-green), var(--color-green-dark));
+  color: var(--color-white);
+  border: 1px solid rgba(0, 255, 136, 0.5);
+  border-radius: var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  margin-top: var(--spacing-2);
+  z-index: 2;
+}
+
+.btn:hover {
+  background: linear-gradient(45deg, #00ff99, #00dd77);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-green);
+  border-color: rgba(0, 255, 136, 0.8);
+}
+
+.divider {
+  text-align: center;
+  margin: var(--spacing-6) 0 var(--spacing-4) 0;
+  color: var(--color-white);
+  font-size: var(--font-size-xs);
+  position: relative;
+  z-index: 2;
+}
+
+.divider span {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0 10px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.divider:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.5), transparent);
+  z-index: 0;
+}
+
+.small-btn {
+  font-size: var(--font-size-xs);
+  color: var(--color-cyan);
+  text-decoration: underline;
+  cursor: pointer;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.small-btn:hover {
+  color: var(--color-white);
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   SHARED CONTAINER STYLES
+   ============================================ */
+.container {
+  background: var(--bg-dark-overlay-strong);
+  border-radius: var(--spacing-5);
+  box-shadow: var(--shadow-cyan);
+  padding: var(--spacing-8) var(--spacing-6);
+  max-width: 350px;
+  width: 100%;
+  margin: auto;
+  animation: fadeIn 1s;
+  backdrop-filter: var(--backdrop-blur);
+  border: var(--border-cyan);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
+  animation: scanLine 3s ease-in-out infinite;
+}
+
+.container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px, 30px 30px;
+  animation: particleFloat 20s linear infinite;
+  pointer-events: none;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--spacing-6) var(--spacing-2);
+    max-width: 95vw;
+  }
+  
+  .btn {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-4);
+  }
+}
+
+

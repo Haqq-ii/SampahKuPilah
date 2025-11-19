@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoDetect - Daftar Akun</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/auth.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -26,7 +27,7 @@
 
   <!-- Main Content -->
   <main class="login-main">
-    <div class="container login-container fade-in">
+    <div class="login-container">
       <div class="form-header">
         <h2><i class="fas fa-user-plus"></i> Daftar Akun</h2>
         <p>Buat akun baru untuk memulai deteksi sampah</p>
@@ -44,14 +45,36 @@
           <label for="password">
             <i class="fas fa-lock"></i> Password
           </label>
-          <input type="password" id="password" name="password" required placeholder="Masukkan password Anda">
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" required placeholder="Masukkan password Anda">
+            <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div id="passwordStrength" class="password-strength" style="display: none;">
+            <div class="strength-bar">
+              <div class="strength-fill" id="strengthFill"></div>
+            </div>
+            <p class="strength-text" id="strengthText"></p>
+            <ul class="strength-requirements" id="strengthRequirements">
+              <li id="req-length"><i class="fas fa-circle"></i> Minimal 8 karakter</li>
+              <li id="req-uppercase"><i class="fas fa-circle"></i> Huruf besar (A-Z)</li>
+              <li id="req-lowercase"><i class="fas fa-circle"></i> Huruf kecil (a-z)</li>
+              <li id="req-number"><i class="fas fa-circle"></i> Angka (0-9)</li>
+            </ul>
+          </div>
         </div>
         
         <div class="input-group">
           <label for="confirmPassword">
             <i class="fas fa-lock"></i> Konfirmasi Password
           </label>
-          <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Konfirmasi password Anda">
+          <div class="password-wrapper">
+            <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Konfirmasi password Anda">
+            <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
         </div>
         
         <button type="submit" class="btn login-btn">
@@ -70,6 +93,13 @@
     <p>&copy; 2024 EcoDetect. All rights reserved.</p>
   </footer>
 
+  <!-- Notification System -->
+  <script src="js/notification.js"></script>
+  <!-- Password Validator -->
+  <script src="js/password-validator.js"></script>
+  <!-- Password Toggle Utility -->
+  <script src="password-toggle.js"></script>
+  <!-- Register Functionality -->
   <script src="register.js"></script>
 </body>
 </html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SampahKuPilah - Profil Saya</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/landing.css" />
+    <link rel="stylesheet" href="css/profile.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="profile-body">
+    <div class="landing-background">
+      <div class="landing-gradient"></div>
+      <div class="landing-orbs"></div>
+    </div>
+
+    <header class="landing-header">
+      <nav class="landing-nav">
+        <div class="nav-brand">
+          <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: var(--spacing-3);">
+            <span class="brand-icon"><i class="fas fa-leaf"></i></span>
+            <span class="brand-name">SampahKuPilah</span>
+          </a>
+        </div>
+        <div class="nav-actions">
+          <a
+            href="profile.html"
+            class="nav-avatar"
+            id="profileAvatar"
+            aria-label="Profil Saya"
+          >
+            <div class="avatar-circle" id="avatarCircle">
+              <span class="avatar-initials" id="avatarInitials"></span>
+              <img class="avatar-image hidden" id="avatarImage" alt="Avatar" />
+            </div>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="profile-main">
+      <div class="profile-container">
+        <!-- Profil Saya Card -->
+        <section class="profile-card">
+          <div class="profile-header">
+            <h1><i class="fas fa-user-circle"></i> Profil Saya</h1>
+          </div>
+          <div class="profile-content">
+            <div class="profile-avatar-section">
+              <div class="profile-avatar-large" id="profileAvatarLarge">
+                <span class="profile-avatar-initials" id="profileAvatarInitials"></span>
+                <img class="profile-avatar-image hidden" id="profileAvatarImage" alt="Foto Profil" />
+              </div>
+              <button type="button" class="btn-change-photo" id="changePhotoBtn">
+                <i class="fas fa-camera"></i> Ganti Foto
+              </button>
+              <input type="file" id="photoInput" accept="image/*" style="display: none;" />
+            </div>
+            <div class="profile-info">
+              <div class="info-group">
+                <label><i class="fas fa-user"></i> Nama Lengkap</label>
+                <p class="info-value" id="userFullName">-</p>
+              </div>
+              <div class="info-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <p class="info-value" id="userEmail">-</p>
+              </div>
+              <div class="profile-actions">
+                <button type="button" class="btn-edit-profile" id="editProfileBtn">
+                  <i class="fas fa-edit"></i> Edit Profil
+                </button>
+                <button type="button" class="btn-logout" id="logoutBtn">
+                  <i class="fas fa-sign-out-alt"></i> Log Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Ringkasan Penggunaan -->
+        <section class="summary-card">
+          <div class="summary-header">
+            <h2><i class="fas fa-chart-line"></i> Ringkasan Penggunaan</h2>
+          </div>
+          <div class="summary-content">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-search"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-value" id="totalDetections">0</span>
+                <span class="stat-label">Total Deteksi Sampah</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-value" id="mostCommonCategory">-</span>
+                <span class="stat-label">Kategori Paling Sering</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-value" id="lastDetectionDate">-</span>
+                <span class="stat-label">Deteksi Terakhir</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Riwayat Deteksi Sampah -->
+        <section class="history-card">
+          <div class="history-header">
+            <h2><i class="fas fa-history"></i> Riwayat Deteksi Sampah</h2>
+          </div>
+          <div class="history-content">
+            <div class="history-table-container">
+              <table class="history-table" id="historyTable">
+                <thead>
+                  <tr>
+                    <th>Tanggal Deteksi</th>
+                    <th>Kategori Sampah</th>
+                    <th>Rekomendasi Video</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <tr>
+                    <td colspan="3" class="no-history-message">
+                      <i class="fas fa-info-circle"></i>
+                      <span>Belum ada riwayat deteksi</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Modal Edit Profil -->
+    <div class="modal-overlay hidden" id="editProfileModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-edit"></i> Edit Profil</h3>
+          <button type="button" class="modal-close" id="closeEditModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form class="edit-profile-form" id="editProfileForm">
+          <div class="form-group">
+            <label for="editName">Nama Lengkap</label>
+            <input type="text" id="editName" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" name="email" required readonly />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" id="cancelEditBtn">Batal</button>
+            <button type="submit" class="btn-save">Simpan Perubahan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="js/notification.js"></script>
+    <script src="profile.js"></script>
+  </body>
+</html>
+
