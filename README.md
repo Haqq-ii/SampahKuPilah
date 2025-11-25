@@ -67,8 +67,7 @@ SampahKuPilah/
 │   ├── style.css               # Styling aplikasi
 │   ├── script.js               # Script login/register
 │   ├── register.js             # Script registrasi
-│   ├── camera-detection.js     # Script deteksi sampah (main)
-│   └── detection-openai.js     # Module deteksi AI real-time
+│   └── camera-detection.js     # Script deteksi sampah (main)
 ├── server.js                   # Server Node.js dengan OpenAI API
 ├── users.json                  # Database pengguna
 ├── package.json                # Dependencies Node.js
@@ -106,6 +105,104 @@ SampahKuPilah/
    - Login atau daftar akun baru
    - Klik "Mulai" pada dashboard untuk mengaktifkan kamera
    - Arahkan kamera ke sampah untuk deteksi AI real-time
+
+## Menjalankan dengan Docker
+
+### Prasyarat
+- Docker dan Docker Compose sudah terinstall
+- File `.env` sudah dibuat dan dikonfigurasi dengan benar
+
+### Langkah-langkah
+
+1. **Buat file `.env` (jika belum ada)**
+   ```bash
+   # Di direktori SampahKuPilah/
+   cp env.example .env
+   ```
+
+2. **Edit file `.env`**
+   ```bash
+   # Pastikan OPENAI_API_KEY sudah diisi dengan API key yang valid
+   OPENAI_API_KEY=sk-proj-your_actual_api_key_here
+   PORT=3000
+   ESP32_HOST=http://192.168.1.20
+   ```
+
+3. **Build dan jalankan dengan Docker Compose**
+   ```bash
+   # Build image dan start container
+   docker-compose up --build
+
+   # Atau untuk menjalankan di background
+   docker-compose up -d --build
+   ```
+
+4. **Cek log untuk memastikan OPENAI_API_KEY ter-load**
+   ```bash
+   # Lihat log container
+   docker-compose logs web
+
+   # Jika berhasil, Anda akan melihat:
+   # 🔑 OPENAI_API_KEY tersedia: true
+   #    Key length: XX karakter
+   #    Key prefix: sk-proj...
+   ```
+
+5. **Akses aplikasi**
+   - Buka browser dan kunjungi `http://localhost:3000`
+   - Fitur deteksi sampah seharusnya sudah berfungsi
+
+### Troubleshooting Docker
+
+**Masalah: Fitur deteksi sampah tidak berfungsi di Docker**
+
+1. **Cek apakah file `.env` ada di direktori `SampahKuPilah/`**
+   ```bash
+   ls -la SampahKuPilah/.env
+   ```
+
+2. **Pastikan file `.env` berisi `OPENAI_API_KEY` yang valid**
+   ```bash
+   cat SampahKuPilah/.env
+   ```
+
+3. **Cek log Docker untuk error OPENAI_API_KEY**
+   ```bash
+   docker-compose logs web | grep -i "OPENAI_API_KEY"
+   ```
+
+4. **Restart container setelah mengubah `.env`**
+   ```bash
+   docker-compose down
+   docker-compose up --build
+   ```
+
+5. **Alternatif: Set environment variable langsung di docker-compose.yml**
+   Jika file `.env` tidak bekerja, uncomment baris di `docker-compose.yml`:
+   ```yaml
+   environment:
+     - OPENAI_API_KEY=sk-proj-your_actual_api_key_here
+   ```
+   ⚠️ **Peringatan**: Jangan commit API key ke Git! Gunakan file `.env` yang ada di `.gitignore`.
+
+### Perintah Docker yang Berguna
+
+```bash
+# Stop container
+docker-compose down
+
+# Restart container
+docker-compose restart
+
+# Lihat log real-time
+docker-compose logs -f web
+
+# Masuk ke dalam container (untuk debug)
+docker-compose exec web sh
+
+# Hapus semua (container, image, volume)
+docker-compose down -v --rmi all
+```
 
 ## Cara Penggunaan
 

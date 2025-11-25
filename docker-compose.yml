@@ -6,6 +6,8 @@ services:
     image: sampahkupilah:web
     env_file:
       - .env
+    environment:
+      - NODE_ENV=production
     ports:
       - "${PORT:-3000}:3000"
     volumes:

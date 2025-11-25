@@ -1,4 +1,4 @@
-// server.js (Versi Final Akurat & Anti Rate Limit)
+// server.js - SampahKuPilah Backend Server
 import express from "express";
 import fs from "fs";
 import path from "path";
@@ -18,34 +18,50 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
-// Static files akan di-load setelah semua API routes (untuk menghindari konflik)
+
+// Validasi dan setup OpenAI API Key
+const apiKey = process.env.OPENAI_API_KEY?.trim();
+
+if (!apiKey) {
+  console.error("❌ ERROR: OPENAI_API_KEY tidak ditemukan!");
+  console.error("   Pastikan file .env ada dan berisi OPENAI_API_KEY");
+  console.warn("⚠️  Fitur deteksi sampah tidak akan berfungsi!");
+} else {
+  const isPlaceholder = apiKey.toLowerCase().includes("your_") || 
+                        apiKey.toLowerCase().includes("example") ||
+                        apiKey.toLowerCase().includes("placeholder") ||
+                        apiKey.length < 20;
+  
+  if (isPlaceholder) {
+    console.error("❌ ERROR: OPENAI_API_KEY masih placeholder!");
+    console.error("   Edit file .env dengan API key yang valid");
+    console.warn("⚠️  Fitur deteksi sampah tidak akan berfungsi!");
+  } else if (!apiKey.startsWith("sk-")) {
+    console.warn("⚠️  OPENAI_API_KEY format mungkin tidak valid (seharusnya dimulai dengan 'sk-')");
+  }
+  
+  process.env.OPENAI_API_KEY = apiKey;
+  console.log("🔑 OPENAI_API_KEY tersedia:", apiKey.length, "karakter");
+}
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// === Helper ===
+// === Helper Functions ===
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
+
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]", "utf-8");
 
-function normalizeEmail(v) {
-  return typeof v === "string" ? v.trim().toLowerCase() : "";
-}
-function readUsers() {
-  return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
-}
-function writeUsers(u) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(u, null, 2), "utf-8");
-}
-function findUserByEmail(users, email) {
-  return users.find((u) => normalizeEmail(u.email) === normalizeEmail(email));
-}
+const normalizeEmail = (v) => typeof v === "string" ? v.trim().toLowerCase() : "";
+const readUsers = () => JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+const writeUsers = (u) => fs.writeFileSync(USERS_FILE, JSON.stringify(u, null, 2), "utf-8");
+const findUserByEmail = (users, email) => users.find((u) => normalizeEmail(u.email) === normalizeEmail(email));
 
-// === Rate Limiting (Simple In-Memory) ===
+// === Rate Limiting ===
 const rateLimitStore = new Map();
 
-function checkRateLimit(identifier, maxAttempts = 5, windowMs = 15 * 60 * 1000) {
-  // 15 menit window
+const checkRateLimit = (identifier, maxAttempts = 5, windowMs = 15 * 60 * 1000) => {
   const now = Date.now();
   const key = identifier;
 
@@ -78,31 +94,26 @@ function checkRateLimit(identifier, maxAttempts = 5, windowMs = 15 * 60 * 1000) 
     allowed: true,
     remaining: maxAttempts - record.count,
   };
-}
+};
 
-function getClientIdentifier(req) {
-  // Use IP address as identifier
-  return (
-    req.headers["x-forwarded-for"]?.split(",")[0] ||
-    req.headers["x-real-ip"] ||
-    req.connection?.remoteAddress ||
-    req.socket?.remoteAddress ||
-    "unknown"
-  );
-}
+const getClientIdentifier = (req) => (
+  req.headers["x-forwarded-for"]?.split(",")[0] ||
+  req.headers["x-real-ip"] ||
+  req.connection?.remoteAddress ||
+  req.socket?.remoteAddress ||
+  "unknown"
+);
 
-// Cleanup old rate limit records every 30 minutes
+// Cleanup rate limit records setiap 30 menit
 setInterval(() => {
   const now = Date.now();
   for (const [key, record] of rateLimitStore.entries()) {
-    if (now > record.resetAt) {
-      rateLimitStore.delete(key);
-    }
+    if (now > record.resetAt) rateLimitStore.delete(key);
   }
 }, 30 * 60 * 1000);
 
 // === Validation Functions ===
-function validateEmail(email) {
+const validateEmail = (email) => {
   if (!email || typeof email !== "string") {
     return { valid: false, error: "Email wajib diisi" };
   }
@@ -132,9 +143,9 @@ function validateEmail(email) {
   }
 
   return { valid: true, error: null };
-}
+};
 
-function validatePassword(password) {
+const validatePassword = (password) => {
   if (!password || typeof password !== "string") {
     return { valid: false, errors: ["Password wajib diisi"] };
   }
@@ -165,12 +176,11 @@ function validatePassword(password) {
     valid: errors.length === 0,
     errors,
   };
-}
+};
 
-// === Register/Login ===
+// === Authentication Routes ===
 app.post("/register", async (req, res) => {
   try {
-    // ✅ Rate Limiting: Max 5 attempts per 15 minutes per IP
     const clientId = getClientIdentifier(req);
     const rateLimit = checkRateLimit(`register:${clientId}`, 5, 15 * 60 * 1000);
 
@@ -183,15 +193,12 @@ app.post("/register", async (req, res) => {
 
     const { email: rawEmail, password } = req.body;
 
-    // ✅ Server-side Email Validation
     const emailValidation = validateEmail(rawEmail);
     if (!emailValidation.valid) {
       return res.status(400).json({ message: emailValidation.error });
     }
 
     const email = normalizeEmail(rawEmail);
-
-    // ✅ Server-side Password Validation
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.valid) {
       return res.status(400).json({
@@ -199,20 +206,16 @@ app.post("/register", async (req, res) => {
       });
     }
 
-    // Check if email already exists
     const users = readUsers();
     if (findUserByEmail(users, email)) {
       return res.status(409).json({ message: "Email sudah terdaftar" });
     }
 
-    // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
     users.push({ email, passwordHash, provider: "local" });
     writeUsers(users);
 
-    // Reset rate limit on success
     rateLimitStore.delete(`register:${clientId}`);
-
     res.json({ message: "Pendaftaran berhasil" });
   } catch (error) {
     console.error("Registration error:", error);
@@ -222,7 +225,6 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
-    // ✅ Rate Limiting: Max 10 attempts per 15 minutes per IP
     const clientId = getClientIdentifier(req);
     const rateLimit = checkRateLimit(`login:${clientId}`, 10, 15 * 60 * 1000);
 
@@ -247,9 +249,7 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Email atau password salah" });
     }
 
-    // Reset rate limit on success
     rateLimitStore.delete(`login:${clientId}`);
-
     res.json({ message: "Login berhasil", user: { email } });
   } catch (error) {
     console.error("Login error:", error);
@@ -267,7 +267,7 @@ app.post("/save-google-user", (req, res) => {
   res.json({ message: "Google user disimpan!" });
 });
 
-// === YouTube Proxy (tanpa ekspose API key ke client) ===
+// === YouTube API Proxy ===
 app.get("/api/youtube/search", async (req, res) => {
   try {
     const q = (req.query.q || "").toString();
@@ -277,7 +277,6 @@ app.get("/api/youtube/search", async (req, res) => {
     if (!q) return res.status(400).json({ error: "query_missing" });
 
     if (!key) {
-      // Fallback aman jika API key belum diset: kirim 3 video contoh topik
       return res.json({
         items: [
           {
@@ -331,7 +330,7 @@ app.get("/api/youtube/search", async (req, res) => {
   }
 });
 
-// === AI Chat Proxy (untuk landing page - Security Fix) ===
+// === OpenAI Chat Proxy ===
 app.post("/api/openai/chat", async (req, res) => {
   try {
     const { messages } = req.body;
@@ -343,7 +342,6 @@ app.post("/api/openai/chat", async (req, res) => {
       });
     }
 
-    // Validasi maksimal messages untuk mencegah abuse
     if (messages.length > 50) {
       return res.status(400).json({ 
         error: "too_many_messages", 
@@ -378,16 +376,35 @@ app.post("/api/openai/chat", async (req, res) => {
   }
 });
 
-// === CLASSIFY (Multi-View + Prompt Hierarkis + Limiter) ===
+// === Waste Classification Endpoint ===
 let classifyBusy = false;
 let lastClassifyAt = 0;
-const CLASSIFY_COOLDOWN_MS = 5000; // 5s antar panggilan agar stabil
+const CLASSIFY_COOLDOWN_MS = 5000;
 
 app.post("/classify", async (req, res) => {
   try {
-    const { imageBase64, images } = req.body || {};
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
+    
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "missing_api_key",
+        message: "OpenAI API key tidak dikonfigurasi. Pastikan OPENAI_API_KEY sudah diset di file .env"
+      });
+    }
+    
+    const isPlaceholder = apiKey.toLowerCase().includes("your_") || 
+                          apiKey.toLowerCase().includes("example") ||
+                          apiKey.toLowerCase().includes("placeholder") ||
+                          apiKey.length < 20;
+    
+    if (isPlaceholder) {
+      return res.status(500).json({
+        error: "invalid_api_key",
+        message: "OpenAI API key tidak valid atau masih placeholder. Edit file .env dengan API key yang valid"
+      });
+    }
 
-    // Terima format lama (single) atau baru (multi-view)
+    const { imageBase64, images } = req.body || {};
     let imageUrls = [];
     if (Array.isArray(images) && images.length > 0) {
       imageUrls = images
@@ -419,7 +436,6 @@ app.post("/classify", async (req, res) => {
     classifyBusy = true;
     lastClassifyAt = Date.now();
 
-    // Prompt kuat (aturan Indonesia + prioritas + ambiguitas biru/hijau)
     const prompt = `
 Kamu adalah sistem klasifikasi sampah untuk konteks Indonesia.
 Kamu akan menerima hingga EMPAT gambar dari frame yang sama:
@@ -464,11 +480,7 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
     });
 
     const raw = completion.choices?.[0]?.message?.content || "{}";
-    let parsed = {
-      category: "abu-abu",
-      reason: "tidak jelas",
-      confidence: 0.7,
-    };
+    let parsed = { category: "abu-abu", reason: "tidak jelas", confidence: 0.7 };
 
     try {
       const m = raw.match(/\{[\s\S]*\}/);
@@ -494,7 +506,6 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
     };
     const binName = binMap[color] || "Residu";
 
-    // Payload sesuai UI
     const decision = {
       dominant_class: binName,
       bin: color,
@@ -502,7 +513,6 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
       reason: parsed.reason,
     };
 
-    // Placeholder bbox tengah (UI overlay)
     const detections = [
       {
         class: binName,
@@ -515,23 +525,38 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
 
     return res.json({ detections, decision });
   } catch (err) {
+    classifyBusy = false;
+    
     if (err?.status === 429) {
-      return res
-        .status(429)
-        .json({ error: "openai_rate_limit", cooldown_ms: 12000 });
+      return res.status(429).json({ 
+        error: "openai_rate_limit", 
+        cooldown_ms: 12000,
+        message: "Terlalu banyak permintaan ke OpenAI. Silakan tunggu beberapa saat."
+      });
     }
-    console.error("💥 classify error:", err);
-    return res.status(500).json({ error: err?.message || "internal_error" });
+    
+    if (err?.message?.includes("API key") || err?.message?.includes("Missing credentials")) {
+      console.error("❌ OPENAI_API_KEY error:", err.message);
+      return res.status(500).json({ 
+        error: "missing_api_key",
+        message: "OpenAI API key tidak valid. Pastikan OPENAI_API_KEY sudah dikonfigurasi di file .env"
+      });
+    }
+    
+    console.error("💥 Classification error:", err);
+    return res.status(500).json({ 
+      error: "classification_error",
+      message: err?.message || "Terjadi kesalahan saat memproses deteksi sampah"
+    });
   } finally {
     classifyBusy = false;
   }
 });
 
-// === IoT Proxy (untuk menghindari CORS issue) ===
+// === IoT Proxy ===
 const ESP32_HOST = process.env.ESP32_HOST || "http://192.168.1.20";
-const ESP32_TIMEOUT = 10000; // 10 detik timeout (lebih lama untuk koneksi WiFi)
+const ESP32_TIMEOUT = 10000;
 
-// Endpoint untuk test koneksi ESP32
 app.get("/api/iot/status", async (req, res) => {
   try {
     console.log(`🔍 Testing ESP32 connection: ${ESP32_HOST}`);
@@ -659,15 +684,12 @@ app.get("/api/iot/open", async (req, res) => {
   }
 });
 
-// === Static Files (harus setelah semua API routes) ===
+// === Static Files ===
 app.use(express.static(path.join(__dirname, "public")));
 
-// === Jalankan Server ===
-const PORT = process.env.PORT || 3000; // Default 3000 untuk konsistensi
+// === Start Server ===
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
   console.log(`📡 ESP32 Host: ${ESP32_HOST}`);
-  console.log(`🔗 IoT Proxy: http://localhost:${PORT}/api/iot/open?type={hijau|merah|biru|abu-abu}`);
-  console.log(`🔍 IoT Status Test: http://localhost:${PORT}/api/iot/status`);
-  console.log(`\n📋 Test koneksi ESP32: buka browser → http://localhost:${PORT}/api/iot/status`);
 });

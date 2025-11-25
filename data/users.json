@@ -57,5 +57,37 @@
     "iat": 1763527666,
     "exp": 1763531266,
     "jti": "83f61f77ccdc88113b9408b9ca32a4fcdda755a9"
+  },
+  {
+    "email": "ronalsiahaan@gmail.com",
+    "passwordHash": "$2b$10$oublr8hkTag2DUluu1zQDuJZTU10PLakN6QdNsI1wX1osy530.8BG",
+    "provider": "local"
+  },
+  {
+    "iss": "https://accounts.google.com",
+    "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
+    "sub": "101167249457281911126",
+    "hd": "students.uii.ac.id",
+    "email": "24523206@students.uii.ac.id",
+    "email_verified": true,
+    "nbf": 1763716437,
+    "name": "NIKO ADITYA ALANSYAH -",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocK8oSxXKum3e7uCH91I-wlWVBwx894KjnpCE2dYZMLYfBU0FA=s96-c",
+    "given_name": "NIKO ADITYA ALANSYAH",
+    "family_name": "-",
+    "iat": 1763716737,
+    "exp": 1763720337,
+    "jti": "f66aa5dcdc701ac51206915e6dc749f6b546c237"
+  },
+  {
+    "email": "haqi@gmail.com",
+    "passwordHash": "$2b$10$AOfLMiJT/Gck4Cwo9RKepOANUWM0nBlIIZ4vSXShBO2nZc8I2MAwe",
+    "provider": "local"
+  },
+  {
+    "email": "haqi123@gmail.com",
+    "passwordHash": "$2b$10$35pPTI6OKqaVyQBgJbKw9e3Z0TRTWuHwd9j5V0q1nASkqBW20IGTW",
+    "provider": "local"
   }
 ]

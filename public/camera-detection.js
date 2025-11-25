@@ -229,10 +229,12 @@ class WasteDetectionSystem {
       this.updateDetectionUI(result);
     } catch (err) {
       console.error("Error during scan:", err);
+      const errorMessage = err?.message || "Gagal melakukan deteksi. Silakan coba lagi.";
+      
       if (window.notification) {
-        window.notification.error("Gagal melakukan deteksi. Silakan coba lagi.");
+        window.notification.error(errorMessage);
       } else {
-        alert("Gagal melakukan deteksi. Silakan coba lagi.");
+        alert(errorMessage);
       }
     } finally {
       this.setLoading(false, "scan");
@@ -284,10 +286,12 @@ class WasteDetectionSystem {
       this.displayUploadedImage(img);
     } catch (error) {
       console.error("Error processing upload:", error);
+      const errorMessage = error?.message || "Gagal memproses gambar. Silakan coba lagi.";
+      
       if (window.notification) {
-        window.notification.error("Gagal memproses gambar. Silakan coba lagi.");
+        window.notification.error(errorMessage);
       } else {
-        alert("Gagal memproses gambar. Silakan coba lagi.");
+        alert(errorMessage);
       }
     } finally {
       this.setLoading(false, "upload");
@@ -626,13 +630,42 @@ class WasteDetectionSystem {
         body: JSON.stringify({ images }),
         signal: controller.signal,
       });
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      
       const text = await res.text();
+      let errorData;
+      
       try {
-        return JSON.parse(text);
+        errorData = JSON.parse(text);
       } catch {
-        throw new Error("Invalid JSON response from /classify");
+        // Jika response bukan JSON, buat error message dari text
+        throw new Error(text || `Server error: ${res.status}`);
       }
+      
+      if (!res.ok) {
+        // Cek apakah error response memiliki message
+        const errorMessage = errorData?.message || errorData?.error || `Server error: ${res.status}`;
+        
+        // Handle specific error types
+        if (errorData?.error === "missing_api_key") {
+          throw new Error("OpenAI API key tidak ditemukan. Silakan hubungi administrator untuk mengkonfigurasi API key.");
+        } else if (errorData?.error === "openai_rate_limit") {
+          throw new Error("Terlalu banyak permintaan. Silakan tunggu beberapa saat sebelum mencoba lagi.");
+        } else if (errorData?.error === "cooldown" || errorData?.error === "server_busy") {
+          throw new Error("Server sedang sibuk. Silakan tunggu beberapa saat.");
+        }
+        
+        throw new Error(errorMessage);
+      }
+      
+      return errorData;
+    } catch (err) {
+      // Handle AbortError (timeout)
+      if (err.name === "AbortError") {
+        throw new Error("Request timeout. Silakan coba lagi atau gunakan gambar yang lebih kecil.");
+      }
+      
+      // Re-throw error yang sudah di-format
+      throw err;
     } finally {
       clearTimeout(t);
     }
