@@ -8,6 +8,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import bcrypt from "bcrypt";
+import { createClient } from "@supabase/supabase-js";
 
 dotenv.config();
 
@@ -46,6 +47,25 @@ if (!apiKey) {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// === Supabase Setup ===
+const supabaseUrl = process.env.SUPABASE_URL?.trim();
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY?.trim();
+
+let supabase = null;
+if (supabaseUrl && supabaseServiceKey) {
+  try {
+    supabase = createClient(supabaseUrl, supabaseServiceKey);
+    console.log("✅ Supabase connected:", supabaseUrl);
+  } catch (error) {
+    console.error("❌ Error connecting to Supabase:", error.message);
+    console.warn("⚠️  Database operations will use JSON file fallback");
+  }
+} else {
+  console.warn("⚠️  Supabase not configured (SUPABASE_URL or SUPABASE_SERVICE_KEY missing)");
+  console.warn("   Database operations will use JSON file fallback");
+  console.warn("   Add Supabase credentials to .env file to enable database features");
+}
+
 // === Helper Functions ===
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
@@ -57,6 +77,118 @@ const normalizeEmail = (v) => typeof v === "string" ? v.trim().toLowerCase() : "
 const readUsers = () => JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
 const writeUsers = (u) => fs.writeFileSync(USERS_FILE, JSON.stringify(u, null, 2), "utf-8");
 const findUserByEmail = (users, email) => users.find((u) => normalizeEmail(u.email) === normalizeEmail(email));
+
+// === Supabase Helper Functions ===
+// Fungsi untuk mencari user by email di Supabase
+async function findUserByEmailSupabase(email) {
+  if (!supabase) return null;
+  
+  try {
+    const normalizedEmail = normalizeEmail(email);
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", normalizedEmail)
+      .single();
+    
+    if (error) {
+      // PGRST116 = not found (ini normal, bukan error)
+      if (error.code !== "PGRST116") {
+        console.error("Error finding user in Supabase:", error);
+      }
+      return null;
+    }
+    
+    return data;
+  } catch (err) {
+    console.error("Exception finding user in Supabase:", err);
+    return null;
+  }
+}
+
+// Fungsi untuk membuat user baru di Supabase
+async function createUserSupabase(userData) {
+  if (!supabase) return null;
+  
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .insert({
+        email: normalizeEmail(userData.email),
+        password_hash: userData.passwordHash || null,
+        provider: userData.provider || "local",
+        name: userData.name || null,
+        picture: userData.picture || null
+      })
+      .select()
+      .single();
+    
+    if (error) {
+      console.error("Error creating user in Supabase:", error);
+      return null;
+    }
+    
+    return data;
+  } catch (err) {
+    console.error("Exception creating user in Supabase:", err);
+    return null;
+  }
+}
+
+// Fungsi untuk menyimpan hasil deteksi ke Supabase
+async function saveDetectionSupabase(userEmail, detectionData) {
+  if (!supabase) return null;
+  
+  try {
+    const { data, error } = await supabase
+      .from("detections")
+      .insert({
+        user_email: normalizeEmail(userEmail),
+        category: detectionData.category || detectionData.bin || "abu-abu",
+        bin_name: detectionData.bin_name || detectionData.dominant_class || "Residu",
+        confidence: detectionData.confidence || 0.8,
+        reason: detectionData.reason || "Auto-detected",
+        created_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+    
+    if (error) {
+      console.error("Error saving detection to Supabase:", error);
+      return null;
+    }
+    
+    console.log("✅ Detection saved to Supabase:", data.id);
+    return data;
+  } catch (err) {
+    console.error("Exception saving detection to Supabase:", err);
+    return null;
+  }
+}
+
+// Fungsi untuk mengambil riwayat deteksi dari Supabase
+async function getDetectionsSupabase(userEmail, limit = 50) {
+  if (!supabase) return [];
+  
+  try {
+    const { data, error } = await supabase
+      .from("detections")
+      .select("*")
+      .eq("user_email", normalizeEmail(userEmail))
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    
+    if (error) {
+      console.error("Error fetching detections from Supabase:", error);
+      return [];
+    }
+    
+    return data || [];
+  } catch (err) {
+    console.error("Exception fetching detections from Supabase:", err);
+    return [];
+  }
+}
 
 // === Rate Limiting ===
 const rateLimitStore = new Map();
@@ -206,14 +338,43 @@ app.post("/register", async (req, res) => {
       });
     }
 
-    const users = readUsers();
-    if (findUserByEmail(users, email)) {
+    // ✨ Cek user di Supabase dulu, fallback ke JSON
+    let existingUser = null;
+    if (supabase) {
+      existingUser = await findUserByEmailSupabase(email);
+    }
+    
+    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility)
+    if (!existingUser) {
+      const users = readUsers();
+      existingUser = findUserByEmail(users, email);
+    }
+
+    if (existingUser) {
       return res.status(409).json({ message: "Email sudah terdaftar" });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    users.push({ email, passwordHash, provider: "local" });
-    writeUsers(users);
+    const newUser = { email, passwordHash, provider: "local" };
+
+    // ✨ Simpan ke Supabase jika tersedia, fallback ke JSON
+    if (supabase) {
+      const created = await createUserSupabase(newUser);
+      if (!created) {
+        // Fallback ke JSON jika Supabase error
+        console.warn("Failed to create user in Supabase, falling back to JSON file");
+        const users = readUsers();
+        users.push(newUser);
+        writeUsers(users);
+      } else {
+        console.log("✅ User created in Supabase:", email);
+      }
+    } else {
+      // Jika Supabase tidak tersedia, pakai JSON file
+      const users = readUsers();
+      users.push(newUser);
+      writeUsers(users);
+    }
 
     rateLimitStore.delete(`register:${clientId}`);
     res.json({ message: "Pendaftaran berhasil" });
@@ -237,14 +398,26 @@ app.post("/login", async (req, res) => {
 
     const { email: rawEmail, password } = req.body;
     const email = normalizeEmail(rawEmail);
-    const users = readUsers();
-    const user = findUserByEmail(users, email);
+    
+    // ✨ Cari user di Supabase dulu, fallback ke JSON
+    let user = null;
+    if (supabase) {
+      user = await findUserByEmailSupabase(email);
+    }
+    
+    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility)
+    if (!user) {
+      const users = readUsers();
+      user = findUserByEmail(users, email);
+    }
 
     if (!user) {
       return res.status(401).json({ message: "Email atau password salah" });
     }
 
-    const ok = await bcrypt.compare(password, user.passwordHash || "");
+    // Handle password hash field name (Supabase pakai password_hash, JSON pakai passwordHash)
+    const passwordHash = user.password_hash || user.passwordHash || "";
+    const ok = await bcrypt.compare(password, passwordHash);
     if (!ok) {
       return res.status(401).json({ message: "Email atau password salah" });
     }
@@ -257,14 +430,52 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/save-google-user", (req, res) => {
-  const user = req.body;
-  const users = readUsers();
-  if (!findUserByEmail(users, user.email)) {
-    users.push(user);
-    writeUsers(users);
+app.post("/save-google-user", async (req, res) => {
+  try {
+    const user = req.body;
+    const email = normalizeEmail(user.email);
+    
+    // ✨ Cek user di Supabase dulu, fallback ke JSON
+    let existingUser = null;
+    if (supabase) {
+      existingUser = await findUserByEmailSupabase(email);
+    }
+    
+    // Jika tidak ada di Supabase, cek di JSON file
+    if (!existingUser) {
+      const users = readUsers();
+      existingUser = findUserByEmail(users, email);
+    }
+    
+    // Jika user belum ada, simpan ke Supabase atau JSON
+    if (!existingUser) {
+      if (supabase) {
+        const created = await createUserSupabase({
+          email: email,
+          provider: "google",
+          name: user.name || null,
+          picture: user.picture || null
+        });
+        if (!created) {
+          // Fallback ke JSON jika Supabase error
+          const users = readUsers();
+          users.push(user);
+          writeUsers(users);
+        } else {
+          console.log("✅ Google user created in Supabase:", email);
+        }
+      } else {
+        const users = readUsers();
+        users.push(user);
+        writeUsers(users);
+      }
+    }
+    
+    res.json({ message: "Google user disimpan!" });
+  } catch (error) {
+    console.error("Error saving Google user:", error);
+    res.status(500).json({ message: "Terjadi kesalahan server" });
   }
-  res.json({ message: "Google user disimpan!" });
 });
 
 // === YouTube API Proxy ===
@@ -523,6 +734,21 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
       },
     ];
 
+    // ✨ Simpan deteksi ke Supabase (opsional - tidak akan error jika tidak ada userEmail)
+    const userEmail = req.body.userEmail || req.headers["x-user-email"];
+    if (userEmail && supabase) {
+      // Simpan di background (tidak blocking response)
+      saveDetectionSupabase(userEmail, {
+        category: color,
+        bin_name: binName,
+        confidence: conf,
+        reason: parsed.reason
+      }).catch(err => {
+        // Log error tapi tidak block response
+        console.warn("Failed to save detection to Supabase (non-blocking):", err.message);
+      });
+    }
+
     return res.json({ detections, decision });
   } catch (err) {
     classifyBusy = false;
@@ -680,6 +906,137 @@ app.get("/api/iot/open", async (req, res) => {
       message: err.message || "Gagal terhubung ke ESP32",
       host: ESP32_HOST,
       type: err.name
+    });
+  }
+});
+
+// === Supabase Test Endpoint (untuk verifikasi koneksi) ===
+app.get("/api/supabase/test", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        connected: false,
+        message: "Supabase not configured",
+        instructions: [
+          "1. Pastikan SUPABASE_URL dan SUPABASE_SERVICE_KEY sudah diisi di file .env",
+          "2. Restart server setelah mengupdate .env",
+          "3. Cek console untuk pesan error koneksi"
+        ]
+      });
+    }
+
+    // Test koneksi dengan query sederhana ke tabel users
+    const { data, error, count } = await supabase
+      .from("users")
+      .select("*", { count: "exact", head: true });
+
+    if (error) {
+      console.error("Supabase test error:", error);
+      return res.status(500).json({
+        connected: false,
+        error: error.message,
+        hint: error.code === "PGRST116" 
+          ? "Tabel users mungkin belum dibuat atau kosong (ini normal untuk pertama kali)"
+          : "Cek struktur tabel dan permissions di Supabase Dashboard"
+      });
+    }
+
+    return res.json({
+      connected: true,
+      message: "✅ Supabase connection successful!",
+      tables: {
+        users: {
+          accessible: true,
+          recordCount: count || 0
+        }
+      },
+      nextSteps: [
+        "1. Test endpoint /api/supabase/test/detections untuk cek tabel detections",
+        "2. Coba registrasi user baru untuk test insert",
+        "3. Coba deteksi sampah untuk test save detection"
+      ]
+    });
+  } catch (err) {
+    console.error("Supabase test exception:", err);
+    return res.status(500).json({
+      connected: false,
+      error: err.message,
+      type: err.name
+    });
+  }
+});
+
+// Test endpoint untuk tabel detections
+app.get("/api/supabase/test/detections", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        connected: false,
+        message: "Supabase not configured"
+      });
+    }
+
+    const { data, error, count } = await supabase
+      .from("detections")
+      .select("*", { count: "exact", head: true });
+
+    if (error) {
+      return res.status(500).json({
+        connected: false,
+        error: error.message,
+        hint: "Pastikan tabel 'detections' sudah dibuat di Supabase"
+      });
+    }
+
+    return res.json({
+      connected: true,
+      message: "✅ Tabel detections accessible!",
+      detections: {
+        accessible: true,
+        recordCount: count || 0
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      connected: false,
+      error: err.message
+    });
+  }
+});
+
+// Endpoint untuk mengambil riwayat deteksi user dari Supabase
+app.get("/api/detections", async (req, res) => {
+  try {
+    const userEmail = req.query.email || req.headers["x-user-email"];
+    
+    if (!userEmail) {
+      return res.status(400).json({ 
+        error: "email_required", 
+        message: "Email user diperlukan (query parameter atau header x-user-email)" 
+      });
+    }
+
+    if (!supabase) {
+      return res.status(503).json({ 
+        error: "database_not_available",
+        message: "Supabase not configured. Using localStorage fallback.",
+        detections: []
+      });
+    }
+
+    const detections = await getDetectionsSupabase(userEmail, 50);
+    
+    return res.json({ 
+      detections: detections || [],
+      count: detections?.length || 0,
+      source: "supabase"
+    });
+  } catch (err) {
+    console.error("Error fetching detections:", err);
+    return res.status(500).json({ 
+      error: "server_error",
+      message: err.message,
+      detections: []
     });
   }
 });

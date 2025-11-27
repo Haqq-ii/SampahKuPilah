@@ -3,91 +3,17 @@
     "iss": "https://accounts.google.com",
     "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
     "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
-    "sub": "108605633237123141285",
-    "email": "nikoalansyah24@gmail.com",
-    "email_verified": true,
-    "nbf": 1760810300,
-    "name": "Niko Alansyah",
-    "picture": "https://lh3.googleusercontent.com/a/ACg8ocIkgdqt5EiNpoAlHi2m6jZFJuJexM60TDN8W_LhZq2dQR958g=s96-c",
-    "given_name": "Niko",
-    "family_name": "Alansyah",
-    "iat": 1760810600,
-    "exp": 1760814200,
-    "jti": "83d6c9bb53efffb252b3a21440dc78c9b0125278"
-  },
-  {
-    "email": "niko@gmail.com",
-    "passwordHash": "$2b$10$8MCu8auV6F.TPTPOOh3v3.vbLrb6QSE3yqycyGq8vxP9uXr0bxe0.",
-    "provider": "local"
-  },
-  {
-    "email": "naryo@gmail.com",
-    "passwordHash": "$2b$10$XrAN1qElHvFvaFtkIQqS4eIz6BJNqGylKeiG.aDycu.D24vEbHdD6",
-    "provider": "local"
-  },
-  {
-    "iss": "https://accounts.google.com",
-    "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
-    "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
-    "sub": "111822018444766052287",
-    "hd": "students.uii.ac.id",
-    "email": "24523218@students.uii.ac.id",
-    "email_verified": true,
-    "nbf": 1763524242,
-    "name": "ACHMAD HAQQI MUZAKKI -",
-    "picture": "https://lh3.googleusercontent.com/a/ACg8ocK05IJLHTTfOSS4Cmz0ZMg_jj8wHgBjo61-RWtLkaVIAJpFfcY=s96-c",
-    "given_name": "ACHMAD HAQQI MUZAKKI ",
-    "family_name": "-",
-    "iat": 1763524542,
-    "exp": 1763528142,
-    "jti": "c543a05e6e0c5f533a8d113da4e5ceaf4bb66cfb"
-  },
-  {
-    "iss": "https://accounts.google.com",
-    "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
-    "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
-    "sub": "100473204324767781470",
-    "email": "haqqimuzakki1@gmail.com",
-    "email_verified": true,
-    "nbf": 1763527366,
-    "name": "Haqqi Muzakki",
-    "picture": "https://lh3.googleusercontent.com/a/ACg8ocIjYL18xW77Z6rFFZFki0r-qoGySTT9NpcN4zIl3bDzov8bug=s96-c",
-    "given_name": "Haqqi",
-    "family_name": "Muzakki",
-    "iat": 1763527666,
-    "exp": 1763531266,
-    "jti": "83f61f77ccdc88113b9408b9ca32a4fcdda755a9"
-  },
-  {
-    "email": "ronalsiahaan@gmail.com",
-    "passwordHash": "$2b$10$oublr8hkTag2DUluu1zQDuJZTU10PLakN6QdNsI1wX1osy530.8BG",
-    "provider": "local"
-  },
-  {
-    "iss": "https://accounts.google.com",
-    "azp": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
-    "aud": "493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com",
     "sub": "101167249457281911126",
     "hd": "students.uii.ac.id",
     "email": "24523206@students.uii.ac.id",
     "email_verified": true,
-    "nbf": 1763716437,
+    "nbf": 1764181456,
     "name": "NIKO ADITYA ALANSYAH -",
     "picture": "https://lh3.googleusercontent.com/a/ACg8ocK8oSxXKum3e7uCH91I-wlWVBwx894KjnpCE2dYZMLYfBU0FA=s96-c",
     "given_name": "NIKO ADITYA ALANSYAH",
     "family_name": "-",
-    "iat": 1763716737,
-    "exp": 1763720337,
-    "jti": "f66aa5dcdc701ac51206915e6dc749f6b546c237"
-  },
-  {
-    "email": "haqi@gmail.com",
-    "passwordHash": "$2b$10$AOfLMiJT/Gck4Cwo9RKepOANUWM0nBlIIZ4vSXShBO2nZc8I2MAwe",
-    "provider": "local"
-  },
-  {
-    "email": "haqi123@gmail.com",
-    "passwordHash": "$2b$10$35pPTI6OKqaVyQBgJbKw9e3Z0TRTWuHwd9j5V0q1nASkqBW20IGTW",
-    "provider": "local"
+    "iat": 1764181756,
+    "exp": 1764185356,
+    "jti": "5e4aaaeba8b397de8352dea14da8096da028f45f"
   }
 ]
