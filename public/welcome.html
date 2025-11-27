@@ -24,6 +24,14 @@
           <i class="fas fa-recycle logo-icon"></i>
           <h1>SampahKuPilah</h1>
         </div>
+        <nav class="dashboard-nav">
+          <a href="marketplace.html" class="nav-link">
+            <i class="fas fa-store"></i> Marketplace
+          </a>
+          <a href="profile.html" class="nav-link">
+            <i class="fas fa-user"></i> Profil
+          </a>
+        </nav>
         <div class="user-info">
           <span>Selamat datang, <strong id="userName">User</strong></span>
           <button class="logout-btn" onclick="logout()">
@@ -196,14 +204,20 @@
     <script src="js/notification.js"></script>
     <script src="camera-detection.js"></script>
     <script>
-      const USER_STORAGE_KEY = "sampahKuPilahUser";
+      // USER_STORAGE_KEY sudah dideklarasikan di camera-detection.js
+      // getStoredUser() juga sudah tersedia di camera-detection.js
       function readSession() {
+        // Gunakan fungsi getStoredUser() yang sudah ada di camera-detection.js
+        if (typeof getStoredUser === 'function') {
+          return getStoredUser();
+        }
+        // Fallback jika getStoredUser belum tersedia
         try {
-          const raw = localStorage.getItem(USER_STORAGE_KEY);
+          const raw = localStorage.getItem("sampahKuPilahUser");
           return raw ? JSON.parse(raw) : null;
         } catch (err) {
           console.warn("Gagal membaca sesi:", err);
-          localStorage.removeItem(USER_STORAGE_KEY);
+          localStorage.removeItem("sampahKuPilahUser");
           return null;
         }
       }
@@ -216,7 +230,7 @@
       }
       function logout() {
         if (confirm("Apakah Anda yakin ingin keluar?")) {
-          localStorage.removeItem(USER_STORAGE_KEY);
+          localStorage.removeItem("sampahKuPilahUser");
           window.location.href = "index.html";
         }
       }

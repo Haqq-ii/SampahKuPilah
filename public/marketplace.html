@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marketplace - SampahKuPilah</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/marketplace.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="marketplace-body">
+    <div class="marketplace-background" aria-hidden="true"></div>
+    <header class="marketplace-header">
+      <div class="header-inner">
+        <a class="back-link" href="index.html">
+          <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+        </a>
+        <div class="header-title">
+          <h1><i class="fas fa-store"></i> Marketplace</h1>
+          <p class="header-description">
+            Temukan barang daur ulang dari komunitas. Beli, jual, dan dukung ekonomi sirkular!
+          </p>
+        </div>
+        <div class="header-actions">
+          <div class="header-actions">
+            <a href="marketplace-create.html" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Jual Barang
+            </a>
+            <a href="marketplace-orders.html" class="btn btn-secondary">
+              <i class="fas fa-shopping-cart"></i> Pesanan Saya
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="marketplace-main">
+      <!-- Filter Sidebar -->
+      <aside class="marketplace-filters" id="filtersSidebar">
+        <div class="filters-header">
+          <h2><i class="fas fa-filter"></i> Filter</h2>
+          <button class="btn-close-filters" id="closeFiltersBtn" aria-label="Tutup filter">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="filter-section">
+          <label for="searchKeyword" class="filter-label">
+            <i class="fas fa-search"></i> Cari Barang
+          </label>
+          <input
+            type="text"
+            id="searchKeyword"
+            class="filter-input"
+            placeholder="Cari judul, deskripsi, atau tag..."
+          />
+        </div>
+
+        <div class="filter-section">
+          <label for="filterCategory" class="filter-label">
+            <i class="fas fa-tags"></i> Kategori
+          </label>
+          <select id="filterCategory" class="filter-select">
+            <option value="">Semua Kategori</option>
+            <option value="plastik">Plastik</option>
+            <option value="elektronik">Elektronik</option>
+            <option value="furniture">Furniture</option>
+            <option value="pakaian">Pakaian</option>
+            <option value="kertas">Kertas</option>
+            <option value="logam">Logam</option>
+            <option value="kaca">Kaca</option>
+            <option value="lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <label for="filterCity" class="filter-label">
+            <i class="fas fa-map-marker-alt"></i> Kota
+          </label>
+          <input
+            type="text"
+            id="filterCity"
+            class="filter-input"
+            placeholder="Nama kota..."
+          />
+        </div>
+
+        <div class="filter-section">
+          <label for="filterDistrict" class="filter-label">
+            <i class="fas fa-map-pin"></i> Kecamatan
+          </label>
+          <input
+            type="text"
+            id="filterDistrict"
+            class="filter-input"
+            placeholder="Nama kecamatan..."
+          />
+        </div>
+
+        <div class="filter-section">
+          <label for="filterVillage" class="filter-label">
+            <i class="fas fa-map"></i> Desa/Kelurahan
+          </label>
+          <input
+            type="text"
+            id="filterVillage"
+            class="filter-input"
+            placeholder="Nama desa/kelurahan..."
+          />
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn btn-primary" id="applyFiltersBtn">
+            <i class="fas fa-check"></i> Terapkan Filter
+          </button>
+          <button class="btn btn-secondary" id="resetFiltersBtn">
+            <i class="fas fa-redo"></i> Reset
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="marketplace-content">
+        <!-- Search & Sort Bar -->
+        <div class="marketplace-toolbar">
+          <button class="btn-toggle-filters" id="toggleFiltersBtn">
+            <i class="fas fa-filter"></i> Filter
+          </button>
+          
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="mainSearchInput"
+              placeholder="Cari barang..."
+              class="search-input"
+            />
+          </div>
+
+          <div class="sort-controls">
+            <label for="sortSelect" class="visually-hidden">Urutkan berdasarkan</label>
+            <select id="sortSelect" class="sort-select">
+              <option value="newest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+              <option value="price_low">Harga Terendah</option>
+              <option value="price_high">Harga Tertinggi</option>
+              <option value="relevance">Paling Relevan</option>
+              <option value="location">Lokasi Terdekat</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-indicator hidden" id="loadingIndicator">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Memuat data...</span>
+        </div>
+
+        <!-- Listings Grid -->
+        <div class="listings-grid" id="listingsGrid" aria-live="polite">
+          <!-- Listing cards will be inserted here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="emptyState">
+          <i class="fas fa-inbox"></i>
+          <h3>Tidak ada barang ditemukan</h3>
+          <p>Coba ubah filter atau kata kunci pencarian Anda</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+          <!-- Pagination controls will be inserted here -->
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Load Supabase URL from server config
+      (async () => {
+        try {
+          const response = await fetch('/api/config');
+          const config = await response.json();
+          window.SUPABASE_URL = config.supabaseUrl || '';
+        } catch (err) {
+          console.warn('Failed to load config, using default:', err);
+          window.SUPABASE_URL = '';
+        }
+      })();
+    </script>
+    <script src="js/notification.js"></script>
+    <script src="js/marketplace.js" defer></script>
+  </body>
+</html>
+

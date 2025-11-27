@@ -79,8 +79,8 @@ function loadUserProfile() {
   document.getElementById("editEmail").value = user.email;
 }
 
-// Fungsi untuk mendapatkan riwayat deteksi
-function getDetectionHistory() {
+// Fungsi untuk mendapatkan riwayat deteksi dari localStorage (fallback)
+function getLocalStorageHistory() {
   try {
     const historyRaw = localStorage.getItem(DETECTION_HISTORY_KEY);
     if (historyRaw) {
@@ -101,8 +101,46 @@ function getDetectionHistory() {
     
     return [];
   } catch (err) {
-    console.warn("Gagal membaca riwayat deteksi:", err);
+    console.warn("Gagal membaca riwayat deteksi dari localStorage:", err);
     return [];
+  }
+}
+
+// Fungsi untuk mendapatkan riwayat deteksi (prioritas: Supabase, fallback: localStorage)
+async function getDetectionHistory() {
+  const user = getStoredUser();
+  if (!user || !user.email) {
+    // Jika tidak ada user, gunakan localStorage
+    return getLocalStorageHistory();
+  }
+
+  try {
+    // Ambil dari Supabase
+    const response = await fetch(`/api/detections?email=${encodeURIComponent(user.email)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const data = await response.json();
+    if (data.detections && data.detections.length > 0) {
+      // Konversi format Supabase ke format yang diharapkan
+      return data.detections.map(d => ({
+        id: d.id,
+        date: d.created_at,
+        category: d.category || d.bin_name?.toLowerCase() || "unknown",
+        bin: d.category,
+        confidence: d.confidence || null,
+        reason: d.reason || null,
+        label: d.bin_name || d.category
+      }));
+    }
+    
+    // Jika Supabase kosong, fallback ke localStorage
+    return getLocalStorageHistory();
+  } catch (err) {
+    console.warn("Gagal mengambil riwayat dari Supabase, menggunakan localStorage:", err);
+    // Fallback ke localStorage jika Supabase error
+    return getLocalStorageHistory();
   }
 }
 
@@ -157,8 +195,8 @@ function formatDate(date) {
 }
 
 // Fungsi untuk menampilkan statistik
-function displayStatistics() {
-  const history = getDetectionHistory();
+async function displayStatistics() {
+  const history = await getDetectionHistory(); // Tambahkan await karena sekarang async
   const stats = calculateStatistics(history);
   
   document.getElementById("totalDetections").textContent = stats.total;
@@ -212,8 +250,8 @@ function formatCategory(category) {
 }
 
 // Fungsi untuk menampilkan riwayat deteksi
-function displayDetectionHistory() {
-  const history = getDetectionHistory();
+async function displayDetectionHistory() {
+  const history = await getDetectionHistory(); // Tambahkan await karena sekarang async
   const tbody = document.getElementById("historyTableBody");
   
   if (!tbody) return;
@@ -362,16 +400,52 @@ function handleLogout() {
   }
 }
 
+// Load marketplace stats
+async function loadMarketplaceStats() {
+  const user = getStoredUser();
+  if (!user || !user.email) return;
+
+  try {
+    const response = await fetch(`/api/marketplace/stats/${encodeURIComponent(user.email)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const stats = await response.json();
+
+    // Update UI
+    const totalItemsSoldEl = document.getElementById("totalItemsSold");
+    const totalItemsBoughtEl = document.getElementById("totalItemsBought");
+    const totalPointsEl = document.getElementById("totalPoints");
+
+    if (totalItemsSoldEl) totalItemsSoldEl.textContent = stats.total_items_sold || 0;
+    if (totalItemsBoughtEl) totalItemsBoughtEl.textContent = stats.total_items_bought || 0;
+    if (totalPointsEl) totalPointsEl.textContent = stats.total_points || 0;
+  } catch (err) {
+    console.warn("Gagal mengambil statistik marketplace:", err);
+    // Set default values
+    const totalItemsSoldEl = document.getElementById("totalItemsSold");
+    const totalItemsBoughtEl = document.getElementById("totalItemsBought");
+    const totalPointsEl = document.getElementById("totalPoints");
+    if (totalItemsSoldEl) totalItemsSoldEl.textContent = "0";
+    if (totalItemsBoughtEl) totalItemsBoughtEl.textContent = "0";
+    if (totalPointsEl) totalPointsEl.textContent = "0";
+  }
+}
+
 // Inisialisasi saat halaman dimuat
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Load user profile
   loadUserProfile();
   
-  // Display statistics
-  displayStatistics();
+  // Display statistics (async)
+  await displayStatistics();
   
-  // Display detection history
-  displayDetectionHistory();
+  // Display detection history (async)
+  await displayDetectionHistory();
+
+  // Load marketplace stats
+  await loadMarketplaceStats();
   
   // Event listeners
   const changePhotoBtn = document.getElementById("changePhotoBtn");

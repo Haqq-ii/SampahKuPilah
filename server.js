@@ -1041,6 +1041,1160 @@ app.get("/api/detections", async (req, res) => {
   }
 });
 
+// === Marketplace Helper Functions ===
+// Fungsi untuk generate order_id unik
+function generateOrderId() {
+  const date = new Date();
+  const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `ORD-${dateStr}-${random}`;
+}
+
+// Fungsi untuk generate message_id unik
+function generateMessageId() {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `MSG-${timestamp}-${random}`;
+}
+
+// === Marketplace Endpoints ===
+// GET /api/marketplace/listings - Ambil daftar listing dengan filter & sort
+app.get("/api/marketplace/listings", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured",
+        listings: []
+      });
+    }
+
+    // Parse query parameters
+    const {
+      keyword,
+      category,
+      city,
+      district,
+      village,
+      status = "active",
+      sort = "newest",
+      page = 1,
+      limit = 20
+    } = req.query;
+
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 20));
+    const offset = (pageNum - 1) * limitNum;
+
+    // Build query - ensure images column is always selected
+    let query = supabase
+      .from("marketplace_listings")
+      .select("*, images", { count: "exact" }); // Explicitly include images
+
+    // Filter status
+    if (status) {
+      query = query.eq("status", status);
+    }
+
+    // Filter kategori
+    if (category) {
+      query = query.eq("category", category);
+    }
+
+    // Filter lokasi
+    if (req.query.province) {
+      query = query.eq("location_province", req.query.province);
+    }
+    if (city) {
+      query = query.eq("location_city", city);
+    }
+    if (district) {
+      query = query.eq("location_district", district);
+    }
+    if (village) {
+      query = query.eq("location_village", village);
+    }
+
+    // Keyword search (full-text search pada search_text)
+    if (keyword && keyword.trim()) {
+      query = query.textSearch("search_text", keyword.trim(), {
+        type: "websearch",
+        config: "indonesian"
+      });
+    }
+
+    // Sort
+    switch (sort) {
+      case "newest":
+        query = query.order("created_at", { ascending: false });
+        break;
+      case "oldest":
+        query = query.order("created_at", { ascending: true });
+        break;
+      case "price_low":
+        query = query.order("price", { ascending: true, nullsLast: true });
+        break;
+      case "price_high":
+        query = query.order("price", { ascending: false, nullsLast: true });
+        break;
+      case "relevance":
+        // Jika ada keyword, relevance sudah di-handle oleh textSearch
+        // Fallback ke newest
+        query = query.order("created_at", { ascending: false });
+        break;
+      case "location":
+        // Sort by location (city first, then district, then village)
+        query = query
+          .order("location_city", { ascending: true })
+          .order("location_district", { ascending: true })
+          .order("location_village", { ascending: true });
+        break;
+      default:
+        query = query.order("created_at", { ascending: false });
+    }
+
+    // Pagination
+    query = query.range(offset, offset + limitNum - 1);
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error("Error fetching listings:", error);
+      return res.status(500).json({
+        error: "database_error",
+        message: error.message,
+        listings: []
+      });
+    }
+
+    // Parse images for each listing (handle JSON string from Supabase)
+    const listings = (data || []).map(listing => {
+      if (listing.images) {
+        if (typeof listing.images === 'string') {
+          try {
+            listing.images = JSON.parse(listing.images);
+          } catch (e) {
+            // If not JSON, treat as single image
+            listing.images = listing.images.trim() ? [listing.images.trim()] : [];
+          }
+        }
+        // Ensure it's an array
+        if (!Array.isArray(listing.images)) {
+          listing.images = [];
+        }
+      } else {
+        listing.images = [];
+      }
+      return listing;
+    });
+
+    return res.json({
+      listings: listings,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total: count || 0,
+        totalPages: Math.ceil((count || 0) / limitNum)
+      }
+    });
+  } catch (err) {
+    console.error("Exception fetching listings:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message,
+      listings: []
+    });
+  }
+});
+
+// GET /api/marketplace/listings/:id - Ambil detail listing
+app.get("/api/marketplace/listings/:id", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const { id } = req.params;
+
+    // Ensure images column is always selected
+    const { data, error } = await supabase
+      .from("marketplace_listings")
+      .select("*, images") // Explicitly include images
+      .eq("id", id)
+      .single();
+    
+    // Parse images if it's a JSON string
+    if (data && data.images) {
+      if (typeof data.images === 'string') {
+        try {
+          data.images = JSON.parse(data.images);
+        } catch (e) {
+          // If not JSON, treat as single image
+          data.images = data.images.trim() ? [data.images.trim()] : [];
+        }
+      }
+      // Ensure it's an array
+      if (!Array.isArray(data.images)) {
+        data.images = [];
+      }
+    } else if (data) {
+      data.images = [];
+    }
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        return res.status(404).json({
+          error: "not_found",
+          message: "Listing tidak ditemukan"
+        });
+      }
+      console.error("Error fetching listing:", error);
+      return res.status(500).json({
+        error: "database_error",
+        message: error.message
+      });
+    }
+
+    // Ambil info seller (dari tabel users)
+    let seller = null;
+    if (data.seller_email) {
+      const sellerData = await findUserByEmailSupabase(data.seller_email);
+      if (sellerData) {
+        seller = {
+          email: sellerData.email,
+          name: sellerData.name || sellerData.email.split("@")[0],
+          picture: sellerData.picture || null
+        };
+      }
+    }
+
+    return res.json({
+      ...data,
+      seller: seller
+    });
+  } catch (err) {
+    console.error("Exception fetching listing:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// POST /api/marketplace/upload-image - Upload gambar ke Supabase Storage
+app.post("/api/marketplace/upload-image", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const userEmail = req.headers["x-user-email"];
+    if (!userEmail) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Email user diperlukan"
+      });
+    }
+
+    const { base64, mimeType, filename } = req.body;
+
+    if (!base64 || !mimeType) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "base64 dan mimeType diperlukan"
+      });
+    }
+
+    // Generate unique filename
+    const fileExt = mimeType.split('/')[1] || 'jpg';
+    const sanitizedFilename = (filename || `image-${Date.now()}`)
+      .replace(/[^a-zA-Z0-9.-]/g, '_')
+      .substring(0, 100);
+    const storagePath = `listings/${Date.now()}-${sanitizedFilename}.${fileExt}`;
+
+    // Convert base64 to buffer
+    const buffer = Buffer.from(base64, 'base64');
+
+    // Upload to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('marketplace-images')
+      .upload(storagePath, buffer, {
+        contentType: mimeType,
+        upsert: false
+      });
+
+    if (uploadError) {
+      console.error("Error uploading to Supabase Storage:", uploadError);
+      // Fallback: return data URL if storage upload fails
+      const dataUrl = `data:${mimeType};base64,${base64}`;
+      return res.json({
+        url: dataUrl,
+        path: null,
+        isDataUrl: true
+      });
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('marketplace-images')
+      .getPublicUrl(storagePath);
+
+    return res.json({
+      url: urlData.publicUrl,
+      path: storagePath,
+      isDataUrl: false
+    });
+  } catch (err) {
+    console.error("Exception uploading image:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// POST /api/marketplace/listings - Buat listing baru
+app.post("/api/marketplace/listings", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const userEmail = req.headers["x-user-email"];
+    if (!userEmail) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Email user diperlukan (header x-user-email)"
+      });
+    }
+
+    // Validasi user exists
+    const user = await findUserByEmailSupabase(userEmail);
+    if (!user) {
+      return res.status(404).json({
+        error: "user_not_found",
+        message: "User tidak ditemukan"
+      });
+    }
+
+    const {
+      title,
+      description,
+      category,
+      tags = [],
+      price = 0,
+      images = [],
+      location_province,
+      location_city,
+      location_district,
+      location_village,
+      use_ai = false
+    } = req.body;
+
+    // Process images: normalize to array of URL strings
+    // Expected format: array of {base64, mimeType, filename} OR array of URL strings
+    let imageUrls = [];
+    if (Array.isArray(images) && images.length > 0) {
+      for (const img of images) {
+        if (typeof img === 'string') {
+          // Already a URL string (http/https or data URL)
+          if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:')) {
+            imageUrls.push(img);
+          } else if (img.trim().length > 0) {
+            // Might be a path, try to construct URL
+            imageUrls.push(img.trim());
+          }
+        } else if (typeof img === 'object' && img !== null) {
+          // Object format: {base64, mimeType, filename} or {url, path}
+          if (img.url) {
+            // Already has URL
+            imageUrls.push(img.url);
+          } else if (img.base64 && img.mimeType) {
+            // Base64 format: convert to data URL (fallback if storage upload fails)
+            imageUrls.push(`data:${img.mimeType};base64,${img.base64}`);
+          } else if (img.path) {
+            // Storage path: construct public URL
+            const publicUrl = `${supabaseUrl}/storage/v1/object/public/marketplace-images/${img.path}`;
+            imageUrls.push(publicUrl);
+          }
+        }
+      }
+    }
+
+    // Validasi required fields
+    if (!title || !description || !category) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "Title, description, dan category wajib diisi"
+      });
+    }
+
+    // Generate search_text (akan di-update oleh trigger, tapi kita set manual juga)
+    const searchText = `${title} ${description} ${tags.join(" ")}`.toLowerCase();
+
+    // Insert listing
+    const { data, error } = await supabase
+      .from("marketplace_listings")
+      .insert({
+        seller_id: user.id,
+        seller_email: normalizeEmail(userEmail),
+        title: title.trim(),
+        description: description.trim(),
+        category: category.trim(),
+        tags: Array.isArray(tags) ? tags : [],
+        price: parseFloat(price) || 0,
+        images: imageUrls,
+        location_province: location_province?.trim() || null,
+        location_city: location_city?.trim() || null,
+        location_district: location_district?.trim() || null,
+        location_village: location_village?.trim() || null,
+        status: "active",
+        ai_generated: use_ai || false,
+        search_text: searchText
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating listing:", error);
+      return res.status(500).json({
+        error: "database_error",
+        message: error.message
+      });
+    }
+
+    console.log("✅ Listing created:", data.id);
+    return res.status(201).json({
+      listing: data,
+      message: "Listing berhasil dibuat"
+    });
+  } catch (err) {
+    console.error("Exception creating listing:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// POST /api/marketplace/orders - Buat order baru (Ajukan Pembelian)
+app.post("/api/marketplace/orders", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const userEmail = req.headers["x-user-email"];
+    if (!userEmail) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Email user diperlukan (header x-user-email)"
+      });
+    }
+
+    const buyer = await findUserByEmailSupabase(userEmail);
+    if (!buyer) {
+      return res.status(404).json({
+        error: "user_not_found",
+        message: "User tidak ditemukan"
+      });
+    }
+
+    const { listing_id } = req.body;
+    if (!listing_id) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "listing_id wajib diisi"
+      });
+    }
+
+    // Ambil listing
+    const { data: listing, error: listingError } = await supabase
+      .from("marketplace_listings")
+      .select("*")
+      .eq("id", listing_id)
+      .single();
+
+    if (listingError || !listing) {
+      return res.status(404).json({
+        error: "listing_not_found",
+        message: "Listing tidak ditemukan"
+      });
+    }
+
+    // Validasi: tidak bisa beli listing sendiri
+    if (listing.seller_email === normalizeEmail(userEmail)) {
+      return res.status(400).json({
+        error: "invalid_action",
+        message: "Tidak bisa membeli listing sendiri"
+      });
+    }
+
+    // Validasi: listing harus active
+    if (listing.status !== "active") {
+      return res.status(400).json({
+        error: "invalid_status",
+        message: "Listing tidak tersedia untuk dibeli"
+      });
+    }
+
+    // Generate order_id
+    const orderId = generateOrderId();
+
+    // Create order
+    const { data: order, error: orderError } = await supabase
+      .from("marketplace_orders")
+      .insert({
+        order_id: orderId,
+        listing_id: listing_id,
+        seller_id: listing.seller_id,
+        seller_email: listing.seller_email,
+        buyer_id: buyer.id,
+        buyer_email: normalizeEmail(userEmail),
+        status: "pending"
+      })
+      .select()
+      .single();
+
+    if (orderError) {
+      console.error("Error creating order:", orderError);
+      return res.status(500).json({
+        error: "database_error",
+        message: orderError.message
+      });
+    }
+
+    console.log("✅ Order created:", order.id);
+    return res.status(201).json({
+      order: order,
+      message: "Order berhasil dibuat"
+    });
+  } catch (err) {
+    console.error("Exception creating order:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// GET /api/marketplace/orders - Ambil daftar order user
+app.get("/api/marketplace/orders", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const userEmail = req.headers["x-user-email"] || req.query.email;
+    if (!userEmail) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Email user diperlukan"
+      });
+    }
+
+    const { role = "buyer", status, page = 1, limit = 20 } = req.query;
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 20));
+    const offset = (pageNum - 1) * limitNum;
+
+    let query = supabase
+      .from("marketplace_orders")
+      .select("*", { count: "exact" });
+
+    // Filter berdasarkan role
+    if (role === "buyer") {
+      query = query.eq("buyer_email", normalizeEmail(userEmail));
+    } else if (role === "seller") {
+      query = query.eq("seller_email", normalizeEmail(userEmail));
+    } else {
+      // Both: buyer OR seller
+      query = query.or(`buyer_email.eq.${normalizeEmail(userEmail)},seller_email.eq.${normalizeEmail(userEmail)}`);
+    }
+
+    // Filter status
+    if (status) {
+      query = query.eq("status", status);
+    }
+
+    // Sort by created_at desc
+    query = query.order("created_at", { ascending: false });
+
+    // Pagination
+    query = query.range(offset, offset + limitNum - 1);
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error("Error fetching orders:", error);
+      return res.status(500).json({
+        error: "database_error",
+        message: error.message,
+        orders: []
+      });
+    }
+
+    return res.json({
+      orders: data || [],
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total: count || 0,
+        totalPages: Math.ceil((count || 0) / limitNum)
+      }
+    });
+  } catch (err) {
+    console.error("Exception fetching orders:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message,
+      orders: []
+    });
+  }
+});
+
+// GET /api/marketplace/orders/:id - Ambil detail order
+app.get("/api/marketplace/orders/:id", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const { id } = req.params;
+    const userEmail = req.headers["x-user-email"] || req.query.email;
+
+    const { data: order, error: orderError } = await supabase
+      .from("marketplace_orders")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({
+        error: "not_found",
+        message: "Order tidak ditemukan"
+      });
+    }
+
+    // Validasi: hanya buyer atau seller yang bisa akses
+    if (userEmail) {
+      const normalizedEmail = normalizeEmail(userEmail);
+      if (order.buyer_email !== normalizedEmail && order.seller_email !== normalizedEmail) {
+        return res.status(403).json({
+          error: "forbidden",
+          message: "Tidak memiliki akses ke order ini"
+        });
+      }
+    }
+
+    // Ambil listing info
+    const { data: listing } = await supabase
+      .from("marketplace_listings")
+      .select("*")
+      .eq("id", order.listing_id)
+      .single();
+
+    return res.json({
+      ...order,
+      listing: listing || null
+    });
+  } catch (err) {
+    console.error("Exception fetching order:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// PUT /api/marketplace/orders/:id/status - Update status order
+app.put("/api/marketplace/orders/:id/status", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const { id } = req.params;
+    const userEmail = req.headers["x-user-email"];
+    if (!userEmail) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Email user diperlukan"
+      });
+    }
+
+    const { status, cod_location, cod_time } = req.body;
+    if (!status) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "Status wajib diisi"
+      });
+    }
+
+    // Validasi status
+    const validStatuses = ["pending", "deal", "done", "canceled"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        error: "invalid_status",
+        message: `Status harus salah satu dari: ${validStatuses.join(", ")}`
+      });
+    }
+
+    // Ambil order
+    const { data: order, error: orderError } = await supabase
+      .from("marketplace_orders")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({
+        error: "not_found",
+        message: "Order tidak ditemukan"
+      });
+    }
+
+    // Validasi: hanya seller atau buyer yang terlibat bisa update
+    const normalizedEmail = normalizeEmail(userEmail);
+    if (order.buyer_email !== normalizedEmail && order.seller_email !== normalizedEmail) {
+      return res.status(403).json({
+        error: "forbidden",
+        message: "Tidak memiliki akses untuk update order ini"
+      });
+    }
+
+    // Validasi: hanya seller bisa update ke 'done'
+    if (status === "done" && order.seller_email !== normalizedEmail) {
+      return res.status(403).json({
+        error: "forbidden",
+        message: "Hanya penjual yang bisa menandai order sebagai selesai"
+      });
+    }
+
+    // Update order
+    const updateData = {
+      status: status,
+      updated_at: new Date().toISOString()
+    };
+
+    if (cod_location) updateData.cod_location = cod_location.trim();
+    if (cod_time) updateData.cod_time = cod_time;
+
+    const { data: updatedOrder, error: updateError } = await supabase
+      .from("marketplace_orders")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error("Error updating order:", updateError);
+      return res.status(500).json({
+        error: "database_error",
+        message: updateError.message
+      });
+    }
+
+    // Jika status = 'done', update listing dan user_stats
+    if (status === "done") {
+      // Update listing status ke 'sold'
+      await supabase
+        .from("marketplace_listings")
+        .update({ status: "sold", updated_at: new Date().toISOString() })
+        .eq("id", order.listing_id);
+
+      // Update user_stats (tambah poin)
+      // Seller: +10 poin, buyer: +5 poin
+      const sellerStats = await supabase
+        .from("user_stats")
+        .select("*")
+        .eq("user_email", order.seller_email)
+        .single();
+
+      if (sellerStats.data) {
+        await supabase
+          .from("user_stats")
+          .update({
+            total_items_sold: (sellerStats.data.total_items_sold || 0) + 1,
+            points_seller: (sellerStats.data.points_seller || 0) + 10,
+            total_points: (sellerStats.data.points_seller || 0) + 10 + (sellerStats.data.points_buyer || 0),
+            updated_at: new Date().toISOString()
+          })
+          .eq("user_email", order.seller_email);
+      } else {
+        // Create stats jika belum ada
+        await supabase
+          .from("user_stats")
+          .insert({
+            user_email: order.seller_email,
+            total_items_sold: 1,
+            points_seller: 10,
+            total_points: 10
+          });
+      }
+
+      const buyerStats = await supabase
+        .from("user_stats")
+        .select("*")
+        .eq("user_email", order.buyer_email)
+        .single();
+
+      if (buyerStats.data) {
+        await supabase
+          .from("user_stats")
+          .update({
+            total_items_bought: (buyerStats.data.total_items_bought || 0) + 1,
+            points_buyer: (buyerStats.data.points_buyer || 0) + 5,
+            total_points: (buyerStats.data.points_seller || 0) + (buyerStats.data.points_buyer || 0) + 5,
+            updated_at: new Date().toISOString()
+          })
+          .eq("user_email", order.buyer_email);
+      } else {
+        await supabase
+          .from("user_stats")
+          .insert({
+            user_email: order.buyer_email,
+            total_items_bought: 1,
+            points_buyer: 5,
+            total_points: 5
+          });
+      }
+
+      console.log("✅ Order marked as done, stats updated");
+    }
+
+    return res.json({
+      order: updatedOrder,
+      message: "Status order berhasil diupdate"
+    });
+  } catch (err) {
+    console.error("Exception updating order:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// POST /api/marketplace/messages - Kirim pesan baru
+app.post("/api/marketplace/messages", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const userEmail = req.headers["x-user-email"];
+    if (!userEmail) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Email user diperlukan"
+      });
+    }
+
+    const { order_id, content } = req.body;
+    if (!order_id || !content || !content.trim()) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "order_id dan content wajib diisi"
+      });
+    }
+
+    // Validasi order exists dan user adalah participant
+    const { data: order, error: orderError } = await supabase
+      .from("marketplace_orders")
+      .select("*")
+      .eq("id", order_id)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({
+        error: "order_not_found",
+        message: "Order tidak ditemukan"
+      });
+    }
+
+    const normalizedEmail = normalizeEmail(userEmail);
+    if (order.buyer_email !== normalizedEmail && order.seller_email !== normalizedEmail) {
+      return res.status(403).json({
+        error: "forbidden",
+        message: "Tidak memiliki akses ke order ini"
+      });
+    }
+
+    // Tentukan receiver
+    const receiverEmail = order.buyer_email === normalizedEmail 
+      ? order.seller_email 
+      : order.buyer_email;
+
+    // Ambil user info untuk sender_id dan receiver_id
+    const sender = await findUserByEmailSupabase(userEmail);
+    const receiver = await findUserByEmailSupabase(receiverEmail);
+
+    if (!sender) {
+      return res.status(404).json({
+        error: "user_not_found",
+        message: "User tidak ditemukan"
+      });
+    }
+
+    // Generate message_id
+    const messageId = generateMessageId();
+
+    // Insert message
+    const { data: message, error: messageError } = await supabase
+      .from("marketplace_messages")
+      .insert({
+        message_id: messageId,
+        order_id: order_id,
+        sender_id: sender.id,
+        sender_email: normalizedEmail,
+        receiver_id: receiver?.id || null,
+        receiver_email: receiverEmail,
+        content: content.trim(),
+        read: false
+      })
+      .select()
+      .single();
+
+    if (messageError) {
+      console.error("Error creating message:", messageError);
+      return res.status(500).json({
+        error: "database_error",
+        message: messageError.message
+      });
+    }
+
+    console.log("✅ Message sent:", message.id);
+    return res.status(201).json({
+      message: message,
+      success: true
+    });
+  } catch (err) {
+    console.error("Exception sending message:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// GET /api/marketplace/messages/:order_id - Ambil semua pesan untuk order
+app.get("/api/marketplace/messages/:order_id", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const { order_id } = req.params;
+    const userEmail = req.headers["x-user-email"] || req.query.email;
+
+    // Validasi order exists dan user adalah participant
+    const { data: order, error: orderError } = await supabase
+      .from("marketplace_orders")
+      .select("*")
+      .eq("id", order_id)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({
+        error: "order_not_found",
+        message: "Order tidak ditemukan"
+      });
+    }
+
+    if (userEmail) {
+      const normalizedEmail = normalizeEmail(userEmail);
+      if (order.buyer_email !== normalizedEmail && order.seller_email !== normalizedEmail) {
+        return res.status(403).json({
+          error: "forbidden",
+          message: "Tidak memiliki akses ke order ini"
+        });
+      }
+    }
+
+    // Ambil messages
+    const { data: messages, error: messagesError } = await supabase
+      .from("marketplace_messages")
+      .select("*")
+      .eq("order_id", order_id)
+      .order("created_at", { ascending: true });
+
+    if (messagesError) {
+      console.error("Error fetching messages:", messagesError);
+      return res.status(500).json({
+        error: "database_error",
+        message: messagesError.message,
+        messages: []
+      });
+    }
+
+    return res.json({
+      messages: messages || [],
+      order: order
+    });
+  } catch (err) {
+    console.error("Exception fetching messages:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message,
+      messages: []
+    });
+  }
+});
+
+// GET /api/marketplace/stats/:user_email - Ambil statistik user
+app.get("/api/marketplace/stats/:user_email", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const { user_email } = req.params;
+    const normalizedEmail = normalizeEmail(user_email);
+
+    const { data, error } = await supabase
+      .from("user_stats")
+      .select("*")
+      .eq("user_email", normalizedEmail)
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        // User stats belum ada, return default
+        return res.json({
+          total_items_sold: 0,
+          total_items_bought: 0,
+          points_seller: 0,
+          points_buyer: 0,
+          total_points: 0
+        });
+      }
+      console.error("Error fetching user stats:", error);
+      return res.status(500).json({
+        error: "database_error",
+        message: error.message
+      });
+    }
+
+    return res.json({
+      total_items_sold: data.total_items_sold || 0,
+      total_items_bought: data.total_items_bought || 0,
+      points_seller: data.points_seller || 0,
+      points_buyer: data.points_buyer || 0,
+      total_points: data.total_points || 0
+    });
+  } catch (err) {
+    console.error("Exception fetching user stats:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
+// GET /api/marketplace/leaderboard - Ambil leaderboard
+app.get("/api/marketplace/leaderboard", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const { type = "all", limit = 10 } = req.query;
+    const limitNum = Math.min(50, Math.max(1, parseInt(limit) || 10));
+
+    let sellerLeaderboard = [];
+    let buyerLeaderboard = [];
+
+    if (type === "all" || type === "seller") {
+      const { data: sellerData, error: sellerError } = await supabase
+        .from("user_stats")
+        .select("*")
+        .order("points_seller", { ascending: false })
+        .limit(limitNum);
+
+      if (!sellerError && sellerData) {
+        sellerLeaderboard = sellerData.map((stat, index) => ({
+          rank: index + 1,
+          user_email: stat.user_email,
+          total_items_sold: stat.total_items_sold || 0,
+          points_seller: stat.points_seller || 0
+        }));
+      }
+    }
+
+    if (type === "all" || type === "buyer") {
+      const { data: buyerData, error: buyerError } = await supabase
+        .from("user_stats")
+        .select("*")
+        .order("points_buyer", { ascending: false })
+        .limit(limitNum);
+
+      if (!buyerError && buyerData) {
+        buyerLeaderboard = buyerData.map((stat, index) => ({
+          rank: index + 1,
+          user_email: stat.user_email,
+          total_items_bought: stat.total_items_bought || 0,
+          points_buyer: stat.points_buyer || 0
+        }));
+      }
+    }
+
+    return res.json({
+      seller_leaderboard: sellerLeaderboard,
+      buyer_leaderboard: buyerLeaderboard
+    });
+  } catch (err) {
+    console.error("Exception fetching leaderboard:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message,
+      seller_leaderboard: [],
+      buyer_leaderboard: []
+    });
+  }
+});
+
+// GET /api/config - Expose public config to frontend
+app.get("/api/config", (req, res) => {
+  res.json({
+    supabaseUrl: supabaseUrl || "",
+    // Don't expose service key for security
+  });
+});
+
 // === Static Files ===
 app.use(express.static(path.join(__dirname, "public")));
 

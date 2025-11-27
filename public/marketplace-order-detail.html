@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Pesanan - Marketplace SampahKuPilah</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/marketplace.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="marketplace-body">
+    <div class="marketplace-background" aria-hidden="true"></div>
+    
+    <header class="marketplace-header">
+      <div class="header-inner">
+        <a class="back-link" href="marketplace-orders.html">
+          <i class="fas fa-arrow-left"></i> Kembali ke Pesanan
+        </a>
+        <div class="header-title">
+          <h1><i class="fas fa-shopping-cart"></i> Detail Pesanan</h1>
+        </div>
+      </div>
+    </header>
+
+    <main class="marketplace-main">
+      <div class="marketplace-content" style="max-width: 1200px; margin: 0 auto;">
+        <!-- Loading -->
+        <div class="loading-indicator" id="loadingIndicator">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Memuat detail pesanan...</span>
+        </div>
+
+        <!-- Order Detail -->
+        <div class="order-detail-container hidden" id="orderDetailContainer">
+          <div class="order-detail-grid">
+            <!-- Order Info -->
+            <div class="order-info-section">
+              <div class="order-info-card">
+                <h3><i class="fas fa-info-circle"></i> Informasi Pesanan</h3>
+                <div class="info-item">
+                  <span class="info-label">Order ID:</span>
+                  <span class="info-value" id="orderId">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Status:</span>
+                  <span class="info-value" id="orderStatus">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Tanggal:</span>
+                  <span class="info-value" id="orderDate">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label" id="orderPartyLabel">Pihak Lain:</span>
+                  <span class="info-value" id="orderParty">-</span>
+                </div>
+                <div class="info-item hidden" id="codLocationItem">
+                  <span class="info-label">Lokasi COD:</span>
+                  <span class="info-value" id="codLocation">-</span>
+                </div>
+                <div class="info-item hidden" id="codTimeItem">
+                  <span class="info-label">Waktu COD:</span>
+                  <span class="info-value" id="codTime">-</span>
+                </div>
+              </div>
+
+              <!-- Listing Info -->
+              <div class="listing-info-card" id="listingInfoCard">
+                <h3><i class="fas fa-box"></i> Informasi Produk</h3>
+                <div id="listingInfo">
+                  <!-- Listing info will be inserted here -->
+                </div>
+              </div>
+
+              <!-- Action Buttons (for seller) -->
+              <div class="order-actions-section" id="orderActionsSection">
+                <!-- Action buttons will be inserted here -->
+              </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section">
+              <div class="chat-header">
+                <h3><i class="fas fa-comments"></i> Chat</h3>
+                <span class="chat-status" id="chatStatus">Memuat pesan...</span>
+              </div>
+              <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be inserted here -->
+              </div>
+              <div class="chat-input-container">
+                <input
+                  type="text"
+                  id="chatInput"
+                  class="chat-input"
+                  placeholder="Ketik pesan..."
+                  maxlength="1000"
+                />
+                <button class="btn btn-primary" id="sendMessageBtn">
+                  <i class="fas fa-paper-plane"></i> Kirim
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state hidden" id="errorState">
+          <i class="fas fa-exclamation-circle"></i>
+          <h3>Pesanan tidak ditemukan</h3>
+          <p>Pesanan yang Anda cari tidak tersedia atau tidak memiliki akses.</p>
+          <a href="marketplace-orders.html" class="btn btn-primary">Kembali ke Pesanan</a>
+        </div>
+      </div>
+    </main>
+
+    <script src="js/notification.js"></script>
+    <script src="js/marketplace-order-detail.js" defer></script>
+  </body>
+</html>
+

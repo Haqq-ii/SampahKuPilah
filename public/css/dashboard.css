@@ -79,6 +79,36 @@
   animation: none;
 }
 
+.dashboard-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.dashboard-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  color: var(--neutral-700);
+  text-decoration: none;
+  border-radius: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.dashboard-nav .nav-link:hover {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.3);
+  color: var(--eco-green-deep);
+}
+
+.dashboard-nav .nav-link i {
+  font-size: var(--font-size-base);
+}
+
 .user-info {
   display: flex;
   align-items: center;

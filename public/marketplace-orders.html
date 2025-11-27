@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesanan Saya - Marketplace SampahKuPilah</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/marketplace.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="marketplace-body">
+    <div class="marketplace-background" aria-hidden="true"></div>
+    
+    <header class="marketplace-header">
+      <div class="header-inner">
+        <a class="back-link" href="marketplace.html">
+          <i class="fas fa-arrow-left"></i> Kembali ke Marketplace
+        </a>
+        <div class="header-title">
+          <h1><i class="fas fa-shopping-cart"></i> Pesanan Saya</h1>
+          <p class="header-description">
+            Kelola pesanan Anda sebagai pembeli atau penjual
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <main class="marketplace-main">
+      <div class="marketplace-content" style="max-width: 1000px; margin: 0 auto;">
+        <!-- Tabs -->
+        <div class="orders-tabs">
+          <button class="tab-btn active" data-role="buyer">
+            <i class="fas fa-shopping-bag"></i> Sebagai Pembeli
+          </button>
+          <button class="tab-btn" data-role="seller">
+            <i class="fas fa-store"></i> Sebagai Penjual
+          </button>
+        </div>
+
+        <!-- Filter Status -->
+        <div class="orders-filter">
+          <label for="statusFilter" class="filter-label">Filter Status:</label>
+          <select id="statusFilter" class="filter-select">
+            <option value="">Semua Status</option>
+            <option value="pending">Pending</option>
+            <option value="deal">Deal</option>
+            <option value="done">Selesai</option>
+            <option value="canceled">Dibatalkan</option>
+          </select>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-indicator" id="loadingIndicator">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Memuat pesanan...</span>
+        </div>
+
+        <!-- Orders List -->
+        <div class="orders-list" id="ordersList">
+          <!-- Orders will be inserted here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="emptyState">
+          <i class="fas fa-inbox"></i>
+          <h3>Belum ada pesanan</h3>
+          <p>Pesanan Anda akan muncul di sini</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </main>
+
+    <script src="js/notification.js"></script>
+    <script src="js/marketplace-orders.js" defer></script>
+  </body>
+</html>
+

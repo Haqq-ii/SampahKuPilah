@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Produk - Marketplace SampahKuPilah</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/marketplace.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="marketplace-body">
+    <div class="marketplace-background" aria-hidden="true"></div>
+    
+    <header class="marketplace-header">
+      <div class="header-inner">
+        <a class="back-link" href="marketplace.html">
+          <i class="fas fa-arrow-left"></i> Kembali ke Marketplace
+        </a>
+        <div class="header-title">
+          <h1><i class="fas fa-store"></i> Detail Produk</h1>
+        </div>
+      </div>
+    </header>
+
+    <main class="marketplace-main">
+      <div class="marketplace-content product-detail-wrapper">
+        <!-- Loading Indicator -->
+        <div class="loading-indicator" id="loadingIndicator">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Memuat data produk...</span>
+        </div>
+
+        <!-- Product Detail -->
+        <div class="product-detail hidden" id="productDetail">
+          <!-- Image Gallery -->
+          <div class="product-images-section">
+            <div class="main-image-container">
+              <div class="main-image" id="mainImage">
+                <i class="fas fa-image"></i>
+                <span>Gambar tidak tersedia</span>
+              </div>
+            </div>
+            <div class="image-thumbnails" id="imageThumbnails">
+              <!-- Thumbnails will be inserted here -->
+            </div>
+          </div>
+
+          <!-- Product Info -->
+          <div class="product-info-section">
+            <!-- Header with Title and Status -->
+            <div class="product-header-card">
+              <div class="product-header-content">
+                <h2 class="product-title" id="productTitle">-</h2>
+                <span class="product-status-badge" id="productStatus">-</span>
+              </div>
+              <div class="product-price" id="productPrice">-</div>
+            </div>
+
+            <!-- Meta Information Card -->
+            <div class="product-meta-card">
+              <h3 class="card-title">
+                <i class="fas fa-info-circle"></i> Informasi Produk
+              </h3>
+              <div class="meta-items">
+                <div class="meta-item">
+                  <div class="meta-icon">
+                    <i class="fas fa-tags"></i>
+                  </div>
+                  <div class="meta-content">
+                    <span class="meta-label">Kategori</span>
+                    <span class="meta-value" id="productCategory">-</span>
+                  </div>
+                </div>
+                <div class="meta-item">
+                  <div class="meta-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </div>
+                  <div class="meta-content">
+                    <span class="meta-label">Lokasi</span>
+                    <span class="meta-value" id="productLocation">-</span>
+                  </div>
+                </div>
+                <div class="meta-item">
+                  <div class="meta-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="meta-content">
+                    <span class="meta-label">Penjual</span>
+                    <span class="meta-value" id="productSeller">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tags Card -->
+            <div class="product-tags-card" id="productTagsContainer">
+              <h3 class="card-title">
+                <i class="fas fa-hashtag"></i> Tag
+              </h3>
+              <div class="product-tags" id="productTags">
+                <!-- Tags will be inserted here -->
+              </div>
+            </div>
+
+            <!-- Description Card -->
+            <div class="product-description-card">
+              <h3 class="card-title">
+                <i class="fas fa-align-left"></i> Deskripsi Produk
+              </h3>
+              <div class="description-content">
+                <p id="productDescription">-</p>
+              </div>
+            </div>
+
+            <!-- Action Buttons Card -->
+            <div class="product-actions-card">
+              <div class="product-actions" id="productActions">
+                <!-- Buttons will be inserted here based on user role -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state hidden" id="errorState">
+          <i class="fas fa-exclamation-circle"></i>
+          <h3>Produk tidak ditemukan</h3>
+          <p>Produk yang Anda cari tidak tersedia atau telah dihapus.</p>
+          <a href="marketplace.html" class="btn btn-primary">Kembali ke Marketplace</a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Load Supabase URL from server config
+      (async () => {
+        try {
+          const response = await fetch('/api/config');
+          const config = await response.json();
+          window.SUPABASE_URL = config.supabaseUrl || '';
+        } catch (err) {
+          console.warn('Failed to load config, using default:', err);
+          window.SUPABASE_URL = '';
+        }
+      })();
+    </script>
+    <script src="js/notification.js"></script>
+    <script src="js/marketplace-detail.js" defer></script>
+  </body>
+</html>
+

@@ -1,6 +1,18 @@
 const LAST_DETECTIONS_KEY = "sampahKuPilah:lastDetections";
 const DETECTION_HISTORY_KEY = "sampahKuPilah:detectionHistory";
+const USER_STORAGE_KEY = "sampahKuPilahUser";
 const MAX_DETECTION_HISTORY = 10;
+
+// Fungsi untuk mendapatkan user dari localStorage
+function getStoredUser() {
+  try {
+    const raw = localStorage.getItem(USER_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    console.warn("Gagal membaca sesi pengguna:", err);
+    return null;
+  }
+}
 
 function persistDetectionLabel(label, bin = null, confidence = null) {
   if (typeof window === "undefined" || !window.localStorage) return;
@@ -624,10 +636,20 @@ class WasteDetectionSystem {
     const controller = new AbortController();
     const t = setTimeout(() => controller.abort(), 15000);
     try {
+      // Ambil user email untuk disimpan ke Supabase
+      const user = getStoredUser();
+      const userEmail = user?.email || null;
+      
       const res = await fetch("/classify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ images }),
+        headers: { 
+          "Content-Type": "application/json",
+          "x-user-email": userEmail || "" // Tambahkan header untuk userEmail
+        },
+        body: JSON.stringify({ 
+          images,
+          userEmail: userEmail // Tambahkan userEmail di body juga
+        }),
         signal: controller.signal,
       });
       

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard - Marketplace SampahKuPilah</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/marketplace.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="marketplace-body">
+    <div class="marketplace-background" aria-hidden="true"></div>
+    
+    <header class="marketplace-header">
+      <div class="header-inner">
+        <a class="back-link" href="marketplace.html">
+          <i class="fas fa-arrow-left"></i> Kembali ke Marketplace
+        </a>
+        <div class="header-title">
+          <h1><i class="fas fa-trophy"></i> Leaderboard</h1>
+          <p class="header-description">
+            Ranking pengguna terbaik di marketplace berdasarkan poin dan aktivitas
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <main class="marketplace-main">
+      <div class="marketplace-content" style="max-width: 1000px; margin: 0 auto;">
+        <!-- Tabs -->
+        <div class="leaderboard-tabs">
+          <button class="tab-btn active" data-type="seller">
+            <i class="fas fa-store"></i> Top Penjual
+          </button>
+          <button class="tab-btn" data-type="buyer">
+            <i class="fas fa-shopping-bag"></i> Top Pembeli
+          </button>
+          <button class="tab-btn" data-type="all">
+            <i class="fas fa-trophy"></i> Semua
+          </button>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-indicator" id="loadingIndicator">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Memuat leaderboard...</span>
+        </div>
+
+        <!-- Seller Leaderboard -->
+        <div class="leaderboard-section" id="sellerLeaderboard">
+          <h2><i class="fas fa-store"></i> Top Penjual</h2>
+          <div class="leaderboard-list" id="sellerList">
+            <!-- Seller rankings will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Buyer Leaderboard -->
+        <div class="leaderboard-section" id="buyerLeaderboard">
+          <h2><i class="fas fa-shopping-bag"></i> Top Pembeli</h2>
+          <div class="leaderboard-list" id="buyerList">
+            <!-- Buyer rankings will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="emptyState">
+          <i class="fas fa-inbox"></i>
+          <h3>Belum ada data leaderboard</h3>
+          <p>Mulai jual atau beli barang untuk mendapatkan poin!</p>
+        </div>
+      </div>
+    </main>
+
+    <script src="js/notification.js"></script>
+    <script src="js/leaderboard.js" defer></script>
+  </body>
+</html>
+
