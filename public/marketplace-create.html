@@ -146,6 +146,15 @@
             <label class="form-label">
               <i class="fas fa-images"></i> Gambar Produk
             </label>
+            <div class="image-enhancement-toggle" style="margin-bottom: var(--spacing-3);">
+              <label class="form-checkbox-label">
+                <input type="checkbox" id="enableImageEnhancement" checked />
+                <span><i class="fas fa-magic"></i> Auto-enhance gambar (optimize kualitas, ukuran, dan brightness)</span>
+              </label>
+              <small class="form-hint" style="display: block; margin-top: var(--spacing-1); margin-left: 24px;">
+                Gambar akan dioptimasi secara otomatis untuk tampilan yang lebih baik
+              </small>
+            </div>
             <div id="imageInputs">
               <div class="image-upload-item">
                 <input
@@ -170,15 +179,19 @@
             <button type="button" class="btn btn-secondary" id="addImageBtn" style="margin-top: var(--spacing-2);">
               <i class="fas fa-plus"></i> Tambah Gambar
             </button>
-            <small class="form-hint">Upload gambar produk (JPG, PNG, maksimal 5MB per gambar)</small>
+            <small class="form-hint">Upload gambar produk (JPG, PNG, maksimal 5MB per gambar). Cocok untuk barang daur ulang dan second hand.</small>
           </div>
 
-          <!-- AI Generate Toggle -->
+          <!-- AI Enhancement Section -->
           <div class="form-group">
-            <label class="form-checkbox-label">
-              <input type="checkbox" id="useAI" name="use_ai" />
-              <span>Gunakan AI untuk generate deskripsi (coming soon)</span>
-            </label>
+            <div class="ai-enhancement-section">
+              <button type="button" class="btn btn-secondary" id="enhanceBtn" style="width: 100%;">
+                <i class="fas fa-magic"></i> Enhance dengan AI
+              </button>
+              <small class="form-hint" style="display: block; margin-top: var(--spacing-2);">
+                AI akan meningkatkan judul, deskripsi, dan tag agar lebih menarik
+              </small>
+            </div>
           </div>
 
           <!-- Submit Button -->
@@ -193,6 +206,90 @@
         </form>
       </div>
     </main>
+
+    <!-- AI Enhancement Preview Modal -->
+    <div class="enhancement-modal hidden" id="enhancementModal">
+      <div class="enhancement-modal-overlay"></div>
+      <div class="enhancement-modal-content">
+        <div class="enhancement-modal-header">
+          <h2><i class="fas fa-magic"></i> Preview Hasil AI Enhancement</h2>
+          <button type="button" class="btn-close-modal" id="closeEnhancementModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="enhancement-preview">
+          <!-- Title Comparison -->
+          <div class="comparison-section">
+            <h3><i class="fas fa-heading"></i> Judul</h3>
+            <div class="comparison-row">
+              <div class="comparison-item original">
+                <label>Asli</label>
+                <div class="comparison-content" id="originalTitle">-</div>
+              </div>
+              <div class="comparison-arrow">→</div>
+              <div class="comparison-item enhanced">
+                <label>Enhanced</label>
+                <div class="comparison-content" id="enhancedTitle">-</div>
+              </div>
+            </div>
+            <button type="button" class="btn-accept-item" data-item="title">
+              <i class="fas fa-check"></i> Terima Enhanced
+            </button>
+          </div>
+
+          <!-- Description Comparison -->
+          <div class="comparison-section">
+            <h3><i class="fas fa-align-left"></i> Deskripsi</h3>
+            <div class="comparison-row">
+              <div class="comparison-item original">
+                <label>Asli</label>
+                <div class="comparison-content" id="originalDescription">-</div>
+              </div>
+              <div class="comparison-arrow">→</div>
+              <div class="comparison-item enhanced">
+                <label>Enhanced</label>
+                <div class="comparison-content" id="enhancedDescription">-</div>
+              </div>
+            </div>
+            <button type="button" class="btn-accept-item" data-item="description">
+              <i class="fas fa-check"></i> Terima Enhanced
+            </button>
+          </div>
+
+          <!-- Tags Comparison -->
+          <div class="comparison-section">
+            <h3><i class="fas fa-hashtag"></i> Tag</h3>
+            <div class="comparison-row">
+              <div class="comparison-item original">
+                <label>Asli</label>
+                <div class="comparison-tags" id="originalTags">-</div>
+              </div>
+              <div class="comparison-arrow">→</div>
+              <div class="comparison-item enhanced">
+                <label>Enhanced</label>
+                <div class="comparison-tags" id="enhancedTags">-</div>
+              </div>
+            </div>
+            <button type="button" class="btn-accept-item" data-item="tags">
+              <i class="fas fa-check"></i> Terima Enhanced
+            </button>
+          </div>
+        </div>
+
+        <div class="enhancement-modal-actions">
+          <button type="button" class="btn btn-secondary" id="regenBtn">
+            <i class="fas fa-redo"></i> Generate Ulang
+          </button>
+          <button type="button" class="btn btn-primary" id="acceptAllBtn">
+            <i class="fas fa-check-double"></i> Terima Semua
+          </button>
+          <button type="button" class="btn btn-secondary" id="cancelEnhancementBtn">
+            <i class="fas fa-times"></i> Batal
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="js/notification.js"></script>
     <script src="js/indonesia-regions.js"></script>

@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import bcrypt from "bcrypt";
 import { createClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 
 dotenv.config();
 
@@ -64,6 +65,75 @@ if (supabaseUrl && supabaseServiceKey) {
   console.warn("⚠️  Supabase not configured (SUPABASE_URL or SUPABASE_SERVICE_KEY missing)");
   console.warn("   Database operations will use JSON file fallback");
   console.warn("   Add Supabase credentials to .env file to enable database features");
+}
+
+// Helper function untuk mendapatkan atau membuat auth.users.id dari email
+// Menggunakan Supabase Admin API dengan service_role key
+async function getOrCreateAuthUserId(email) {
+  if (!supabase || !supabaseUrl || !supabaseServiceKey) return null;
+  
+  try {
+    const normalizedEmail = normalizeEmail(email);
+    
+    // Coba dapatkan user dari auth.users menggunakan Admin API
+    // Supabase Admin API: GET /auth/v1/admin/users dengan filter email
+    const listResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+      method: 'GET',
+      headers: {
+        'apikey': supabaseServiceKey,
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (listResponse.ok) {
+      const listData = await listResponse.json();
+      if (listData && listData.users && Array.isArray(listData.users)) {
+        const user = listData.users.find(u => u.email && u.email.toLowerCase() === normalizedEmail);
+        if (user && user.id) {
+          console.log(`✅ Found auth user for: ${normalizedEmail}, id: ${user.id}`);
+          return user.id;
+        }
+      }
+    } else {
+      const errorText = await listResponse.text();
+      console.warn("Error listing auth users:", errorText.substring(0, 200));
+    }
+    
+    // Jika tidak ditemukan, create user di auth.users
+    // Menggunakan Supabase Admin API: POST /auth/v1/admin/users
+    const createResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseServiceKey,
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: normalizedEmail,
+        email_confirm: true, // Auto-confirm email
+        user_metadata: {}
+      })
+    });
+    
+    if (createResponse.ok) {
+      const createData = await createResponse.json();
+      if (createData && createData.user && createData.user.id) {
+        console.log(`✅ Created auth user for: ${normalizedEmail}, id: ${createData.user.id}`);
+        return createData.user.id;
+      }
+    } else {
+      const errorText = await createResponse.text();
+      console.error("Error creating auth user:", errorText.substring(0, 200));
+    }
+    
+    // Jika gagal, return null dan akan menggunakan users.id sebagai fallback
+    console.warn(`⚠️  Could not get/create auth user for: ${normalizedEmail}`);
+    return null;
+  } catch (err) {
+    console.error("Error getting/creating auth user ID:", err.message);
+    return null;
+  }
 }
 
 // === Helper Functions ===
@@ -359,6 +429,18 @@ app.post("/register", async (req, res) => {
 
     // ✨ Simpan ke Supabase jika tersedia, fallback ke JSON
     if (supabase) {
+      // Pertama, create user di auth.users menggunakan Admin API
+      let authUserId = null;
+      try {
+        authUserId = await getOrCreateAuthUserId(email);
+        if (authUserId) {
+          console.log(`✅ Auth user created/found for: ${email}, id: ${authUserId}`);
+        }
+      } catch (authErr) {
+        console.warn("Failed to create auth user, will continue with users table:", authErr.message);
+      }
+      
+      // Kemudian create user di tabel users
       const created = await createUserSupabase(newUser);
       if (!created) {
         // Fallback ke JSON jika Supabase error
@@ -368,6 +450,8 @@ app.post("/register", async (req, res) => {
         writeUsers(users);
       } else {
         console.log("✅ User created in Supabase:", email);
+        // Jika authUserId berhasil dibuat, kita bisa update users table dengan auth_user_id jika ada kolom tersebut
+        // Tapi untuk sekarang, kita akan menggunakan authUserId langsung saat create listing/order
       }
     } else {
       // Jika Supabase tidak tersedia, pakai JSON file
@@ -1086,10 +1170,10 @@ app.get("/api/marketplace/listings", async (req, res) => {
     const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 20));
     const offset = (pageNum - 1) * limitNum;
 
-    // Build query - ensure images column is always selected
+    // Build query - ensure images column and seller_id are always selected
     let query = supabase
       .from("marketplace_listings")
-      .select("*, images", { count: "exact" }); // Explicitly include images
+      .select("*, images, seller_id", { count: "exact" }); // Explicitly include images and seller_id
 
     // Filter status
     if (status) {
@@ -1207,6 +1291,94 @@ app.get("/api/marketplace/listings", async (req, res) => {
   }
 });
 
+// DELETE /api/marketplace/listings/:id - Hapus listing (hanya owner)
+app.delete("/api/marketplace/listings/:id", async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({
+        error: "database_not_available",
+        message: "Supabase not configured"
+      });
+    }
+
+    const { id } = req.params;
+    const userEmail = req.headers["x-user-email"];
+    
+    if (!userEmail) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Email user diperlukan"
+      });
+    }
+
+    // Ambil listing untuk validasi ownership
+    const { data: listing, error: listingError } = await supabase
+      .from("marketplace_listings")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (listingError || !listing) {
+      return res.status(404).json({
+        error: "not_found",
+        message: "Listing tidak ditemukan"
+      });
+    }
+
+    // Validasi: hanya owner yang bisa hapus
+    if (listing.seller_email !== normalizeEmail(userEmail)) {
+      return res.status(403).json({
+        error: "forbidden",
+        message: "Anda tidak memiliki izin untuk menghapus listing ini"
+      });
+    }
+
+    // Cek apakah ada order yang masih pending/deal (tidak bisa hapus jika ada order aktif)
+    const { data: activeOrders, error: ordersError } = await supabase
+      .from("marketplace_orders")
+      .select("id")
+      .eq("listing_id", id)
+      .in("status", ["pending", "deal"]);
+
+    if (ordersError) {
+      console.error("Error checking orders:", ordersError);
+    }
+
+    if (activeOrders && activeOrders.length > 0) {
+      return res.status(400).json({
+        error: "cannot_delete",
+        message: "Tidak bisa menghapus listing yang masih memiliki order aktif (pending/deal). Silakan batalkan order terlebih dahulu."
+      });
+    }
+
+    // Hapus listing (cascade akan menghapus order yang sudah done/canceled)
+    const { error: deleteError } = await supabase
+      .from("marketplace_listings")
+      .delete()
+      .eq("id", id);
+
+    if (deleteError) {
+      console.error("Error deleting listing:", deleteError);
+      return res.status(500).json({
+        error: "database_error",
+        message: deleteError.message
+      });
+    }
+
+    console.log("✅ Listing deleted:", id);
+    return res.json({
+      success: true,
+      message: "Listing berhasil dihapus"
+    });
+  } catch (err) {
+    console.error("Exception deleting listing:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
 // GET /api/marketplace/listings/:id - Ambil detail listing
 app.get("/api/marketplace/listings/:id", async (req, res) => {
   try {
@@ -1219,10 +1391,10 @@ app.get("/api/marketplace/listings/:id", async (req, res) => {
 
     const { id } = req.params;
 
-    // Ensure images column is always selected
+    // Ensure images column and seller_id are always selected
     const { data, error } = await supabase
       .from("marketplace_listings")
-      .select("*, images") // Explicitly include images
+      .select("*, images, seller_id") // Explicitly include images and seller_id
       .eq("id", id)
       .single();
     
@@ -1284,6 +1456,103 @@ app.get("/api/marketplace/listings/:id", async (req, res) => {
   }
 });
 
+// POST /api/marketplace/enhance-image - Enhance gambar dengan Sharp
+app.post("/api/marketplace/enhance-image", async (req, res) => {
+  try {
+    const { base64, mimeType, filename } = req.body;
+
+    if (!base64 || !mimeType) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "base64 dan mimeType diperlukan"
+      });
+    }
+
+    // Convert base64 to buffer
+    const imageBuffer = Buffer.from(base64, 'base64');
+
+    // Enhance image dengan Sharp
+    let enhancedBuffer;
+    try {
+      // Get image metadata
+      const metadata = await sharp(imageBuffer).metadata();
+      
+      // Determine optimal dimensions (max 1920x1920, maintain aspect ratio)
+      const maxDimension = 1920;
+      let width = metadata.width;
+      let height = metadata.height;
+      
+      if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+          width = maxDimension;
+          height = Math.round((metadata.height / metadata.width) * maxDimension);
+        } else {
+          height = maxDimension;
+          width = Math.round((metadata.width / metadata.height) * maxDimension);
+        }
+      }
+
+      // Enhance image: resize, improve quality, optimize
+      enhancedBuffer = await sharp(imageBuffer)
+        .resize(width, height, {
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .modulate({
+          brightness: 1.05,  // Slightly brighter
+          saturation: 1.1,   // Slightly more vibrant
+        })
+        .sharpen({          // Sharpen for better clarity
+          sigma: 1,
+          flat: 1,
+          jagged: 2
+        })
+        .normalize()        // Normalize colors
+        .jpeg({             // Convert to JPEG for better compression
+          quality: 85,
+          progressive: true,
+          mozjpeg: true
+        })
+        .toBuffer();
+
+      // Convert enhanced buffer to base64
+      const enhancedBase64 = enhancedBuffer.toString('base64');
+      const enhancedMimeType = 'image/jpeg';
+
+      return res.json({
+        success: true,
+        enhanced: {
+          base64: enhancedBase64,
+          mimeType: enhancedMimeType,
+          width: width,
+          height: height,
+          originalWidth: metadata.width,
+          originalHeight: metadata.height,
+          sizeReduction: `${Math.round((1 - (enhancedBuffer.length / imageBuffer.length)) * 100)}%`
+        }
+      });
+    } catch (sharpError) {
+      console.error("Sharp processing error:", sharpError);
+      // Fallback: return original if enhancement fails
+      return res.json({
+        success: false,
+        error: "enhancement_failed",
+        message: "Gagal melakukan enhancement, menggunakan gambar asli",
+        original: {
+          base64: base64,
+          mimeType: mimeType
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Exception enhancing image:", err);
+    return res.status(500).json({
+      error: "server_error",
+      message: err.message
+    });
+  }
+});
+
 // POST /api/marketplace/upload-image - Upload gambar ke Supabase Storage
 app.post("/api/marketplace/upload-image", async (req, res) => {
   try {
@@ -1302,7 +1571,7 @@ app.post("/api/marketplace/upload-image", async (req, res) => {
       });
     }
 
-    const { base64, mimeType, filename } = req.body;
+    const { base64, mimeType, filename, enhance = false } = req.body;
 
     if (!base64 || !mimeType) {
       return res.status(400).json({
@@ -1311,32 +1580,87 @@ app.post("/api/marketplace/upload-image", async (req, res) => {
       });
     }
 
+    let finalBase64 = base64;
+    let finalMimeType = mimeType;
+    let finalBuffer;
+
+    // Enhance image jika diminta
+    if (enhance) {
+      try {
+        const imageBuffer = Buffer.from(base64, 'base64');
+        const metadata = await sharp(imageBuffer).metadata();
+        
+        const maxDimension = 1920;
+        let width = metadata.width;
+        let height = metadata.height;
+        
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            width = maxDimension;
+            height = Math.round((metadata.height / metadata.width) * maxDimension);
+          } else {
+            height = maxDimension;
+            width = Math.round((metadata.width / metadata.height) * maxDimension);
+          }
+        }
+
+        finalBuffer = await sharp(imageBuffer)
+          .resize(width, height, {
+            fit: 'inside',
+            withoutEnlargement: true
+          })
+          .modulate({
+            brightness: 1.05,
+            saturation: 1.1,
+          })
+          .sharpen({
+            sigma: 1,
+            flat: 1,
+            jagged: 2
+          })
+          .normalize()
+          .jpeg({
+            quality: 85,
+            progressive: true,
+            mozjpeg: true
+          })
+          .toBuffer();
+
+        finalBase64 = finalBuffer.toString('base64');
+        finalMimeType = 'image/jpeg';
+      } catch (enhanceError) {
+        console.warn("Image enhancement failed, using original:", enhanceError.message);
+        // Fallback to original
+        finalBuffer = Buffer.from(base64, 'base64');
+      }
+    } else {
+      finalBuffer = Buffer.from(base64, 'base64');
+    }
+
     // Generate unique filename
-    const fileExt = mimeType.split('/')[1] || 'jpg';
+    const fileExt = finalMimeType.split('/')[1] || 'jpg';
     const sanitizedFilename = (filename || `image-${Date.now()}`)
       .replace(/[^a-zA-Z0-9.-]/g, '_')
       .substring(0, 100);
     const storagePath = `listings/${Date.now()}-${sanitizedFilename}.${fileExt}`;
 
-    // Convert base64 to buffer
-    const buffer = Buffer.from(base64, 'base64');
-
     // Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('marketplace-images')
-      .upload(storagePath, buffer, {
-        contentType: mimeType,
+      .upload(storagePath, finalBuffer, {
+        contentType: finalMimeType,
         upsert: false
       });
 
     if (uploadError) {
       console.error("Error uploading to Supabase Storage:", uploadError);
       // Fallback: return data URL if storage upload fails
-      const dataUrl = `data:${mimeType};base64,${base64}`;
+      const dataUrl = `data:${finalMimeType};base64,${finalBase64}`;
       return res.json({
         url: dataUrl,
         path: null,
-        isDataUrl: true
+        isDataUrl: true,
+        enhanced: enhance
       });
     }
 
@@ -1348,13 +1672,193 @@ app.post("/api/marketplace/upload-image", async (req, res) => {
     return res.json({
       url: urlData.publicUrl,
       path: storagePath,
-      isDataUrl: false
+      isDataUrl: false,
+      enhanced: enhance
     });
   } catch (err) {
     console.error("Exception uploading image:", err);
     return res.status(500).json({
       error: "server_error",
       message: err.message
+    });
+  }
+});
+
+// POST /api/marketplace/enhance-listing - AI Enhancement untuk listing
+app.post("/api/marketplace/enhance-listing", async (req, res) => {
+  console.log("🔍 Enhancement endpoint called");
+  try {
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
+    
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "missing_api_key",
+        message: "OpenAI API key tidak dikonfigurasi"
+      });
+    }
+
+    const {
+      title,
+      description,
+      category,
+      tags = [],
+      price = 0
+    } = req.body;
+
+    // Validasi minimal
+    if (!title || !description || !category) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "Title, description, dan category wajib diisi untuk enhancement"
+      });
+    }
+
+    // Prepare prompts untuk AI
+    const titlePrompt = `Kamu adalah copywriter profesional untuk marketplace daur ulang di Indonesia.
+Buatkan judul yang menarik, SEO-friendly, dan persuasif untuk produk berikut:
+
+Kategori: ${category}
+Judul asli: ${title}
+Deskripsi: ${description}
+${tags.length > 0 ? `Tag: ${tags.join(', ')}` : ''}
+
+Buatkan 1 judul yang:
+- Maksimal 60 karakter
+- Menarik perhatian pembeli
+- Mengandung kata kunci penting
+- Sesuai dengan konteks Indonesia
+- Tidak berlebihan atau clickbait
+
+Jawab HANYA dengan judul yang dihasilkan, tanpa penjelasan tambahan.`;
+
+    const descriptionPrompt = `Kamu adalah copywriter profesional untuk marketplace daur ulang di Indonesia.
+Tuliskan deskripsi produk yang menarik, informatif, dan persuasif berdasarkan informasi berikut:
+
+Kategori: ${category}
+Judul: ${title}
+Deskripsi asli: ${description}
+${tags.length > 0 ? `Tag: ${tags.join(', ')}` : ''}
+${price > 0 ? `Harga: Rp ${parseInt(price).toLocaleString('id-ID')}` : 'Harga: Gratis'}
+
+Buatkan deskripsi yang:
+- Maksimal 500 karakter
+- Menjelaskan kondisi, ukuran, dan detail produk dengan jelas
+- Menyebutkan manfaat dan nilai produk
+- Menggunakan bahasa yang ramah dan profesional
+- Sesuai dengan konteks Indonesia
+- Tidak berlebihan atau menipu
+
+Jawab HANYA dengan deskripsi yang dihasilkan, tanpa penjelasan tambahan.`;
+
+    const tagsPrompt = `Berdasarkan informasi produk berikut, buatkan 3-5 tag yang relevan untuk memudahkan pencarian:
+
+Kategori: ${category}
+Judul: ${title}
+Deskripsi: ${description}
+${tags.length > 0 ? `Tag yang sudah ada: ${tags.join(', ')}` : ''}
+
+Buatkan tag yang:
+- Relevan dengan produk
+- Populer untuk pencarian
+- Maksimal 1-2 kata per tag
+- Dalam bahasa Indonesia atau bahasa umum
+
+Jawab dalam format JSON array: ["tag1", "tag2", "tag3"]
+HANYA return JSON array, tanpa penjelasan tambahan.`;
+
+    // Call OpenAI untuk enhancement
+    const [titleResponse, descriptionResponse, tagsResponse] = await Promise.all([
+      openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "Kamu adalah copywriter profesional untuk marketplace." },
+          { role: "user", content: titlePrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 100
+      }),
+      openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "Kamu adalah copywriter profesional untuk marketplace." },
+          { role: "user", content: descriptionPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 300
+      }),
+      openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "Kamu adalah ahli SEO dan tagging untuk marketplace." },
+          { role: "user", content: tagsPrompt }
+        ],
+        temperature: 0.8,
+        max_tokens: 150
+      })
+    ]);
+
+    // Extract results
+    const enhancedTitle = titleResponse.choices?.[0]?.message?.content?.trim() || title;
+    const enhancedDescription = descriptionResponse.choices?.[0]?.message?.content?.trim() || description;
+    
+    // Parse tags (handle JSON array response)
+    let enhancedTags = [...tags];
+    try {
+      const tagsContent = tagsResponse.choices?.[0]?.message?.content?.trim() || '[]';
+      const parsedTags = JSON.parse(tagsContent);
+      if (Array.isArray(parsedTags)) {
+        // Merge dengan existing tags, remove duplicates
+        enhancedTags = [...new Set([...tags, ...parsedTags])];
+      }
+    } catch (e) {
+      // If parsing fails, try to extract tags from text
+      const tagsText = tagsResponse.choices?.[0]?.message?.content?.trim() || '';
+      const extractedTags = tagsText
+        .replace(/[\[\]"]/g, '')
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+      if (extractedTags.length > 0) {
+        enhancedTags = [...new Set([...tags, ...extractedTags])];
+      }
+    }
+
+    // Limit tags to max 10
+    enhancedTags = enhancedTags.slice(0, 10);
+
+    return res.json({
+      success: true,
+      enhanced: {
+        title: enhancedTitle,
+        description: enhancedDescription,
+        tags: enhancedTags
+      },
+      original: {
+        title: title,
+        description: description,
+        tags: tags
+      }
+    });
+  } catch (err) {
+    console.error("Error enhancing listing:", err);
+    
+    if (err?.status === 429) {
+      return res.status(429).json({
+        error: "rate_limit",
+        message: "Terlalu banyak permintaan ke AI. Silakan coba lagi nanti."
+      });
+    }
+    
+    if (err?.message?.includes("API key") || err?.message?.includes("Missing credentials")) {
+      return res.status(500).json({
+        error: "missing_api_key",
+        message: "OpenAI API key tidak valid"
+      });
+    }
+    
+    return res.status(500).json({
+      error: "enhancement_error",
+      message: err?.message || "Terjadi kesalahan saat melakukan enhancement"
     });
   }
 });
@@ -1442,10 +1946,23 @@ app.post("/api/marketplace/listings", async (req, res) => {
     const searchText = `${title} ${description} ${tags.join(" ")}`.toLowerCase();
 
     // Insert listing
+    // Pastikan seller_id menggunakan auth.users.id yang valid
+    // Coba dapatkan atau create auth.users.id
+    let sellerId = user.id;
+    const authUserId = await getOrCreateAuthUserId(userEmail);
+    if (authUserId) {
+      sellerId = authUserId;
+      console.log(`✅ Using auth.users.id for seller: ${sellerId}`);
+    } else {
+      console.warn(`⚠️  Auth user ID not found/created for ${userEmail}, using users.id: ${user.id}`);
+      // Tetap gunakan user.id, tapi ini mungkin akan error jika foreign key strict
+      sellerId = user.id;
+    }
+    
     const { data, error } = await supabase
       .from("marketplace_listings")
       .insert({
-        seller_id: user.id,
+        seller_id: sellerId, // Gunakan auth.users.id jika tersedia
         seller_email: normalizeEmail(userEmail),
         title: title.trim(),
         description: description.trim(),
@@ -1520,10 +2037,10 @@ app.post("/api/marketplace/orders", async (req, res) => {
       });
     }
 
-    // Ambil listing
+    // Ambil listing (pastikan seller_id di-select)
     const { data: listing, error: listingError } = await supabase
       .from("marketplace_listings")
-      .select("*")
+      .select("*, seller_id") // Explicitly include seller_id
       .eq("id", listing_id)
       .single();
 
@@ -1554,14 +2071,47 @@ app.post("/api/marketplace/orders", async (req, res) => {
     const orderId = generateOrderId();
 
     // Create order
+    // Pastikan seller_id dan buyer_id menggunakan auth.users.id yang valid
+    // Coba dapatkan atau create auth.users.id untuk seller dan buyer
+    let sellerId = listing.seller_id;
+    let buyerId = buyer.id;
+    
+    // Dapatkan atau create auth.users.id untuk seller
+    const sellerAuthId = await getOrCreateAuthUserId(listing.seller_email);
+    if (sellerAuthId) {
+      sellerId = sellerAuthId;
+      console.log(`✅ Using auth.users.id for seller: ${sellerId}`);
+    } else if (!listing.seller_id) {
+      // Jika tidak ada seller_id di listing dan gagal create auth user, return error
+      return res.status(400).json({
+        error: "invalid_listing",
+        message: "Listing tidak memiliki seller_id yang valid dan gagal membuat auth user"
+      });
+    } else {
+      // Gunakan listing.seller_id yang sudah ada (mungkin dari listing lama)
+      console.warn(`⚠️  Using existing listing.seller_id: ${listing.seller_id}`);
+      sellerId = listing.seller_id;
+    }
+    
+    // Dapatkan atau create auth.users.id untuk buyer
+    const buyerAuthId = await getOrCreateAuthUserId(userEmail);
+    if (buyerAuthId) {
+      buyerId = buyerAuthId;
+      console.log(`✅ Using auth.users.id for buyer: ${buyerId}`);
+    } else {
+      console.warn(`⚠️  Auth user ID not found/created for buyer ${userEmail}, using users.id: ${buyer.id}`);
+      // Tetap gunakan buyer.id, tapi ini mungkin akan error jika foreign key strict
+      buyerId = buyer.id;
+    }
+
     const { data: order, error: orderError } = await supabase
       .from("marketplace_orders")
       .insert({
         order_id: orderId,
         listing_id: listing_id,
-        seller_id: listing.seller_id,
+        seller_id: sellerId, // Gunakan auth.users.id untuk seller
         seller_email: listing.seller_email,
-        buyer_id: buyer.id,
+        buyer_id: buyerId, // Gunakan auth.users.id untuk buyer
         buyer_email: normalizeEmail(userEmail),
         status: "pending"
       })
@@ -1705,10 +2255,10 @@ app.get("/api/marketplace/orders/:id", async (req, res) => {
       }
     }
 
-    // Ambil listing info
+    // Ambil listing info (pastikan seller_id di-select)
     const { data: listing } = await supabase
       .from("marketplace_listings")
-      .select("*")
+      .select("*, seller_id") // Explicitly include seller_id
       .eq("id", order.listing_id)
       .single();
 

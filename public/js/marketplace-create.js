@@ -148,6 +148,10 @@ async function uploadImage(file) {
     // Convert to base64
     const fileData = await fileToBase64(file);
     
+    // Check if enhancement is enabled
+    const enhanceCheckbox = document.getElementById("enableImageEnhancement");
+    const enhance = enhanceCheckbox ? enhanceCheckbox.checked : true; // Default: enabled
+    
     // Try upload to Supabase Storage via backend
     const response = await fetch("/api/marketplace/upload-image", {
       method: "POST",
@@ -158,7 +162,8 @@ async function uploadImage(file) {
       body: JSON.stringify({
         base64: fileData.base64,
         mimeType: fileData.mimeType,
-        filename: fileData.filename
+        filename: fileData.filename,
+        enhance: enhance
       })
     });
 
@@ -167,6 +172,11 @@ async function uploadImage(file) {
     }
 
     const result = await response.json();
+    
+    // Show notification if enhanced
+    if (result.enhanced && window.notification) {
+      window.notification.success("Gambar berhasil dioptimasi!");
+    }
     
     // Return URL (either Supabase Storage URL or data URL fallback)
     return result.url;
@@ -210,6 +220,123 @@ function parseTags(tagsInput) {
     .filter(tag => tag.length > 0);
 }
 
+// Format tags for display
+function formatTagsForDisplay(tags) {
+  if (!Array.isArray(tags) || tags.length === 0) return '<span class="no-tags">Tidak ada tag</span>';
+  return tags.map(tag => `<span class="tag-preview">${escapeHtml(tag)}</span>`).join('');
+}
+
+// Escape HTML untuk prevent XSS
+function escapeHtml(text) {
+  if (!text) return "";
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Call AI Enhancement API
+async function enhanceWithAI() {
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const category = document.getElementById("category").value;
+  const tags = parseTags(document.getElementById("tags").value);
+  const price = parseFloat(document.getElementById("price").value) || 0;
+
+  // Validation
+  if (!title || !description || !category) {
+    if (window.notification) {
+      window.notification.error("Judul, deskripsi, dan kategori wajib diisi untuk enhancement");
+    }
+    return null;
+  }
+
+  try {
+    const response = await fetch("/api/marketplace/enhance-listing", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        category,
+        tags,
+        price
+      })
+    });
+
+    // Check if response is OK and is JSON
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await response.text();
+      console.error("Non-JSON response:", text.substring(0, 200));
+      
+      if (response.status === 404) {
+        throw new Error("Endpoint tidak ditemukan. Pastikan server sudah di-restart setelah update terbaru.");
+      }
+      
+      throw new Error(`Server mengembalikan response yang tidak valid (${response.status}). Pastikan server sudah di-restart.`);
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || `Gagal melakukan enhancement (${response.status})`);
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Error enhancing listing:", err);
+    if (window.notification) {
+      const errorMsg = err.message || "Gagal melakukan enhancement. Silakan coba lagi.";
+      window.notification.error(errorMsg);
+    }
+    return null;
+  }
+}
+
+// Show enhancement preview modal
+function showEnhancementPreview(enhancementData) {
+  const modal = document.getElementById("enhancementModal");
+  const original = enhancementData.original;
+  const enhanced = enhancementData.enhanced;
+
+  // Populate original values
+  document.getElementById("originalTitle").textContent = original.title || "-";
+  document.getElementById("originalDescription").textContent = original.description || "-";
+  document.getElementById("originalTags").innerHTML = formatTagsForDisplay(original.tags || []);
+
+  // Populate enhanced values
+  document.getElementById("enhancedTitle").textContent = enhanced.title || "-";
+  document.getElementById("enhancedDescription").textContent = enhanced.description || "-";
+  document.getElementById("enhancedTags").innerHTML = formatTagsForDisplay(enhanced.tags || []);
+
+  // Store enhancement data for later use
+  modal.dataset.enhancedData = JSON.stringify(enhanced);
+
+  // Show modal
+  modal.classList.remove("hidden");
+}
+
+// Apply enhanced value to form
+function applyEnhancedValue(field, value) {
+  if (field === "title") {
+    document.getElementById("title").value = value;
+  } else if (field === "description") {
+    document.getElementById("description").value = value;
+  } else if (field === "tags") {
+    if (Array.isArray(value)) {
+      document.getElementById("tags").value = value.join(", ");
+    }
+  }
+}
+
+// Close enhancement modal
+function closeEnhancementModal() {
+  const modal = document.getElementById("enhancementModal");
+  modal.classList.add("hidden");
+}
+
 // Handle form submission
 async function handleSubmit(e) {
   e.preventDefault();
@@ -241,7 +368,7 @@ async function handleSubmit(e) {
     location_city: document.getElementById("location_city").value || null,
     location_district: document.getElementById("location_district").value || null,
     location_village: document.getElementById("location_village").value || null,
-    use_ai: document.getElementById("useAI").checked
+    use_ai: false // Deprecated, keeping for backward compatibility
   };
 
   // Validation
@@ -403,6 +530,122 @@ document.addEventListener("DOMContentLoaded", () => {
   const addImageBtn = document.getElementById("addImageBtn");
   if (addImageBtn) {
     addImageBtn.addEventListener("click", addImageInput);
+  }
+
+  // AI Enhancement button
+  const enhanceBtn = document.getElementById("enhanceBtn");
+  if (enhanceBtn) {
+    enhanceBtn.addEventListener("click", async () => {
+      const originalText = enhanceBtn.innerHTML;
+      enhanceBtn.disabled = true;
+      enhanceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+      if (window.notification) {
+        window.notification.info("AI sedang memproses enhancement...");
+      }
+
+      const result = await enhanceWithAI();
+      
+      enhanceBtn.disabled = false;
+      enhanceBtn.innerHTML = originalText;
+
+      if (result) {
+        showEnhancementPreview(result);
+      }
+    });
+  }
+
+  // Close enhancement modal buttons
+  const closeModalBtn = document.getElementById("closeEnhancementModal");
+  const cancelEnhancementBtn = document.getElementById("cancelEnhancementBtn");
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", closeEnhancementModal);
+  }
+  if (cancelEnhancementBtn) {
+    cancelEnhancementBtn.addEventListener("click", closeEnhancementModal);
+  }
+
+  // Accept individual items
+  const acceptItemButtons = document.querySelectorAll(".btn-accept-item");
+  acceptItemButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = btn.dataset.item;
+      const modal = document.getElementById("enhancementModal");
+      const enhancedData = JSON.parse(modal.dataset.enhancedData || "{}");
+
+      if (item === "title" && enhancedData.title) {
+        applyEnhancedValue("title", enhancedData.title);
+        if (window.notification) {
+          window.notification.success("Judul enhanced telah diterapkan");
+        }
+      } else if (item === "description" && enhancedData.description) {
+        applyEnhancedValue("description", enhancedData.description);
+        if (window.notification) {
+          window.notification.success("Deskripsi enhanced telah diterapkan");
+        }
+      } else if (item === "tags" && enhancedData.tags) {
+        applyEnhancedValue("tags", enhancedData.tags);
+        if (window.notification) {
+          window.notification.success("Tag enhanced telah diterapkan");
+        }
+      }
+    });
+  });
+
+  // Accept all button
+  const acceptAllBtn = document.getElementById("acceptAllBtn");
+  if (acceptAllBtn) {
+    acceptAllBtn.addEventListener("click", () => {
+      const modal = document.getElementById("enhancementModal");
+      const enhancedData = JSON.parse(modal.dataset.enhancedData || "{}");
+
+      if (enhancedData.title) {
+        applyEnhancedValue("title", enhancedData.title);
+      }
+      if (enhancedData.description) {
+        applyEnhancedValue("description", enhancedData.description);
+      }
+      if (enhancedData.tags) {
+        applyEnhancedValue("tags", enhancedData.tags);
+      }
+
+      if (window.notification) {
+        window.notification.success("Semua enhancement telah diterapkan");
+      }
+
+      closeEnhancementModal();
+    });
+  }
+
+  // Regenerate button
+  const regenBtn = document.getElementById("regenBtn");
+  if (regenBtn) {
+    regenBtn.addEventListener("click", async () => {
+      const originalText = regenBtn.innerHTML;
+      regenBtn.disabled = true;
+      regenBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generate Ulang...';
+
+      const result = await enhanceWithAI();
+      
+      regenBtn.disabled = false;
+      regenBtn.innerHTML = originalText;
+
+      if (result) {
+        showEnhancementPreview(result);
+        if (window.notification) {
+          window.notification.success("Enhancement baru telah dihasilkan");
+        }
+      }
+    });
+  }
+
+  // Close modal on overlay click
+  const modal = document.getElementById("enhancementModal");
+  if (modal) {
+    const overlay = modal.querySelector(".enhancement-modal-overlay");
+    if (overlay) {
+      overlay.addEventListener("click", closeEnhancementModal);
+    }
   }
 });
 

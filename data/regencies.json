@@ -1,0 +1,2567 @@
+[
+  {
+    "1101": 1102,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH SINGKIL"
+  },
+  {
+    "1101": 1103,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH SELATAN"
+  },
+  {
+    "1101": 1104,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH TENGGARA"
+  },
+  {
+    "1101": 1105,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH TIMUR"
+  },
+  {
+    "1101": 1106,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH TENGAH"
+  },
+  {
+    "1101": 1107,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH BARAT"
+  },
+  {
+    "1101": 1108,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH BESAR"
+  },
+  {
+    "1101": 1109,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN PIDIE"
+  },
+  {
+    "1101": 1110,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN BIREUEN"
+  },
+  {
+    "1101": 1111,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH UTARA"
+  },
+  {
+    "1101": 1112,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH BARAT DAYA"
+  },
+  {
+    "1101": 1113,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN GAYO LUES"
+  },
+  {
+    "1101": 1114,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH TAMIANG"
+  },
+  {
+    "1101": 1115,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN NAGAN RAYA"
+  },
+  {
+    "1101": 1116,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN ACEH JAYA"
+  },
+  {
+    "1101": 1117,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN BENER MERIAH"
+  },
+  {
+    "1101": 1118,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KABUPATEN PIDIE JAYA"
+  },
+  {
+    "1101": 1171,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KOTA BANDA ACEH"
+  },
+  {
+    "1101": 1172,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KOTA SABANG"
+  },
+  {
+    "1101": 1173,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KOTA LANGSA"
+  },
+  {
+    "1101": 1174,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KOTA LHOKSEUMAWE"
+  },
+  {
+    "1101": 1175,
+    "11": 11,
+    "KABUPATEN SIMEULUE": "KOTA SUBULUSSALAM"
+  },
+  {
+    "1101": 1201,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN NIAS"
+  },
+  {
+    "1101": 1202,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN MANDAILING NATAL"
+  },
+  {
+    "1101": 1203,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN TAPANULI SELATAN"
+  },
+  {
+    "1101": 1204,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN TAPANULI TENGAH"
+  },
+  {
+    "1101": 1205,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN TAPANULI UTARA"
+  },
+  {
+    "1101": 1206,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN TOBA SAMOSIR"
+  },
+  {
+    "1101": 1207,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN LABUHAN BATU"
+  },
+  {
+    "1101": 1208,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN ASAHAN"
+  },
+  {
+    "1101": 1209,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN SIMALUNGUN"
+  },
+  {
+    "1101": 1210,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN DAIRI"
+  },
+  {
+    "1101": 1211,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN KARO"
+  },
+  {
+    "1101": 1212,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN DELI SERDANG"
+  },
+  {
+    "1101": 1213,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN LANGKAT"
+  },
+  {
+    "1101": 1214,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN NIAS SELATAN"
+  },
+  {
+    "1101": 1215,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN HUMBANG HASUNDUTAN"
+  },
+  {
+    "1101": 1216,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN PAKPAK BHARAT"
+  },
+  {
+    "1101": 1217,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN SAMOSIR"
+  },
+  {
+    "1101": 1218,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN SERDANG BEDAGAI"
+  },
+  {
+    "1101": 1219,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN BATU BARA"
+  },
+  {
+    "1101": 1220,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN PADANG LAWAS UTARA"
+  },
+  {
+    "1101": 1221,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN PADANG LAWAS"
+  },
+  {
+    "1101": 1222,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN LABUHAN BATU SELATAN"
+  },
+  {
+    "1101": 1223,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN LABUHAN BATU UTARA"
+  },
+  {
+    "1101": 1224,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN NIAS UTARA"
+  },
+  {
+    "1101": 1225,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KABUPATEN NIAS BARAT"
+  },
+  {
+    "1101": 1271,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA SIBOLGA"
+  },
+  {
+    "1101": 1272,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA TANJUNG BALAI"
+  },
+  {
+    "1101": 1273,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA PEMATANG SIANTAR"
+  },
+  {
+    "1101": 1274,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA TEBING TINGGI"
+  },
+  {
+    "1101": 1275,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA MEDAN"
+  },
+  {
+    "1101": 1276,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA BINJAI"
+  },
+  {
+    "1101": 1277,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA PADANGSIDIMPUAN"
+  },
+  {
+    "1101": 1278,
+    "11": 12,
+    "KABUPATEN SIMEULUE": "KOTA GUNUNGSITOLI"
+  },
+  {
+    "1101": 1301,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN MENTAWAI"
+  },
+  {
+    "1101": 1302,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN PESISIR SELATAN"
+  },
+  {
+    "1101": 1303,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN SOLOK"
+  },
+  {
+    "1101": 1304,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN SIJUNJUNG"
+  },
+  {
+    "1101": 1305,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANAH DATAR"
+  },
+  {
+    "1101": 1306,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN PADANG PARIAMAN"
+  },
+  {
+    "1101": 1307,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN AGAM"
+  },
+  {
+    "1101": 1308,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN LIMA PULUH KOTA"
+  },
+  {
+    "1101": 1309,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN PASAMAN"
+  },
+  {
+    "1101": 1310,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN SOLOK SELATAN"
+  },
+  {
+    "1101": 1311,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN DHARMASRAYA"
+  },
+  {
+    "1101": 1312,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KABUPATEN PASAMAN BARAT"
+  },
+  {
+    "1101": 1371,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KOTA PADANG"
+  },
+  {
+    "1101": 1372,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KOTA SOLOK"
+  },
+  {
+    "1101": 1373,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KOTA SAWAH LUNTO"
+  },
+  {
+    "1101": 1374,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KOTA PADANG PANJANG"
+  },
+  {
+    "1101": 1375,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KOTA BUKITTINGGI"
+  },
+  {
+    "1101": 1376,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KOTA PAYAKUMBUH"
+  },
+  {
+    "1101": 1377,
+    "11": 13,
+    "KABUPATEN SIMEULUE": "KOTA PARIAMAN"
+  },
+  {
+    "1101": 1401,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUANTAN SINGINGI"
+  },
+  {
+    "1101": 1402,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN INDRAGIRI HULU"
+  },
+  {
+    "1101": 1403,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN INDRAGIRI HILIR"
+  },
+  {
+    "1101": 1404,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN PELALAWAN"
+  },
+  {
+    "1101": 1405,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN S I A K"
+  },
+  {
+    "1101": 1406,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN KAMPAR"
+  },
+  {
+    "1101": 1407,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN ROKAN HULU"
+  },
+  {
+    "1101": 1408,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN BENGKALIS"
+  },
+  {
+    "1101": 1409,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN ROKAN HILIR"
+  },
+  {
+    "1101": 1410,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN MERANTI"
+  },
+  {
+    "1101": 1471,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KOTA PEKANBARU"
+  },
+  {
+    "1101": 1473,
+    "11": 14,
+    "KABUPATEN SIMEULUE": "KOTA D U M A I"
+  },
+  {
+    "1101": 1501,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN KERINCI"
+  },
+  {
+    "1101": 1502,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN MERANGIN"
+  },
+  {
+    "1101": 1503,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN SAROLANGUN"
+  },
+  {
+    "1101": 1504,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN BATANG HARI"
+  },
+  {
+    "1101": 1505,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUARO JAMBI"
+  },
+  {
+    "1101": 1506,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANJUNG JABUNG TIMUR"
+  },
+  {
+    "1101": 1507,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANJUNG JABUNG BARAT"
+  },
+  {
+    "1101": 1508,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN TEBO"
+  },
+  {
+    "1101": 1509,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KABUPATEN BUNGO"
+  },
+  {
+    "1101": 1571,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KOTA JAMBI"
+  },
+  {
+    "1101": 1572,
+    "11": 15,
+    "KABUPATEN SIMEULUE": "KOTA SUNGAI PENUH"
+  },
+  {
+    "1101": 1601,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN OGAN KOMERING ULU"
+  },
+  {
+    "1101": 1602,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN OGAN KOMERING ILIR"
+  },
+  {
+    "1101": 1603,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUARA ENIM"
+  },
+  {
+    "1101": 1604,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAHAT"
+  },
+  {
+    "1101": 1605,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUSI RAWAS"
+  },
+  {
+    "1101": 1606,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUSI BANYUASIN"
+  },
+  {
+    "1101": 1607,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANYU ASIN"
+  },
+  {
+    "1101": 1608,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN OGAN KOMERING ULU SELATAN"
+  },
+  {
+    "1101": 1609,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN OGAN KOMERING ULU TIMUR"
+  },
+  {
+    "1101": 1610,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN OGAN ILIR"
+  },
+  {
+    "1101": 1611,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN EMPAT LAWANG"
+  },
+  {
+    "1101": 1612,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN PENUKAL ABAB LEMATANG ILIR"
+  },
+  {
+    "1101": 1613,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUSI RAWAS UTARA"
+  },
+  {
+    "1101": 1671,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KOTA PALEMBANG"
+  },
+  {
+    "1101": 1672,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KOTA PRABUMULIH"
+  },
+  {
+    "1101": 1673,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KOTA PAGAR ALAM"
+  },
+  {
+    "1101": 1674,
+    "11": 16,
+    "KABUPATEN SIMEULUE": "KOTA LUBUKLINGGAU"
+  },
+  {
+    "1101": 1701,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN BENGKULU SELATAN"
+  },
+  {
+    "1101": 1702,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN REJANG LEBONG"
+  },
+  {
+    "1101": 1703,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN BENGKULU UTARA"
+  },
+  {
+    "1101": 1704,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN KAUR"
+  },
+  {
+    "1101": 1705,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN SELUMA"
+  },
+  {
+    "1101": 1706,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUKOMUKO"
+  },
+  {
+    "1101": 1707,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN LEBONG"
+  },
+  {
+    "1101": 1708,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPAHIANG"
+  },
+  {
+    "1101": 1709,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KABUPATEN BENGKULU TENGAH"
+  },
+  {
+    "1101": 1771,
+    "11": 17,
+    "KABUPATEN SIMEULUE": "KOTA BENGKULU"
+  },
+  {
+    "1101": 1801,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAMPUNG BARAT"
+  },
+  {
+    "1101": 1802,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANGGAMUS"
+  },
+  {
+    "1101": 1803,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAMPUNG SELATAN"
+  },
+  {
+    "1101": 1804,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAMPUNG TIMUR"
+  },
+  {
+    "1101": 1805,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAMPUNG TENGAH"
+  },
+  {
+    "1101": 1806,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAMPUNG UTARA"
+  },
+  {
+    "1101": 1807,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN WAY KANAN"
+  },
+  {
+    "1101": 1808,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN TULANGBAWANG"
+  },
+  {
+    "1101": 1809,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN PESAWARAN"
+  },
+  {
+    "1101": 1810,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN PRINGSEWU"
+  },
+  {
+    "1101": 1811,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN MESUJI"
+  },
+  {
+    "1101": 1812,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN TULANG BAWANG BARAT"
+  },
+  {
+    "1101": 1813,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KABUPATEN PESISIR BARAT"
+  },
+  {
+    "1101": 1871,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KOTA BANDAR LAMPUNG"
+  },
+  {
+    "1101": 1872,
+    "11": 18,
+    "KABUPATEN SIMEULUE": "KOTA METRO"
+  },
+  {
+    "1101": 1901,
+    "11": 19,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGKA"
+  },
+  {
+    "1101": 1902,
+    "11": 19,
+    "KABUPATEN SIMEULUE": "KABUPATEN BELITUNG"
+  },
+  {
+    "1101": 1903,
+    "11": 19,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGKA BARAT"
+  },
+  {
+    "1101": 1904,
+    "11": 19,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGKA TENGAH"
+  },
+  {
+    "1101": 1905,
+    "11": 19,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGKA SELATAN"
+  },
+  {
+    "1101": 1906,
+    "11": 19,
+    "KABUPATEN SIMEULUE": "KABUPATEN BELITUNG TIMUR"
+  },
+  {
+    "1101": 1971,
+    "11": 19,
+    "KABUPATEN SIMEULUE": "KOTA PANGKAL PINANG"
+  },
+  {
+    "1101": 2101,
+    "11": 21,
+    "KABUPATEN SIMEULUE": "KABUPATEN KARIMUN"
+  },
+  {
+    "1101": 2102,
+    "11": 21,
+    "KABUPATEN SIMEULUE": "KABUPATEN BINTAN"
+  },
+  {
+    "1101": 2103,
+    "11": 21,
+    "KABUPATEN SIMEULUE": "KABUPATEN NATUNA"
+  },
+  {
+    "1101": 2104,
+    "11": 21,
+    "KABUPATEN SIMEULUE": "KABUPATEN LINGGA"
+  },
+  {
+    "1101": 2105,
+    "11": 21,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN ANAMBAS"
+  },
+  {
+    "1101": 2171,
+    "11": 21,
+    "KABUPATEN SIMEULUE": "KOTA B A T A M"
+  },
+  {
+    "1101": 2172,
+    "11": 21,
+    "KABUPATEN SIMEULUE": "KOTA TANJUNG PINANG"
+  },
+  {
+    "1101": 3101,
+    "11": 31,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN SERIBU"
+  },
+  {
+    "1101": 3171,
+    "11": 31,
+    "KABUPATEN SIMEULUE": "KOTA JAKARTA SELATAN"
+  },
+  {
+    "1101": 3172,
+    "11": 31,
+    "KABUPATEN SIMEULUE": "KOTA JAKARTA TIMUR"
+  },
+  {
+    "1101": 3173,
+    "11": 31,
+    "KABUPATEN SIMEULUE": "KOTA JAKARTA PUSAT"
+  },
+  {
+    "1101": 3174,
+    "11": 31,
+    "KABUPATEN SIMEULUE": "KOTA JAKARTA BARAT"
+  },
+  {
+    "1101": 3175,
+    "11": 31,
+    "KABUPATEN SIMEULUE": "KOTA JAKARTA UTARA"
+  },
+  {
+    "1101": 3201,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOGOR"
+  },
+  {
+    "1101": 3202,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUKABUMI"
+  },
+  {
+    "1101": 3203,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN CIANJUR"
+  },
+  {
+    "1101": 3204,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANDUNG"
+  },
+  {
+    "1101": 3205,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN GARUT"
+  },
+  {
+    "1101": 3206,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN TASIKMALAYA"
+  },
+  {
+    "1101": 3207,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN CIAMIS"
+  },
+  {
+    "1101": 3208,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUNINGAN"
+  },
+  {
+    "1101": 3209,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN CIREBON"
+  },
+  {
+    "1101": 3210,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAJALENGKA"
+  },
+  {
+    "1101": 3211,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMEDANG"
+  },
+  {
+    "1101": 3212,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN INDRAMAYU"
+  },
+  {
+    "1101": 3213,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUBANG"
+  },
+  {
+    "1101": 3214,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN PURWAKARTA"
+  },
+  {
+    "1101": 3215,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN KARAWANG"
+  },
+  {
+    "1101": 3216,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN BEKASI"
+  },
+  {
+    "1101": 3217,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANDUNG BARAT"
+  },
+  {
+    "1101": 3218,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KABUPATEN PANGANDARAN"
+  },
+  {
+    "1101": 3271,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA BOGOR"
+  },
+  {
+    "1101": 3272,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA SUKABUMI"
+  },
+  {
+    "1101": 3273,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA BANDUNG"
+  },
+  {
+    "1101": 3274,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA CIREBON"
+  },
+  {
+    "1101": 3275,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA BEKASI"
+  },
+  {
+    "1101": 3276,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA DEPOK"
+  },
+  {
+    "1101": 3277,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA CIMAHI"
+  },
+  {
+    "1101": 3278,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA TASIKMALAYA"
+  },
+  {
+    "1101": 3279,
+    "11": 32,
+    "KABUPATEN SIMEULUE": "KOTA BANJAR"
+  },
+  {
+    "1101": 3301,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN CILACAP"
+  },
+  {
+    "1101": 3302,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANYUMAS"
+  },
+  {
+    "1101": 3303,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN PURBALINGGA"
+  },
+  {
+    "1101": 3304,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANJARNEGARA"
+  },
+  {
+    "1101": 3305,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEBUMEN"
+  },
+  {
+    "1101": 3306,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN PURWOREJO"
+  },
+  {
+    "1101": 3307,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN WONOSOBO"
+  },
+  {
+    "1101": 3308,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAGELANG"
+  },
+  {
+    "1101": 3309,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOYOLALI"
+  },
+  {
+    "1101": 3310,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN KLATEN"
+  },
+  {
+    "1101": 3311,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUKOHARJO"
+  },
+  {
+    "1101": 3312,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN WONOGIRI"
+  },
+  {
+    "1101": 3313,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN KARANGANYAR"
+  },
+  {
+    "1101": 3314,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN SRAGEN"
+  },
+  {
+    "1101": 3315,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN GROBOGAN"
+  },
+  {
+    "1101": 3316,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN BLORA"
+  },
+  {
+    "1101": 3317,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN REMBANG"
+  },
+  {
+    "1101": 3318,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN PATI"
+  },
+  {
+    "1101": 3319,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUDUS"
+  },
+  {
+    "1101": 3320,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN JEPARA"
+  },
+  {
+    "1101": 3321,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN DEMAK"
+  },
+  {
+    "1101": 3322,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN SEMARANG"
+  },
+  {
+    "1101": 3323,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN TEMANGGUNG"
+  },
+  {
+    "1101": 3324,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN KENDAL"
+  },
+  {
+    "1101": 3325,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN BATANG"
+  },
+  {
+    "1101": 3326,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN PEKALONGAN"
+  },
+  {
+    "1101": 3327,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN PEMALANG"
+  },
+  {
+    "1101": 3328,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN TEGAL"
+  },
+  {
+    "1101": 3329,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KABUPATEN BREBES"
+  },
+  {
+    "1101": 3371,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KOTA MAGELANG"
+  },
+  {
+    "1101": 3372,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KOTA SURAKARTA"
+  },
+  {
+    "1101": 3373,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KOTA SALATIGA"
+  },
+  {
+    "1101": 3374,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KOTA SEMARANG"
+  },
+  {
+    "1101": 3375,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KOTA PEKALONGAN"
+  },
+  {
+    "1101": 3376,
+    "11": 33,
+    "KABUPATEN SIMEULUE": "KOTA TEGAL"
+  },
+  {
+    "1101": 3401,
+    "11": 34,
+    "KABUPATEN SIMEULUE": "KABUPATEN KULON PROGO"
+  },
+  {
+    "1101": 3402,
+    "11": 34,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANTUL"
+  },
+  {
+    "1101": 3403,
+    "11": 34,
+    "KABUPATEN SIMEULUE": "KABUPATEN GUNUNG KIDUL"
+  },
+  {
+    "1101": 3404,
+    "11": 34,
+    "KABUPATEN SIMEULUE": "KABUPATEN SLEMAN"
+  },
+  {
+    "1101": 3471,
+    "11": 34,
+    "KABUPATEN SIMEULUE": "KOTA YOGYAKARTA"
+  },
+  {
+    "1101": 3501,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN PACITAN"
+  },
+  {
+    "1101": 3502,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN PONOROGO"
+  },
+  {
+    "1101": 3503,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN TRENGGALEK"
+  },
+  {
+    "1101": 3504,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN TULUNGAGUNG"
+  },
+  {
+    "1101": 3505,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN BLITAR"
+  },
+  {
+    "1101": 3506,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEDIRI"
+  },
+  {
+    "1101": 3507,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN MALANG"
+  },
+  {
+    "1101": 3508,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN LUMAJANG"
+  },
+  {
+    "1101": 3509,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN JEMBER"
+  },
+  {
+    "1101": 3510,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANYUWANGI"
+  },
+  {
+    "1101": 3511,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN BONDOWOSO"
+  },
+  {
+    "1101": 3512,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN SITUBONDO"
+  },
+  {
+    "1101": 3513,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN PROBOLINGGO"
+  },
+  {
+    "1101": 3514,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN PASURUAN"
+  },
+  {
+    "1101": 3515,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN SIDOARJO"
+  },
+  {
+    "1101": 3516,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN MOJOKERTO"
+  },
+  {
+    "1101": 3517,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN JOMBANG"
+  },
+  {
+    "1101": 3518,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN NGANJUK"
+  },
+  {
+    "1101": 3519,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN MADIUN"
+  },
+  {
+    "1101": 3520,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAGETAN"
+  },
+  {
+    "1101": 3521,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN NGAWI"
+  },
+  {
+    "1101": 3522,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOJONEGORO"
+  },
+  {
+    "1101": 3523,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN TUBAN"
+  },
+  {
+    "1101": 3524,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAMONGAN"
+  },
+  {
+    "1101": 3525,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN GRESIK"
+  },
+  {
+    "1101": 3526,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGKALAN"
+  },
+  {
+    "1101": 3527,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN SAMPANG"
+  },
+  {
+    "1101": 3528,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN PAMEKASAN"
+  },
+  {
+    "1101": 3529,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMENEP"
+  },
+  {
+    "1101": 3571,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA KEDIRI"
+  },
+  {
+    "1101": 3572,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA BLITAR"
+  },
+  {
+    "1101": 3573,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA MALANG"
+  },
+  {
+    "1101": 3574,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA PROBOLINGGO"
+  },
+  {
+    "1101": 3575,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA PASURUAN"
+  },
+  {
+    "1101": 3576,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA MOJOKERTO"
+  },
+  {
+    "1101": 3577,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA MADIUN"
+  },
+  {
+    "1101": 3578,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA SURABAYA"
+  },
+  {
+    "1101": 3579,
+    "11": 35,
+    "KABUPATEN SIMEULUE": "KOTA BATU"
+  },
+  {
+    "1101": 3601,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KABUPATEN PANDEGLANG"
+  },
+  {
+    "1101": 3602,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KABUPATEN LEBAK"
+  },
+  {
+    "1101": 3603,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANGERANG"
+  },
+  {
+    "1101": 3604,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KABUPATEN SERANG"
+  },
+  {
+    "1101": 3671,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KOTA TANGERANG"
+  },
+  {
+    "1101": 3672,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KOTA CILEGON"
+  },
+  {
+    "1101": 3673,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KOTA SERANG"
+  },
+  {
+    "1101": 3674,
+    "11": 36,
+    "KABUPATEN SIMEULUE": "KOTA TANGERANG SELATAN"
+  },
+  {
+    "1101": 5101,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN JEMBRANA"
+  },
+  {
+    "1101": 5102,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN TABANAN"
+  },
+  {
+    "1101": 5103,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN BADUNG"
+  },
+  {
+    "1101": 5104,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN GIANYAR"
+  },
+  {
+    "1101": 5105,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN KLUNGKUNG"
+  },
+  {
+    "1101": 5106,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGLI"
+  },
+  {
+    "1101": 5107,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN KARANG ASEM"
+  },
+  {
+    "1101": 5108,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KABUPATEN BULELENG"
+  },
+  {
+    "1101": 5171,
+    "11": 51,
+    "KABUPATEN SIMEULUE": "KOTA DENPASAR"
+  },
+  {
+    "1101": 5201,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN LOMBOK BARAT"
+  },
+  {
+    "1101": 5202,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN LOMBOK TENGAH"
+  },
+  {
+    "1101": 5203,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN LOMBOK TIMUR"
+  },
+  {
+    "1101": 5204,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMBAWA"
+  },
+  {
+    "1101": 5205,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN DOMPU"
+  },
+  {
+    "1101": 5206,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN BIMA"
+  },
+  {
+    "1101": 5207,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMBAWA BARAT"
+  },
+  {
+    "1101": 5208,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KABUPATEN LOMBOK UTARA"
+  },
+  {
+    "1101": 5271,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KOTA MATARAM"
+  },
+  {
+    "1101": 5272,
+    "11": 52,
+    "KABUPATEN SIMEULUE": "KOTA BIMA"
+  },
+  {
+    "1101": 5301,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMBA BARAT"
+  },
+  {
+    "1101": 5302,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMBA TIMUR"
+  },
+  {
+    "1101": 5303,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUPANG"
+  },
+  {
+    "1101": 5304,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN TIMOR TENGAH SELATAN"
+  },
+  {
+    "1101": 5305,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN TIMOR TENGAH UTARA"
+  },
+  {
+    "1101": 5306,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN BELU"
+  },
+  {
+    "1101": 5307,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN ALOR"
+  },
+  {
+    "1101": 5308,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN LEMBATA"
+  },
+  {
+    "1101": 5309,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN FLORES TIMUR"
+  },
+  {
+    "1101": 5310,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN SIKKA"
+  },
+  {
+    "1101": 5311,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN ENDE"
+  },
+  {
+    "1101": 5312,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN NGADA"
+  },
+  {
+    "1101": 5313,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN MANGGARAI"
+  },
+  {
+    "1101": 5314,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN ROTE NDAO"
+  },
+  {
+    "1101": 5315,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN MANGGARAI BARAT"
+  },
+  {
+    "1101": 5316,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMBA TENGAH"
+  },
+  {
+    "1101": 5317,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUMBA BARAT DAYA"
+  },
+  {
+    "1101": 5318,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN NAGEKEO"
+  },
+  {
+    "1101": 5319,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN MANGGARAI TIMUR"
+  },
+  {
+    "1101": 5320,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN SABU RAIJUA"
+  },
+  {
+    "1101": 5321,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KABUPATEN MALAKA"
+  },
+  {
+    "1101": 5371,
+    "11": 53,
+    "KABUPATEN SIMEULUE": "KOTA KUPANG"
+  },
+  {
+    "1101": 6101,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN SAMBAS"
+  },
+  {
+    "1101": 6102,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN BENGKAYANG"
+  },
+  {
+    "1101": 6103,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN LANDAK"
+  },
+  {
+    "1101": 6104,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN MEMPAWAH"
+  },
+  {
+    "1101": 6105,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN SANGGAU"
+  },
+  {
+    "1101": 6106,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN KETAPANG"
+  },
+  {
+    "1101": 6107,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN SINTANG"
+  },
+  {
+    "1101": 6108,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN KAPUAS HULU"
+  },
+  {
+    "1101": 6109,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN SEKADAU"
+  },
+  {
+    "1101": 6110,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN MELAWI"
+  },
+  {
+    "1101": 6111,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN KAYONG UTARA"
+  },
+  {
+    "1101": 6112,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUBU RAYA"
+  },
+  {
+    "1101": 6171,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KOTA PONTIANAK"
+  },
+  {
+    "1101": 6172,
+    "11": 61,
+    "KABUPATEN SIMEULUE": "KOTA SINGKAWANG"
+  },
+  {
+    "1101": 6201,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN KOTAWARINGIN BARAT"
+  },
+  {
+    "1101": 6202,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN KOTAWARINGIN TIMUR"
+  },
+  {
+    "1101": 6203,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN KAPUAS"
+  },
+  {
+    "1101": 6204,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN BARITO SELATAN"
+  },
+  {
+    "1101": 6205,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN BARITO UTARA"
+  },
+  {
+    "1101": 6206,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUKAMARA"
+  },
+  {
+    "1101": 6207,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN LAMANDAU"
+  },
+  {
+    "1101": 6208,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN SERUYAN"
+  },
+  {
+    "1101": 6209,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN KATINGAN"
+  },
+  {
+    "1101": 6210,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN PULANG PISAU"
+  },
+  {
+    "1101": 6211,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN GUNUNG MAS"
+  },
+  {
+    "1101": 6212,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN BARITO TIMUR"
+  },
+  {
+    "1101": 6213,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KABUPATEN MURUNG RAYA"
+  },
+  {
+    "1101": 6271,
+    "11": 62,
+    "KABUPATEN SIMEULUE": "KOTA PALANGKA RAYA"
+  },
+  {
+    "1101": 6301,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANAH LAUT"
+  },
+  {
+    "1101": 6302,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN KOTA BARU"
+  },
+  {
+    "1101": 6303,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANJAR"
+  },
+  {
+    "1101": 6304,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN BARITO KUALA"
+  },
+  {
+    "1101": 6305,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN TAPIN"
+  },
+  {
+    "1101": 6306,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN HULU SUNGAI SELATAN"
+  },
+  {
+    "1101": 6307,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN HULU SUNGAI TENGAH"
+  },
+  {
+    "1101": 6308,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN HULU SUNGAI UTARA"
+  },
+  {
+    "1101": 6309,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN TABALONG"
+  },
+  {
+    "1101": 6310,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANAH BUMBU"
+  },
+  {
+    "1101": 6311,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KABUPATEN BALANGAN"
+  },
+  {
+    "1101": 6371,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KOTA BANJARMASIN"
+  },
+  {
+    "1101": 6372,
+    "11": 63,
+    "KABUPATEN SIMEULUE": "KOTA BANJAR BARU"
+  },
+  {
+    "1101": 6401,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KABUPATEN PASER"
+  },
+  {
+    "1101": 6402,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUTAI BARAT"
+  },
+  {
+    "1101": 6403,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUTAI KARTANEGARA"
+  },
+  {
+    "1101": 6404,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KABUPATEN KUTAI TIMUR"
+  },
+  {
+    "1101": 6405,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KABUPATEN BERAU"
+  },
+  {
+    "1101": 6409,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KABUPATEN PENAJAM PASER UTARA"
+  },
+  {
+    "1101": 6411,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAHAKAM HULU"
+  },
+  {
+    "1101": 6471,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KOTA BALIKPAPAN"
+  },
+  {
+    "1101": 6472,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KOTA SAMARINDA"
+  },
+  {
+    "1101": 6474,
+    "11": 64,
+    "KABUPATEN SIMEULUE": "KOTA BONTANG"
+  },
+  {
+    "1101": 6501,
+    "11": 65,
+    "KABUPATEN SIMEULUE": "KABUPATEN MALINAU"
+  },
+  {
+    "1101": 6502,
+    "11": 65,
+    "KABUPATEN SIMEULUE": "KABUPATEN BULUNGAN"
+  },
+  {
+    "1101": 6503,
+    "11": 65,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANA TIDUNG"
+  },
+  {
+    "1101": 6504,
+    "11": 65,
+    "KABUPATEN SIMEULUE": "KABUPATEN NUNUKAN"
+  },
+  {
+    "1101": 6571,
+    "11": 65,
+    "KABUPATEN SIMEULUE": "KOTA TARAKAN"
+  },
+  {
+    "1101": 7101,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOLAANG MONGONDOW"
+  },
+  {
+    "1101": 7102,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN MINAHASA"
+  },
+  {
+    "1101": 7103,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN SANGIHE"
+  },
+  {
+    "1101": 7104,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN TALAUD"
+  },
+  {
+    "1101": 7105,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN MINAHASA SELATAN"
+  },
+  {
+    "1101": 7106,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN MINAHASA UTARA"
+  },
+  {
+    "1101": 7107,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOLAANG MONGONDOW UTARA"
+  },
+  {
+    "1101": 7108,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN SIAU TAGULANDANG BIARO"
+  },
+  {
+    "1101": 7109,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN MINAHASA TENGGARA"
+  },
+  {
+    "1101": 7110,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOLAANG MONGONDOW SELATAN"
+  },
+  {
+    "1101": 7111,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOLAANG MONGONDOW TIMUR"
+  },
+  {
+    "1101": 7171,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KOTA MANADO"
+  },
+  {
+    "1101": 7172,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KOTA BITUNG"
+  },
+  {
+    "1101": 7173,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KOTA TOMOHON"
+  },
+  {
+    "1101": 7174,
+    "11": 71,
+    "KABUPATEN SIMEULUE": "KOTA KOTAMOBAGU"
+  },
+  {
+    "1101": 7201,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGGAI KEPULAUAN"
+  },
+  {
+    "1101": 7202,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGGAI"
+  },
+  {
+    "1101": 7203,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN MOROWALI"
+  },
+  {
+    "1101": 7204,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN POSO"
+  },
+  {
+    "1101": 7205,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN DONGGALA"
+  },
+  {
+    "1101": 7206,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN TOLI-TOLI"
+  },
+  {
+    "1101": 7207,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN BUOL"
+  },
+  {
+    "1101": 7208,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN PARIGI MOUTONG"
+  },
+  {
+    "1101": 7209,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN TOJO UNA-UNA"
+  },
+  {
+    "1101": 7210,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN SIGI"
+  },
+  {
+    "1101": 7211,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANGGAI LAUT"
+  },
+  {
+    "1101": 7212,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KABUPATEN MOROWALI UTARA"
+  },
+  {
+    "1101": 7271,
+    "11": 72,
+    "KABUPATEN SIMEULUE": "KOTA PALU"
+  },
+  {
+    "1101": 7301,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN SELAYAR"
+  },
+  {
+    "1101": 7302,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN BULUKUMBA"
+  },
+  {
+    "1101": 7303,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN BANTAENG"
+  },
+  {
+    "1101": 7304,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN JENEPONTO"
+  },
+  {
+    "1101": 7305,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN TAKALAR"
+  },
+  {
+    "1101": 7306,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN GOWA"
+  },
+  {
+    "1101": 7307,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN SINJAI"
+  },
+  {
+    "1101": 7308,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAROS"
+  },
+  {
+    "1101": 7309,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN PANGKAJENE DAN KEPULAUAN"
+  },
+  {
+    "1101": 7310,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN BARRU"
+  },
+  {
+    "1101": 7311,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN BONE"
+  },
+  {
+    "1101": 7312,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN SOPPENG"
+  },
+  {
+    "1101": 7313,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN WAJO"
+  },
+  {
+    "1101": 7314,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN SIDENRENG RAPPANG"
+  },
+  {
+    "1101": 7315,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN PINRANG"
+  },
+  {
+    "1101": 7316,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN ENREKANG"
+  },
+  {
+    "1101": 7317,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN LUWU"
+  },
+  {
+    "1101": 7318,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN TANA TORAJA"
+  },
+  {
+    "1101": 7322,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN LUWU UTARA"
+  },
+  {
+    "1101": 7325,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN LUWU TIMUR"
+  },
+  {
+    "1101": 7326,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KABUPATEN TORAJA UTARA"
+  },
+  {
+    "1101": 7371,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KOTA MAKASSAR"
+  },
+  {
+    "1101": 7372,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KOTA PAREPARE"
+  },
+  {
+    "1101": 7373,
+    "11": 73,
+    "KABUPATEN SIMEULUE": "KOTA PALOPO"
+  },
+  {
+    "1101": 7401,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN BUTON"
+  },
+  {
+    "1101": 7402,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUNA"
+  },
+  {
+    "1101": 7403,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN KONAWE"
+  },
+  {
+    "1101": 7404,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN KOLAKA"
+  },
+  {
+    "1101": 7405,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN KONAWE SELATAN"
+  },
+  {
+    "1101": 7406,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOMBANA"
+  },
+  {
+    "1101": 7407,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN WAKATOBI"
+  },
+  {
+    "1101": 7408,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN KOLAKA UTARA"
+  },
+  {
+    "1101": 7409,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN BUTON UTARA"
+  },
+  {
+    "1101": 7410,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN KONAWE UTARA"
+  },
+  {
+    "1101": 7411,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN KOLAKA TIMUR"
+  },
+  {
+    "1101": 7412,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN KONAWE KEPULAUAN"
+  },
+  {
+    "1101": 7413,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN MUNA BARAT"
+  },
+  {
+    "1101": 7414,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN BUTON TENGAH"
+  },
+  {
+    "1101": 7415,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KABUPATEN BUTON SELATAN"
+  },
+  {
+    "1101": 7471,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KOTA KENDARI"
+  },
+  {
+    "1101": 7472,
+    "11": 74,
+    "KABUPATEN SIMEULUE": "KOTA BAUBAU"
+  },
+  {
+    "1101": 7501,
+    "11": 75,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOALEMO"
+  },
+  {
+    "1101": 7502,
+    "11": 75,
+    "KABUPATEN SIMEULUE": "KABUPATEN GORONTALO"
+  },
+  {
+    "1101": 7503,
+    "11": 75,
+    "KABUPATEN SIMEULUE": "KABUPATEN POHUWATO"
+  },
+  {
+    "1101": 7504,
+    "11": 75,
+    "KABUPATEN SIMEULUE": "KABUPATEN BONE BOLANGO"
+  },
+  {
+    "1101": 7505,
+    "11": 75,
+    "KABUPATEN SIMEULUE": "KABUPATEN GORONTALO UTARA"
+  },
+  {
+    "1101": 7571,
+    "11": 75,
+    "KABUPATEN SIMEULUE": "KOTA GORONTALO"
+  },
+  {
+    "1101": 7601,
+    "11": 76,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAJENE"
+  },
+  {
+    "1101": 7602,
+    "11": 76,
+    "KABUPATEN SIMEULUE": "KABUPATEN POLEWALI MANDAR"
+  },
+  {
+    "1101": 7603,
+    "11": 76,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAMASA"
+  },
+  {
+    "1101": 7604,
+    "11": 76,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAMUJU"
+  },
+  {
+    "1101": 7605,
+    "11": 76,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAMUJU UTARA"
+  },
+  {
+    "1101": 7606,
+    "11": 76,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAMUJU TENGAH"
+  },
+  {
+    "1101": 8101,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN MALUKU TENGGARA BARAT"
+  },
+  {
+    "1101": 8102,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN MALUKU TENGGARA"
+  },
+  {
+    "1101": 8103,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN MALUKU TENGAH"
+  },
+  {
+    "1101": 8104,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN BURU"
+  },
+  {
+    "1101": 8105,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN ARU"
+  },
+  {
+    "1101": 8106,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN SERAM BAGIAN BARAT"
+  },
+  {
+    "1101": 8107,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN SERAM BAGIAN TIMUR"
+  },
+  {
+    "1101": 8108,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN MALUKU BARAT DAYA"
+  },
+  {
+    "1101": 8109,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KABUPATEN BURU SELATAN"
+  },
+  {
+    "1101": 8171,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KOTA AMBON"
+  },
+  {
+    "1101": 8172,
+    "11": 81,
+    "KABUPATEN SIMEULUE": "KOTA TUAL"
+  },
+  {
+    "1101": 8201,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN HALMAHERA BARAT"
+  },
+  {
+    "1101": 8202,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN HALMAHERA TENGAH"
+  },
+  {
+    "1101": 8203,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN SULA"
+  },
+  {
+    "1101": 8204,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN HALMAHERA SELATAN"
+  },
+  {
+    "1101": 8205,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN HALMAHERA UTARA"
+  },
+  {
+    "1101": 8206,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN HALMAHERA TIMUR"
+  },
+  {
+    "1101": 8207,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN PULAU MOROTAI"
+  },
+  {
+    "1101": 8208,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KABUPATEN PULAU TALIABU"
+  },
+  {
+    "1101": 8271,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KOTA TERNATE"
+  },
+  {
+    "1101": 8272,
+    "11": 82,
+    "KABUPATEN SIMEULUE": "KOTA TIDORE KEPULAUAN"
+  },
+  {
+    "1101": 9101,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN FAKFAK"
+  },
+  {
+    "1101": 9102,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN KAIMANA"
+  },
+  {
+    "1101": 9103,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN TELUK WONDAMA"
+  },
+  {
+    "1101": 9104,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN TELUK BINTUNI"
+  },
+  {
+    "1101": 9105,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN MANOKWARI"
+  },
+  {
+    "1101": 9106,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN SORONG SELATAN"
+  },
+  {
+    "1101": 9107,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN SORONG"
+  },
+  {
+    "1101": 9108,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN RAJA AMPAT"
+  },
+  {
+    "1101": 9109,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN TAMBRAUW"
+  },
+  {
+    "1101": 9110,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAYBRAT"
+  },
+  {
+    "1101": 9111,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN MANOKWARI SELATAN"
+  },
+  {
+    "1101": 9112,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KABUPATEN PEGUNUNGAN ARFAK"
+  },
+  {
+    "1101": 9171,
+    "11": 91,
+    "KABUPATEN SIMEULUE": "KOTA SORONG"
+  },
+  {
+    "1101": 9401,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN MERAUKE"
+  },
+  {
+    "1101": 9402,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN JAYAWIJAYA"
+  },
+  {
+    "1101": 9403,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN JAYAPURA"
+  },
+  {
+    "1101": 9404,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN NABIRE"
+  },
+  {
+    "1101": 9408,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEPULAUAN YAPEN"
+  },
+  {
+    "1101": 9409,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN BIAK NUMFOR"
+  },
+  {
+    "1101": 9410,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN PANIAI"
+  },
+  {
+    "1101": 9411,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN PUNCAK JAYA"
+  },
+  {
+    "1101": 9412,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN MIMIKA"
+  },
+  {
+    "1101": 9413,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN BOVEN DIGOEL"
+  },
+  {
+    "1101": 9414,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAPPI"
+  },
+  {
+    "1101": 9415,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN ASMAT"
+  },
+  {
+    "1101": 9416,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN YAHUKIMO"
+  },
+  {
+    "1101": 9417,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN PEGUNUNGAN BINTANG"
+  },
+  {
+    "1101": 9418,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN TOLIKARA"
+  },
+  {
+    "1101": 9419,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN SARMI"
+  },
+  {
+    "1101": 9420,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN KEEROM"
+  },
+  {
+    "1101": 9426,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN WAROPEN"
+  },
+  {
+    "1101": 9427,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN SUPIORI"
+  },
+  {
+    "1101": 9428,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAMBERAMO RAYA"
+  },
+  {
+    "1101": 9429,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN NDUGA"
+  },
+  {
+    "1101": 9430,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN LANNY JAYA"
+  },
+  {
+    "1101": 9431,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN MAMBERAMO TENGAH"
+  },
+  {
+    "1101": 9432,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN YALIMO"
+  },
+  {
+    "1101": 9433,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN PUNCAK"
+  },
+  {
+    "1101": 9434,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN DOGIYAI"
+  },
+  {
+    "1101": 9435,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN INTAN JAYA"
+  },
+  {
+    "1101": 9436,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KABUPATEN DEIYAI"
+  },
+  {
+    "1101": 9471,
+    "11": 94,
+    "KABUPATEN SIMEULUE": "KOTA JAYAPURA"
+  }
+ ]

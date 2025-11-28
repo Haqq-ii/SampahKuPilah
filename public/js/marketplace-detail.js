@@ -356,6 +356,9 @@ function renderActionButtons(listing) {
       <a href="marketplace-orders.html?role=seller" class="btn btn-secondary" style="width: 100%; margin-top: var(--spacing-3);">
         <i class="fas fa-shopping-cart"></i> Lihat Pesanan
       </a>
+      <button class="btn btn-secondary" id="deleteButton" style="width: 100%; margin-top: var(--spacing-3); background: rgba(244, 67, 54, 0.1); color: #c62828; border-color: rgba(244, 67, 54, 0.3);">
+        <i class="fas fa-trash"></i> Hapus Produk
+      </button>
     `;
   } else if (!isAvailable) {
     html = `
@@ -377,6 +380,76 @@ function renderActionButtons(listing) {
   const buyButton = document.getElementById("buyButton");
   if (buyButton) {
     buyButton.addEventListener("click", handleBuyButton);
+  }
+
+  // Add delete button handler
+  const deleteButton = document.getElementById("deleteButton");
+  if (deleteButton) {
+    deleteButton.addEventListener("click", handleDeleteButton);
+  }
+}
+
+// Handle delete button click
+async function handleDeleteButton() {
+  const listingId = getListingIdFromURL();
+  const user = getStoredUser();
+
+  if (!user || !user.email) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  if (!listingId) {
+    if (window.notification) {
+      window.notification.error("ID produk tidak valid");
+    }
+    return;
+  }
+
+  // Konfirmasi hapus
+  const confirmed = confirm("Apakah Anda yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.");
+  if (!confirmed) {
+    return;
+  }
+
+  const deleteButton = document.getElementById("deleteButton");
+  if (deleteButton) {
+    deleteButton.disabled = true;
+    deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghapus...';
+  }
+
+  try {
+    const response = await fetch(`/api/marketplace/listings/${listingId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-user-email": user.email
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Gagal menghapus produk");
+    }
+
+    if (window.notification) {
+      window.notification.success("Produk berhasil dihapus! Redirecting...");
+    }
+
+    // Redirect ke marketplace
+    setTimeout(() => {
+      window.location.href = "marketplace.html";
+    }, 1500);
+  } catch (err) {
+    console.error("Error deleting listing:", err);
+    if (window.notification) {
+      window.notification.error(err.message || "Gagal menghapus produk. Silakan coba lagi.");
+    }
+    if (deleteButton) {
+      deleteButton.disabled = false;
+      deleteButton.innerHTML = '<i class="fas fa-trash"></i> Hapus Produk';
+    }
   }
 }
 
