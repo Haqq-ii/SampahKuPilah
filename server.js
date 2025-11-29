@@ -2745,6 +2745,12 @@ app.get("/api/config", (req, res) => {
   });
 });
 
+// === PWA Manifest Route (dengan content-type yang benar) ===
+app.get("/manifest.webmanifest", (req, res) => {
+  res.setHeader("Content-Type", "application/manifest+json");
+  res.sendFile(path.join(__dirname, "public", "manifest.webmanifest"));
+});
+
 // === Static Files ===
 app.use(express.static(path.join(__dirname, "public")));
 

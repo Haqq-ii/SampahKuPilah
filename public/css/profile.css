@@ -547,6 +547,7 @@
   }
 }
 
+/* Tablet and below (<= 768px) */
 @media (max-width: 768px) {
   .profile-main {
     padding: var(--spacing-6) 0 var(--spacing-12);
@@ -570,17 +571,112 @@
   
   .history-table {
     font-size: var(--font-size-xs);
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   .history-table th,
   .history-table td {
     padding: var(--spacing-2) var(--spacing-3);
+    min-width: 80px;
   }
   
   .modal-content {
     width: calc(100% - var(--spacing-4));
     margin: var(--spacing-4);
+    padding: var(--spacing-5);
   }
+
+  .profile-actions {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .btn-edit,
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+    min-height: 48px;
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Mobile (<= 480px) */
+@media (max-width: 480px) {
+  .profile-main {
+    padding: var(--spacing-4) 0 var(--spacing-8);
+    width: calc(100% - var(--spacing-3));
+  }
+
+  .profile-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .profile-card,
+  .summary-card,
+  .history-card {
+    padding: var(--spacing-4);
+  }
+  
+  .profile-avatar-large {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-avatar-initials {
+    font-size: var(--font-size-2xl);
+  }
+
+  .profile-name {
+    font-size: var(--font-size-xl);
+  }
+
+  .profile-email {
+    font-size: var(--font-size-sm);
+  }
+  
+  .history-table {
+    font-size: var(--font-size-xs);
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .history-table th,
+  .history-table td {
+    padding: var(--spacing-2);
+    min-width: 70px;
+    font-size: var(--font-size-xs);
+  }
+  
+  .modal-content {
+    width: calc(100% - var(--spacing-3));
+    margin: var(--spacing-3);
+    padding: var(--spacing-4);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 48px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .profile-actions {
+    gap: var(--spacing-2);
+  }
+
+  .btn-edit,
+  .btn-save,
+  .btn-cancel {
+    min-height: 48px;
+    padding: var(--spacing-4);
+  }
+}
   
   .form-actions {
     flex-direction: column;
