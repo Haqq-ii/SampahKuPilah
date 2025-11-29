@@ -140,12 +140,43 @@ async function getOrCreateAuthUserId(email) {
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]", "utf-8");
+// File system operations - disabled on Vercel (read-only filesystem)
+const IS_VERCEL = process.env.VERCEL === "1" || process.env.VERCEL_ENV;
+
+if (!IS_VERCEL) {
+  // Hanya create file/directory jika tidak di Vercel
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]", "utf-8");
+}
 
 const normalizeEmail = (v) => typeof v === "string" ? v.trim().toLowerCase() : "";
-const readUsers = () => JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
-const writeUsers = (u) => fs.writeFileSync(USERS_FILE, JSON.stringify(u, null, 2), "utf-8");
+
+// Read users - hanya jika file exists dan tidak di Vercel
+const readUsers = () => {
+  if (IS_VERCEL || !fs.existsSync(USERS_FILE)) {
+    return [];
+  }
+  try {
+    return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+  } catch (err) {
+    console.warn("Error reading users.json:", err);
+    return [];
+  }
+};
+
+// Write users - disabled on Vercel (gunakan Supabase saja)
+const writeUsers = (u) => {
+  if (IS_VERCEL) {
+    console.warn("⚠️  File system write disabled on Vercel. Use Supabase instead.");
+    return;
+  }
+  if (!fs.existsSync(USERS_FILE)) {
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(USERS_FILE, "[]", "utf-8");
+  }
+  fs.writeFileSync(USERS_FILE, JSON.stringify(u, null, 2), "utf-8");
+};
+
 const findUserByEmail = (users, email) => users.find((u) => normalizeEmail(u.email) === normalizeEmail(email));
 
 // === Supabase Helper Functions ===
@@ -408,14 +439,14 @@ app.post("/register", async (req, res) => {
       });
     }
 
-    // ✨ Cek user di Supabase dulu, fallback ke JSON
+    // ✨ Cek user di Supabase dulu, fallback ke JSON (hanya jika tidak di Vercel)
     let existingUser = null;
     if (supabase) {
       existingUser = await findUserByEmailSupabase(email);
     }
     
-    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility)
-    if (!existingUser) {
+    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility - hanya local)
+    if (!existingUser && !IS_VERCEL) {
       const users = readUsers();
       existingUser = findUserByEmail(users, email);
     }
@@ -443,21 +474,33 @@ app.post("/register", async (req, res) => {
       // Kemudian create user di tabel users
       const created = await createUserSupabase(newUser);
       if (!created) {
-        // Fallback ke JSON jika Supabase error
-        console.warn("Failed to create user in Supabase, falling back to JSON file");
-        const users = readUsers();
-        users.push(newUser);
-        writeUsers(users);
+        // Fallback ke JSON jika Supabase error (hanya jika tidak di Vercel)
+        if (!IS_VERCEL) {
+          console.warn("Failed to create user in Supabase, falling back to JSON file");
+          const users = readUsers();
+          users.push(newUser);
+          writeUsers(users);
+        } else {
+          // Di Vercel, jika Supabase gagal, return error
+          console.error("Failed to create user in Supabase on Vercel");
+          return res.status(500).json({ message: "Gagal membuat akun. Pastikan Supabase dikonfigurasi dengan benar." });
+        }
       } else {
         console.log("✅ User created in Supabase:", email);
         // Jika authUserId berhasil dibuat, kita bisa update users table dengan auth_user_id jika ada kolom tersebut
         // Tapi untuk sekarang, kita akan menggunakan authUserId langsung saat create listing/order
       }
     } else {
-      // Jika Supabase tidak tersedia, pakai JSON file
-      const users = readUsers();
-      users.push(newUser);
-      writeUsers(users);
+      // Jika Supabase tidak tersedia, pakai JSON file (hanya jika tidak di Vercel)
+      if (!IS_VERCEL) {
+        const users = readUsers();
+        users.push(newUser);
+        writeUsers(users);
+      } else {
+        // Di Vercel, Supabase wajib tersedia
+        console.error("Supabase not configured on Vercel");
+        return res.status(500).json({ message: "Database tidak tersedia. Pastikan Supabase dikonfigurasi." });
+      }
     }
 
     rateLimitStore.delete(`register:${clientId}`);
@@ -483,14 +526,14 @@ app.post("/login", async (req, res) => {
     const { email: rawEmail, password } = req.body;
     const email = normalizeEmail(rawEmail);
     
-    // ✨ Cari user di Supabase dulu, fallback ke JSON
+    // ✨ Cari user di Supabase dulu, fallback ke JSON (hanya jika tidak di Vercel)
     let user = null;
     if (supabase) {
       user = await findUserByEmailSupabase(email);
     }
     
-    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility)
-    if (!user) {
+    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility - hanya local)
+    if (!user && !IS_VERCEL) {
       const users = readUsers();
       user = findUserByEmail(users, email);
     }
@@ -519,14 +562,14 @@ app.post("/save-google-user", async (req, res) => {
     const user = req.body;
     const email = normalizeEmail(user.email);
     
-    // ✨ Cek user di Supabase dulu, fallback ke JSON
+    // ✨ Cek user di Supabase dulu, fallback ke JSON (hanya jika tidak di Vercel)
     let existingUser = null;
     if (supabase) {
       existingUser = await findUserByEmailSupabase(email);
     }
     
-    // Jika tidak ada di Supabase, cek di JSON file
-    if (!existingUser) {
+    // Jika tidak ada di Supabase, cek di JSON file (hanya local)
+    if (!existingUser && !IS_VERCEL) {
       const users = readUsers();
       existingUser = findUserByEmail(users, email);
     }
@@ -541,17 +584,28 @@ app.post("/save-google-user", async (req, res) => {
           picture: user.picture || null
         });
         if (!created) {
-          // Fallback ke JSON jika Supabase error
-          const users = readUsers();
-          users.push(user);
-          writeUsers(users);
+          // Fallback ke JSON jika Supabase error (hanya jika tidak di Vercel)
+          if (!IS_VERCEL) {
+            const users = readUsers();
+            users.push(user);
+            writeUsers(users);
+          } else {
+            console.error("Failed to create Google user in Supabase on Vercel");
+            return res.status(500).json({ message: "Gagal menyimpan user. Pastikan Supabase dikonfigurasi dengan benar." });
+          }
         } else {
           console.log("✅ Google user created in Supabase:", email);
         }
       } else {
-        const users = readUsers();
-        users.push(user);
-        writeUsers(users);
+        // Jika Supabase tidak tersedia, pakai JSON file (hanya jika tidak di Vercel)
+        if (!IS_VERCEL) {
+          const users = readUsers();
+          users.push(user);
+          writeUsers(users);
+        } else {
+          console.error("Supabase not configured on Vercel");
+          return res.status(500).json({ message: "Database tidak tersedia. Pastikan Supabase dikonfigurasi." });
+        }
       }
     }
     
@@ -2754,9 +2808,16 @@ app.get("/manifest.webmanifest", (req, res) => {
 // === Static Files ===
 app.use(express.static(path.join(__dirname, "public")));
 
-// === Start Server ===
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log(`📡 ESP32 Host: ${ESP32_HOST}`);
-});
+// === Export for Vercel Serverless ===
+// Vercel akan menggunakan export default untuk serverless functions
+export default app;
+
+// === Start Server (Local Development Only) ===
+// Hanya start server jika tidak di Vercel
+if (!IS_VERCEL) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`📡 ESP32 Host: ${ESP32_HOST}`);
+  });
+}
