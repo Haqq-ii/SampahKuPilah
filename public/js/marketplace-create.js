@@ -32,11 +32,11 @@ function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = reader.result.split(',')[1]; // Remove data:image/...;base64, prefix
+      const base64 = reader.result.split(",")[1]; // Remove data:image/...;base64, prefix
       resolve({
         base64: base64,
         mimeType: file.type,
-        filename: file.name
+        filename: file.name,
       });
     };
     reader.onerror = reject;
@@ -46,25 +46,25 @@ function fileToBase64(file) {
 
 // Setup image preview
 function setupImagePreview(fileInput, previewContainer, previewImg, removeBtn) {
-  fileInput.addEventListener('change', async (e) => {
+  fileInput.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
+    if (!file.type.startsWith("image/")) {
       if (window.notification) {
-        window.notification.error('Harap pilih file gambar yang valid');
+        window.notification.error("Harap pilih file gambar yang valid");
       }
-      fileInput.value = '';
+      fileInput.value = "";
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       if (window.notification) {
-        window.notification.error('Ukuran gambar maksimal 5MB');
+        window.notification.error("Ukuran gambar maksimal 5MB");
       }
-      fileInput.value = '';
+      fileInput.value = "";
       return;
     }
 
@@ -72,24 +72,28 @@ function setupImagePreview(fileInput, previewContainer, previewImg, removeBtn) {
     const reader = new FileReader();
     reader.onload = (e) => {
       previewImg.src = e.target.result;
-      previewImg.classList.remove('hidden');
-      previewContainer.querySelector('.image-preview-placeholder').classList.add('hidden');
-      removeBtn.style.display = 'block';
+      previewImg.classList.remove("hidden");
+      previewContainer
+        .querySelector(".image-preview-placeholder")
+        .classList.add("hidden");
+      removeBtn.style.display = "block";
     };
     reader.readAsDataURL(file);
   });
 
   // Remove image
-  removeBtn.addEventListener('click', () => {
-    fileInput.value = '';
-    previewImg.src = '';
-    previewImg.classList.add('hidden');
-    previewContainer.querySelector('.image-preview-placeholder').classList.remove('hidden');
-    removeBtn.style.display = 'none';
+  removeBtn.addEventListener("click", () => {
+    fileInput.value = "";
+    previewImg.src = "";
+    previewImg.classList.add("hidden");
+    previewContainer
+      .querySelector(".image-preview-placeholder")
+      .classList.remove("hidden");
+    removeBtn.style.display = "none";
   });
 
   // Click container to trigger file input
-  previewContainer.addEventListener('click', () => {
+  previewContainer.addEventListener("click", () => {
     fileInput.click();
   });
 }
@@ -97,43 +101,44 @@ function setupImagePreview(fileInput, previewContainer, previewImg, removeBtn) {
 // Add image input field
 function addImageInput() {
   const imageInputs = document.getElementById("imageInputs");
-  
+
   const wrapper = document.createElement("div");
   wrapper.className = "image-upload-item";
-  
+
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.name = "image";
   fileInput.className = "form-input image-file-input";
   fileInput.accept = "image/*";
   fileInput.style.display = "none";
-  
+
   const previewContainer = document.createElement("div");
   previewContainer.className = "image-preview-container";
-  
+
   const placeholder = document.createElement("div");
   placeholder.className = "image-preview-placeholder";
-  placeholder.innerHTML = '<i class="fas fa-image"></i><span>Klik untuk pilih gambar</span>';
-  
+  placeholder.innerHTML =
+    '<i class="fas fa-image"></i><span>Klik untuk pilih gambar</span>';
+
   const previewImg = document.createElement("img");
   previewImg.className = "image-preview hidden";
   previewImg.alt = "Preview";
-  
+
   previewContainer.appendChild(placeholder);
   previewContainer.appendChild(previewImg);
-  
+
   const removeBtn = document.createElement("button");
   removeBtn.type = "button";
   removeBtn.className = "btn-remove-image";
   removeBtn.innerHTML = '<i class="fas fa-times"></i> Hapus';
   removeBtn.style.display = "none";
-  
+
   wrapper.appendChild(fileInput);
   wrapper.appendChild(previewContainer);
   wrapper.appendChild(removeBtn);
-  
+
   setupImagePreview(fileInput, previewContainer, previewImg, removeBtn);
-  
+
   imageInputs.appendChild(wrapper);
 }
 
@@ -147,24 +152,24 @@ async function uploadImage(file) {
   try {
     // Convert to base64
     const fileData = await fileToBase64(file);
-    
+
     // Check if enhancement is enabled
     const enhanceCheckbox = document.getElementById("enableImageEnhancement");
     const enhance = enhanceCheckbox ? enhanceCheckbox.checked : true; // Default: enabled
-    
+
     // Try upload to Supabase Storage via backend
     const response = await fetch("/api/marketplace/upload-image", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-user-email": user.email
+        "x-user-email": user.email,
       },
       body: JSON.stringify({
         base64: fileData.base64,
         mimeType: fileData.mimeType,
         filename: fileData.filename,
-        enhance: enhance
-      })
+        enhance: enhance,
+      }),
     });
 
     if (!response.ok) {
@@ -172,12 +177,12 @@ async function uploadImage(file) {
     }
 
     const result = await response.json();
-    
+
     // Show notification if enhanced
     if (result.enhanced && window.notification) {
       window.notification.success("Gambar berhasil dioptimasi!");
     }
-    
+
     // Return URL (either Supabase Storage URL or data URL fallback)
     return result.url;
   } catch (err) {
@@ -192,7 +197,7 @@ async function uploadImage(file) {
 async function collectImages() {
   const inputs = document.querySelectorAll(".image-file-input");
   const images = [];
-  
+
   for (const input of inputs) {
     if (input.files && input.files[0]) {
       try {
@@ -202,12 +207,14 @@ async function collectImages() {
       } catch (err) {
         console.error("Error processing image:", err);
         if (window.notification) {
-          window.notification.error(`Gagal memproses gambar: ${input.files[0].name}`);
+          window.notification.error(
+            `Gagal memproses gambar: ${input.files[0].name}`
+          );
         }
       }
     }
   }
-  
+
   return images;
 }
 
@@ -216,14 +223,17 @@ function parseTags(tagsInput) {
   if (!tagsInput) return [];
   return tagsInput
     .split(",")
-    .map(tag => tag.trim())
-    .filter(tag => tag.length > 0);
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0);
 }
 
 // Format tags for display
 function formatTagsForDisplay(tags) {
-  if (!Array.isArray(tags) || tags.length === 0) return '<span class="no-tags">Tidak ada tag</span>';
-  return tags.map(tag => `<span class="tag-preview">${escapeHtml(tag)}</span>`).join('');
+  if (!Array.isArray(tags) || tags.length === 0)
+    return '<span class="no-tags">Tidak ada tag</span>';
+  return tags
+    .map((tag) => `<span class="tag-preview">${escapeHtml(tag)}</span>`)
+    .join("");
 }
 
 // Escape HTML untuk prevent XSS
@@ -245,7 +255,9 @@ async function enhanceWithAI() {
   // Validation
   if (!title || !description || !category) {
     if (window.notification) {
-      window.notification.error("Judul, deskripsi, dan kategori wajib diisi untuk enhancement");
+      window.notification.error(
+        "Judul, deskripsi, dan kategori wajib diisi untuk enhancement"
+      );
     }
     return null;
   }
@@ -254,15 +266,15 @@ async function enhanceWithAI() {
     const response = await fetch("/api/marketplace/enhance-listing", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         title,
         description,
         category,
         tags,
-        price
-      })
+        price,
+      }),
     });
 
     // Check if response is OK and is JSON
@@ -270,25 +282,32 @@ async function enhanceWithAI() {
     if (!contentType || !contentType.includes("application/json")) {
       const text = await response.text();
       console.error("Non-JSON response:", text.substring(0, 200));
-      
+
       if (response.status === 404) {
-        throw new Error("Endpoint tidak ditemukan. Pastikan server sudah di-restart setelah update terbaru.");
+        throw new Error(
+          "Endpoint tidak ditemukan. Pastikan server sudah di-restart setelah update terbaru."
+        );
       }
-      
-      throw new Error(`Server mengembalikan response yang tidak valid (${response.status}). Pastikan server sudah di-restart.`);
+
+      throw new Error(
+        `Server mengembalikan response yang tidak valid (${response.status}). Pastikan server sudah di-restart.`
+      );
     }
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || `Gagal melakukan enhancement (${response.status})`);
+      throw new Error(
+        data.message || `Gagal melakukan enhancement (${response.status})`
+      );
     }
 
     return data;
   } catch (err) {
     console.error("Error enhancing listing:", err);
     if (window.notification) {
-      const errorMsg = err.message || "Gagal melakukan enhancement. Silakan coba lagi.";
+      const errorMsg =
+        err.message || "Gagal melakukan enhancement. Silakan coba lagi.";
       window.notification.error(errorMsg);
     }
     return null;
@@ -303,13 +322,19 @@ function showEnhancementPreview(enhancementData) {
 
   // Populate original values
   document.getElementById("originalTitle").textContent = original.title || "-";
-  document.getElementById("originalDescription").textContent = original.description || "-";
-  document.getElementById("originalTags").innerHTML = formatTagsForDisplay(original.tags || []);
+  document.getElementById("originalDescription").textContent =
+    original.description || "-";
+  document.getElementById("originalTags").innerHTML = formatTagsForDisplay(
+    original.tags || []
+  );
 
   // Populate enhanced values
   document.getElementById("enhancedTitle").textContent = enhanced.title || "-";
-  document.getElementById("enhancedDescription").textContent = enhanced.description || "-";
-  document.getElementById("enhancedTags").innerHTML = formatTagsForDisplay(enhanced.tags || []);
+  document.getElementById("enhancedDescription").textContent =
+    enhanced.description || "-";
+  document.getElementById("enhancedTags").innerHTML = formatTagsForDisplay(
+    enhanced.tags || []
+  );
 
   // Store enhancement data for later use
   modal.dataset.enhancedData = JSON.stringify(enhanced);
@@ -341,11 +366,24 @@ function closeEnhancementModal() {
 async function handleSubmit(e) {
   e.preventDefault();
 
+  // Pastikan user sudah login
   if (!checkAuth()) {
     return;
   }
 
   const user = getStoredUser();
+
+  // ✅ Tambahan: pastikan user.id & user.email ada
+  if (!user || !user.id || !user.email) {
+    console.error("User object invalid:", user);
+    if (window.notification) {
+      window.notification.error(
+        "User tidak terautentikasi. Silakan login ulang."
+      );
+    }
+    return;
+  }
+
   const submitBtn = document.getElementById("submitBtn");
   const originalText = submitBtn.innerHTML;
 
@@ -353,42 +391,50 @@ async function handleSubmit(e) {
   submitBtn.disabled = true;
   submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
-  // Collect images first (async)
-  const images = await collectImages();
-  
-  // Collect form data
-  const formData = {
-    title: document.getElementById("title").value.trim(),
-    description: document.getElementById("description").value.trim(),
-    category: document.getElementById("category").value,
-    tags: parseTags(document.getElementById("tags").value),
-    price: parseFloat(document.getElementById("price").value) || 0,
-    images: images,
-    location_province: document.getElementById("location_province").value || null,
-    location_city: document.getElementById("location_city").value || null,
-    location_district: document.getElementById("location_district").value || null,
-    location_village: document.getElementById("location_village").value || null,
-    use_ai: false // Deprecated, keeping for backward compatibility
-  };
-
-  // Validation
-  if (!formData.title || !formData.description || !formData.category) {
-    if (window.notification) {
-      window.notification.error("Judul, deskripsi, dan kategori wajib diisi");
-    }
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = originalText;
-    return;
-  }
-
   try {
+    // Collect images first (async)
+    const images = await collectImages();
+
+    // Collect form data
+    const formData = {
+      title: document.getElementById("title").value.trim(),
+      description: document.getElementById("description").value.trim(),
+      category: document.getElementById("category").value,
+      tags: parseTags(document.getElementById("tags").value),
+      price: parseFloat(document.getElementById("price").value) || 0,
+      images: images,
+      location_province:
+        document.getElementById("location_province").value || null,
+      location_city: document.getElementById("location_city").value || null,
+      location_district:
+        document.getElementById("location_district").value || null,
+      location_village:
+        document.getElementById("location_village").value || null,
+      use_ai: false, // Deprecated, keeping for backward compatibility
+
+      // ✅ Tambahan (opsional): kirim juga seller_id dalam body
+      seller_id: user.id,
+    };
+
+    // Validation
+    if (!formData.title || !formData.description || !formData.category) {
+      if (window.notification) {
+        window.notification.error("Judul, deskripsi, dan kategori wajib diisi");
+      }
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      return;
+    }
+
+    // ✅ Kirim juga x-user-id (UUID dari auth.users)
     const response = await fetch("/api/marketplace/listings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-user-email": user.email
+        "x-user-id": user.id, // 🔹 penting untuk FK ke auth.users(id)
+        "x-user-email": user.email, // masih boleh dipakai untuk log/cek
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     });
 
     const data = await response.json();
@@ -398,7 +444,9 @@ async function handleSubmit(e) {
     }
 
     if (window.notification) {
-      window.notification.success("Barang berhasil dipublikasikan! Redirecting...");
+      window.notification.success(
+        "Barang berhasil dipublikasikan! Redirecting..."
+      );
     }
 
     // Redirect to detail page
@@ -408,8 +456,12 @@ async function handleSubmit(e) {
   } catch (err) {
     console.error("Error creating listing:", err);
     if (window.notification) {
-      window.notification.error(err.message || "Gagal membuat listing. Silakan coba lagi.");
+      window.notification.error(
+        err.message || "Gagal membuat listing. Silakan coba lagi."
+      );
     }
+  } finally {
+    // Selalu restore tombol
     submitBtn.disabled = false;
     submitBtn.innerHTML = originalText;
   }
@@ -424,7 +476,7 @@ function initializeLocationDropdowns() {
 
   // Populate provinces
   const provinces = getProvinces();
-  provinces.forEach(province => {
+  provinces.forEach((province) => {
     const option = document.createElement("option");
     option.value = province;
     option.textContent = province;
@@ -434,7 +486,7 @@ function initializeLocationDropdowns() {
   // Province change handler
   provinceSelect.addEventListener("change", () => {
     const province = provinceSelect.value;
-    
+
     // Reset and disable dependent selects
     citySelect.innerHTML = '<option value="">Pilih Kota/Kabupaten</option>';
     citySelect.disabled = !province;
@@ -445,7 +497,7 @@ function initializeLocationDropdowns() {
 
     if (province) {
       const cities = getCities(province);
-      cities.forEach(city => {
+      cities.forEach((city) => {
         const option = document.createElement("option");
         option.value = city;
         option.textContent = city;
@@ -459,7 +511,7 @@ function initializeLocationDropdowns() {
   citySelect.addEventListener("change", () => {
     const province = provinceSelect.value;
     const city = citySelect.value;
-    
+
     // Reset and disable dependent selects
     districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
     districtSelect.disabled = !city;
@@ -468,7 +520,7 @@ function initializeLocationDropdowns() {
 
     if (province && city) {
       const districts = getDistricts(province, city);
-      districts.forEach(district => {
+      districts.forEach((district) => {
         const option = document.createElement("option");
         option.value = district;
         option.textContent = district;
@@ -483,14 +535,14 @@ function initializeLocationDropdowns() {
     const province = provinceSelect.value;
     const city = citySelect.value;
     const district = districtSelect.value;
-    
+
     // Reset village select
     villageSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
     villageSelect.disabled = !district;
 
     if (province && city && district) {
       const villages = getVillages(province, city, district);
-      villages.forEach(village => {
+      villages.forEach((village) => {
         const option = document.createElement("option");
         option.value = village;
         option.textContent = village;
@@ -513,11 +565,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Setup first image input
   const firstImageInput = document.querySelector(".image-file-input");
-  const firstPreviewContainer = document.querySelector(".image-preview-container");
+  const firstPreviewContainer = document.querySelector(
+    ".image-preview-container"
+  );
   const firstPreviewImg = document.querySelector(".image-preview");
   const firstRemoveBtn = document.querySelector(".btn-remove-image");
-  if (firstImageInput && firstPreviewContainer && firstPreviewImg && firstRemoveBtn) {
-    setupImagePreview(firstImageInput, firstPreviewContainer, firstPreviewImg, firstRemoveBtn);
+  if (
+    firstImageInput &&
+    firstPreviewContainer &&
+    firstPreviewImg &&
+    firstRemoveBtn
+  ) {
+    setupImagePreview(
+      firstImageInput,
+      firstPreviewContainer,
+      firstPreviewImg,
+      firstRemoveBtn
+    );
   }
 
   // Form submission
@@ -538,14 +602,15 @@ document.addEventListener("DOMContentLoaded", () => {
     enhanceBtn.addEventListener("click", async () => {
       const originalText = enhanceBtn.innerHTML;
       enhanceBtn.disabled = true;
-      enhanceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+      enhanceBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
       if (window.notification) {
         window.notification.info("AI sedang memproses enhancement...");
       }
 
       const result = await enhanceWithAI();
-      
+
       enhanceBtn.disabled = false;
       enhanceBtn.innerHTML = originalText;
 
@@ -567,7 +632,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Accept individual items
   const acceptItemButtons = document.querySelectorAll(".btn-accept-item");
-  acceptItemButtons.forEach(btn => {
+  acceptItemButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const item = btn.dataset.item;
       const modal = document.getElementById("enhancementModal");
@@ -623,10 +688,11 @@ document.addEventListener("DOMContentLoaded", () => {
     regenBtn.addEventListener("click", async () => {
       const originalText = regenBtn.innerHTML;
       regenBtn.disabled = true;
-      regenBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generate Ulang...';
+      regenBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Generate Ulang...';
 
       const result = await enhanceWithAI();
-      
+
       regenBtn.disabled = false;
       regenBtn.innerHTML = originalText;
 
@@ -648,4 +714,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
-
