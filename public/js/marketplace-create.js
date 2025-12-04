@@ -373,8 +373,8 @@ async function handleSubmit(e) {
 
   const user = getStoredUser();
 
-  // ✅ Tambahan: pastikan user.id & user.email ada
-  if (!user || !user.id || !user.email) {
+  // ✅ Cek minimal: harus ada email
+  if (!user || !user.email) {
     console.error("User object invalid:", user);
     if (window.notification) {
       window.notification.error(
@@ -383,6 +383,9 @@ async function handleSubmit(e) {
     }
     return;
   }
+
+  // ✅ Fallback: kalau tidak ada user.id, pakai email sebagai pengganti
+  const userId = user.id || user.email;
 
   const submitBtn = document.getElementById("submitBtn");
   const originalText = submitBtn.innerHTML;
@@ -412,8 +415,8 @@ async function handleSubmit(e) {
         document.getElementById("location_village").value || null,
       use_ai: false, // Deprecated, keeping for backward compatibility
 
-      // ✅ Tambahan (opsional): kirim juga seller_id dalam body
-      seller_id: user.id,
+      // ✅ Kirim seller_id (gunakan userId)
+      seller_id: userId,
     };
 
     // Validation
@@ -426,13 +429,13 @@ async function handleSubmit(e) {
       return;
     }
 
-    // ✅ Kirim juga x-user-id (UUID dari auth.users)
+    // ✅ Kirim juga x-user-id & x-user-email
     const response = await fetch("/api/marketplace/listings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-user-id": user.id, // 🔹 penting untuk FK ke auth.users(id)
-        "x-user-email": user.email, // masih boleh dipakai untuk log/cek
+        "x-user-id": userId, // sekarang aman (id atau email)
+        "x-user-email": user.email,
       },
       body: JSON.stringify(formData),
     });
