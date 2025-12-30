@@ -1,0 +1,11 @@
+{
+  "name": "sampahkupilah",
+  "framework": "nextjs",
+  "language": "javascript",
+  "buildCommand": "npm run build",
+  "startCommand": "next start",
+  "domain": "sampahkupilah",
+  "email": "mydev.accout@gmail.com",
+  "secretKey": "imuii_b98bcfa9d27c2602ae718b014fa239392a5c3f07ad6562e0bea309931babaa3f",
+  "repoUrl": "https://github.com/Lab-Sisjarkom-IMUII/sampahkupilah-746bcbf6.git"
+}
