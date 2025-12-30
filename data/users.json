@@ -15,5 +15,10 @@
     "iat": 1764181756,
     "exp": 1764185356,
     "jti": "5e4aaaeba8b397de8352dea14da8096da028f45f"
+  },
+  {
+    "email": "nikoalansyah24@gmail.com",
+    "passwordHash": "$2b$10$xli5oOauJ7XvXeeyz07pj.NExz/8BKPzMLs6vuj.oMgGXm/y6aGEO",
+    "provider": "local"
   }
 ]

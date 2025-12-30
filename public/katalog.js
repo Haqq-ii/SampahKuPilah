@@ -134,8 +134,8 @@
     const payload = await response.json();
     return Array.isArray(payload.items)
       ? payload.items
-          .filter((item) => item?.id?.videoId)
-          .slice(0, MAX_YOUTUBE_RESULTS)
+        .filter((item) => item?.id?.videoId)
+        .slice(0, MAX_YOUTUBE_RESULTS)
       : [];
   }
 
@@ -219,13 +219,35 @@
   async function loadVideos() {
     if (!videosGrid || !videosFallback) return;
 
-    const { query } = buildDetectionKeywords();
-    const initialQuery = query || DEFAULT_SEARCH_QUERY;
+    console.log("🔍 loadVideos() called");
+    console.log("🔍 Current URL:", window.location.href);
+    console.log("🔍 Search params:", window.location.search);
 
-    if (videoSearchInput && !videoSearchInput.value) {
+    // Check if there's a search parameter in URL (priority)
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search') || urlParams.get('q');
+
+    console.log("🔍 URL Params object:", urlParams.toString());
+    console.log("🔍 Search param value:", searchParam);
+
+    let initialQuery;
+    if (searchParam && searchParam.trim()) {
+      // Use URL parameter as ABSOLUTE priority
+      initialQuery = searchParam.trim();
+      console.log("🎬 Using URL search parameter:", initialQuery);
+    } else {
+      // Fallback to detection history
+      const { query } = buildDetectionKeywords();
+      initialQuery = query || DEFAULT_SEARCH_QUERY;
+      console.log("📚 Using detection history:", initialQuery);
+    }
+
+    // Always update search input to show what we're searching for
+    if (videoSearchInput) {
       videoSearchInput.value = initialQuery;
     }
 
+    console.log("🔍 Final search query:", initialQuery);
     await performVideoSearch(initialQuery, { alertOnEmpty: false });
   }
 

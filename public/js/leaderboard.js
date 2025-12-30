@@ -23,6 +23,9 @@ async function fetchLeaderboard(type = "all") {
 function renderRankingItem(item, index) {
   const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "";
   const rankClass = index < 3 ? "top-rank" : "";
+  
+  // Gunakan user_name jika ada, fallback ke bagian email sebelum @
+  const displayName = item.user_name || item.user_email?.split("@")[0] || "User";
 
   return `
     <div class="ranking-item ${rankClass}">
@@ -30,6 +33,7 @@ function renderRankingItem(item, index) {
         ${medal || (index + 1)}
       </div>
       <div class="ranking-info">
+        <div class="ranking-name">${escapeHtml(displayName)}</div>
         <div class="ranking-email">${escapeHtml(item.user_email)}</div>
         <div class="ranking-stats">
           ${item.total_items_sold !== undefined 

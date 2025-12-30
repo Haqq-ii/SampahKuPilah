@@ -1,15 +1,17 @@
-// server.js - SampahKuPilah Backend Server
+// server.js - SampahKuPilah Backend Server (Refactored)
 import express from "express";
-import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import OpenAI from "openai";
-import bcrypt from "bcrypt";
 import { createClient } from "@supabase/supabase-js";
 import sharp from "sharp";
+
+// Import routes
+import authRoutes from "./routes/auth.js";
+import iotRoutes from "./routes/iot.js";
 
 dotenv.config();
 
@@ -21,6 +23,10 @@ app.use(cors());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Use routes (mounted after middleware setup)
+app.use("/", authRoutes);
+app.use("/api/iot", iotRoutes);
+
 // Validasi dan setup OpenAI API Key
 const apiKey = process.env.OPENAI_API_KEY?.trim();
 
@@ -29,11 +35,11 @@ if (!apiKey) {
   console.error("   Pastikan file .env ada dan berisi OPENAI_API_KEY");
   console.warn("⚠️  Fitur deteksi sampah tidak akan berfungsi!");
 } else {
-  const isPlaceholder = apiKey.toLowerCase().includes("your_") || 
-                        apiKey.toLowerCase().includes("example") ||
-                        apiKey.toLowerCase().includes("placeholder") ||
-                        apiKey.length < 20;
-  
+  const isPlaceholder = apiKey.toLowerCase().includes("your_") ||
+    apiKey.toLowerCase().includes("example") ||
+    apiKey.toLowerCase().includes("placeholder") ||
+    apiKey.length < 20;
+
   if (isPlaceholder) {
     console.error("❌ ERROR: OPENAI_API_KEY masih placeholder!");
     console.error("   Edit file .env dengan API key yang valid");
@@ -41,7 +47,7 @@ if (!apiKey) {
   } else if (!apiKey.startsWith("sk-")) {
     console.warn("⚠️  OPENAI_API_KEY format mungkin tidak valid (seharusnya dimulai dengan 'sk-')");
   }
-  
+
   process.env.OPENAI_API_KEY = apiKey;
   console.log("🔑 OPENAI_API_KEY tersedia:", apiKey.length, "karakter");
 }
@@ -67,14 +73,18 @@ if (supabaseUrl && supabaseServiceKey) {
   console.warn("   Add Supabase credentials to .env file to enable database features");
 }
 
+// === Environment Constants ===
+const IS_VERCEL = process.env.VERCEL === "1" || process.env.VERCEL_ENV;
+const ESP32_HOST = process.env.ESP32_HOST || "http://192.168.1.20";
+
 // Helper function untuk mendapatkan atau membuat auth.users.id dari email
 // Menggunakan Supabase Admin API dengan service_role key
 async function getOrCreateAuthUserId(email) {
   if (!supabase || !supabaseUrl || !supabaseServiceKey) return null;
-  
+
   try {
     const normalizedEmail = normalizeEmail(email);
-    
+
     // Coba dapatkan user dari auth.users menggunakan Admin API
     // Supabase Admin API: GET /auth/v1/admin/users dengan filter email
     const listResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
@@ -85,7 +95,7 @@ async function getOrCreateAuthUserId(email) {
         'Content-Type': 'application/json'
       }
     });
-    
+
     if (listResponse.ok) {
       const listData = await listResponse.json();
       if (listData && listData.users && Array.isArray(listData.users)) {
@@ -99,7 +109,7 @@ async function getOrCreateAuthUserId(email) {
       const errorText = await listResponse.text();
       console.warn("Error listing auth users:", errorText.substring(0, 200));
     }
-    
+
     // Jika tidak ditemukan, create user di auth.users
     // Menggunakan Supabase Admin API: POST /auth/v1/admin/users
     const createResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
@@ -115,7 +125,7 @@ async function getOrCreateAuthUserId(email) {
         user_metadata: {}
       })
     });
-    
+
     if (createResponse.ok) {
       const createData = await createResponse.json();
       if (createData && createData.user && createData.user.id) {
@@ -126,7 +136,7 @@ async function getOrCreateAuthUserId(email) {
       const errorText = await createResponse.text();
       console.error("Error creating auth user:", errorText.substring(0, 200));
     }
-    
+
     // Jika gagal, return null dan akan menggunakan users.id sebagai fallback
     console.warn(`⚠️  Could not get/create auth user for: ${normalizedEmail}`);
     return null;
@@ -136,110 +146,13 @@ async function getOrCreateAuthUserId(email) {
   }
 }
 
-// === Helper Functions ===
-const DATA_DIR = path.join(__dirname, "data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-
-// File system operations - disabled on Vercel (read-only filesystem)
-const IS_VERCEL = process.env.VERCEL === "1" || process.env.VERCEL_ENV;
-
-if (!IS_VERCEL) {
-  // Hanya create file/directory jika tidak di Vercel
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]", "utf-8");
-}
-
+// === Helper Functions for Detection ===
 const normalizeEmail = (v) => typeof v === "string" ? v.trim().toLowerCase() : "";
-
-// Read users - hanya jika file exists dan tidak di Vercel
-const readUsers = () => {
-  if (IS_VERCEL || !fs.existsSync(USERS_FILE)) {
-    return [];
-  }
-  try {
-    return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
-  } catch (err) {
-    console.warn("Error reading users.json:", err);
-    return [];
-  }
-};
-
-// Write users - disabled on Vercel (gunakan Supabase saja)
-const writeUsers = (u) => {
-  if (IS_VERCEL) {
-    console.warn("⚠️  File system write disabled on Vercel. Use Supabase instead.");
-    return;
-  }
-  if (!fs.existsSync(USERS_FILE)) {
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(USERS_FILE, "[]", "utf-8");
-  }
-  fs.writeFileSync(USERS_FILE, JSON.stringify(u, null, 2), "utf-8");
-};
-
-const findUserByEmail = (users, email) => users.find((u) => normalizeEmail(u.email) === normalizeEmail(email));
-
-// === Supabase Helper Functions ===
-// Fungsi untuk mencari user by email di Supabase
-async function findUserByEmailSupabase(email) {
-  if (!supabase) return null;
-  
-  try {
-    const normalizedEmail = normalizeEmail(email);
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", normalizedEmail)
-      .single();
-    
-    if (error) {
-      // PGRST116 = not found (ini normal, bukan error)
-      if (error.code !== "PGRST116") {
-        console.error("Error finding user in Supabase:", error);
-      }
-      return null;
-    }
-    
-    return data;
-  } catch (err) {
-    console.error("Exception finding user in Supabase:", err);
-    return null;
-  }
-}
-
-// Fungsi untuk membuat user baru di Supabase
-async function createUserSupabase(userData) {
-  if (!supabase) return null;
-  
-  try {
-    const { data, error } = await supabase
-      .from("users")
-      .insert({
-        email: normalizeEmail(userData.email),
-        password_hash: userData.passwordHash || null,
-        provider: userData.provider || "local",
-        name: userData.name || null,
-        picture: userData.picture || null
-      })
-      .select()
-      .single();
-    
-    if (error) {
-      console.error("Error creating user in Supabase:", error);
-      return null;
-    }
-    
-    return data;
-  } catch (err) {
-    console.error("Exception creating user in Supabase:", err);
-    return null;
-  }
-}
 
 // Fungsi untuk menyimpan hasil deteksi ke Supabase
 async function saveDetectionSupabase(userEmail, detectionData) {
   if (!supabase) return null;
-  
+
   try {
     const { data, error } = await supabase
       .from("detections")
@@ -253,12 +166,12 @@ async function saveDetectionSupabase(userEmail, detectionData) {
       })
       .select()
       .single();
-    
+
     if (error) {
       console.error("Error saving detection to Supabase:", error);
       return null;
     }
-    
+
     console.log("✅ Detection saved to Supabase:", data.id);
     return data;
   } catch (err) {
@@ -270,7 +183,7 @@ async function saveDetectionSupabase(userEmail, detectionData) {
 // Fungsi untuk mengambil riwayat deteksi dari Supabase
 async function getDetectionsSupabase(userEmail, limit = 50) {
   if (!supabase) return [];
-  
+
   try {
     const { data, error } = await supabase
       .from("detections")
@@ -278,12 +191,12 @@ async function getDetectionsSupabase(userEmail, limit = 50) {
       .eq("user_email", normalizeEmail(userEmail))
       .order("created_at", { ascending: false })
       .limit(limit);
-    
+
     if (error) {
       console.error("Error fetching detections from Supabase:", error);
       return [];
     }
-    
+
     return data || [];
   } catch (err) {
     console.error("Exception fetching detections from Supabase:", err);
@@ -291,330 +204,8 @@ async function getDetectionsSupabase(userEmail, limit = 50) {
   }
 }
 
-// === Rate Limiting ===
-const rateLimitStore = new Map();
-
-const checkRateLimit = (identifier, maxAttempts = 5, windowMs = 15 * 60 * 1000) => {
-  const now = Date.now();
-  const key = identifier;
-
-  if (!rateLimitStore.has(key)) {
-    rateLimitStore.set(key, { count: 1, resetAt: now + windowMs });
-    return { allowed: true, remaining: maxAttempts - 1 };
-  }
-
-  const record = rateLimitStore.get(key);
-
-  // Reset if window expired
-  if (now > record.resetAt) {
-    record.count = 1;
-    record.resetAt = now + windowMs;
-    return { allowed: true, remaining: maxAttempts - 1 };
-  }
-
-  // Check if exceeded
-  if (record.count >= maxAttempts) {
-    const retryAfter = Math.ceil((record.resetAt - now) / 1000);
-    return {
-      allowed: false,
-      remaining: 0,
-      retryAfter,
-    };
-  }
-
-  record.count++;
-  return {
-    allowed: true,
-    remaining: maxAttempts - record.count,
-  };
-};
-
-const getClientIdentifier = (req) => (
-  req.headers["x-forwarded-for"]?.split(",")[0] ||
-  req.headers["x-real-ip"] ||
-  req.connection?.remoteAddress ||
-  req.socket?.remoteAddress ||
-  "unknown"
-);
-
-// Cleanup rate limit records setiap 30 menit
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, record] of rateLimitStore.entries()) {
-    if (now > record.resetAt) rateLimitStore.delete(key);
-  }
-}, 30 * 60 * 1000);
-
-// === Validation Functions ===
-const validateEmail = (email) => {
-  if (!email || typeof email !== "string") {
-    return { valid: false, error: "Email wajib diisi" };
-  }
-
-  const trimmed = email.trim().toLowerCase();
-
-  // Basic format check
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(trimmed)) {
-    return { valid: false, error: "Format email tidak valid" };
-  }
-
-  // Check length
-  if (trimmed.length > 254) {
-    return { valid: false, error: "Email terlalu panjang" };
-  }
-
-  // Check local part
-  const [localPart] = trimmed.split("@");
-  if (localPart.length > 64) {
-    return { valid: false, error: "Email tidak valid" };
-  }
-
-  // Check for invalid patterns
-  if (trimmed.startsWith(".") || trimmed.endsWith(".") || trimmed.includes("..")) {
-    return { valid: false, error: "Format email tidak valid" };
-  }
-
-  return { valid: true, error: null };
-};
-
-const validatePassword = (password) => {
-  if (!password || typeof password !== "string") {
-    return { valid: false, errors: ["Password wajib diisi"] };
-  }
-
-  const errors = [];
-
-  // Minimal 8 karakter
-  if (password.length < 8) {
-    errors.push("Password minimal 8 karakter");
-  }
-
-  // Harus ada huruf besar
-  if (!/[A-Z]/.test(password)) {
-    errors.push("Password harus mengandung huruf besar (A-Z)");
-  }
-
-  // Harus ada huruf kecil
-  if (!/[a-z]/.test(password)) {
-    errors.push("Password harus mengandung huruf kecil (a-z)");
-  }
-
-  // Harus ada angka
-  if (!/[0-9]/.test(password)) {
-    errors.push("Password harus mengandung angka (0-9)");
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
-};
-
-// === Authentication Routes ===
-app.post("/register", async (req, res) => {
-  try {
-    const clientId = getClientIdentifier(req);
-    const rateLimit = checkRateLimit(`register:${clientId}`, 5, 15 * 60 * 1000);
-
-    if (!rateLimit.allowed) {
-      return res.status(429).json({
-        message: `Terlalu banyak percobaan. Coba lagi dalam ${Math.ceil(rateLimit.retryAfter / 60)} menit.`,
-        retryAfter: rateLimit.retryAfter,
-      });
-    }
-
-    const { email: rawEmail, password } = req.body;
-
-    const emailValidation = validateEmail(rawEmail);
-    if (!emailValidation.valid) {
-      return res.status(400).json({ message: emailValidation.error });
-    }
-
-    const email = normalizeEmail(rawEmail);
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.valid) {
-      return res.status(400).json({
-        message: passwordValidation.errors.join(", "),
-      });
-    }
-
-    // ✨ Cek user di Supabase dulu, fallback ke JSON (hanya jika tidak di Vercel)
-    let existingUser = null;
-    if (supabase) {
-      existingUser = await findUserByEmailSupabase(email);
-    }
-    
-    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility - hanya local)
-    if (!existingUser && !IS_VERCEL) {
-      const users = readUsers();
-      existingUser = findUserByEmail(users, email);
-    }
-
-    if (existingUser) {
-      return res.status(409).json({ message: "Email sudah terdaftar" });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-    const newUser = { email, passwordHash, provider: "local" };
-
-    // ✨ Simpan ke Supabase jika tersedia, fallback ke JSON
-    if (supabase) {
-      // Pertama, create user di auth.users menggunakan Admin API
-      let authUserId = null;
-      try {
-        authUserId = await getOrCreateAuthUserId(email);
-        if (authUserId) {
-          console.log(`✅ Auth user created/found for: ${email}, id: ${authUserId}`);
-        }
-      } catch (authErr) {
-        console.warn("Failed to create auth user, will continue with users table:", authErr.message);
-      }
-      
-      // Kemudian create user di tabel users
-      const created = await createUserSupabase(newUser);
-      if (!created) {
-        // Fallback ke JSON jika Supabase error (hanya jika tidak di Vercel)
-        if (!IS_VERCEL) {
-          console.warn("Failed to create user in Supabase, falling back to JSON file");
-          const users = readUsers();
-          users.push(newUser);
-          writeUsers(users);
-        } else {
-          // Di Vercel, jika Supabase gagal, return error
-          console.error("Failed to create user in Supabase on Vercel");
-          return res.status(500).json({ message: "Gagal membuat akun. Pastikan Supabase dikonfigurasi dengan benar." });
-        }
-      } else {
-        console.log("✅ User created in Supabase:", email);
-        // Jika authUserId berhasil dibuat, kita bisa update users table dengan auth_user_id jika ada kolom tersebut
-        // Tapi untuk sekarang, kita akan menggunakan authUserId langsung saat create listing/order
-      }
-    } else {
-      // Jika Supabase tidak tersedia, pakai JSON file (hanya jika tidak di Vercel)
-      if (!IS_VERCEL) {
-        const users = readUsers();
-        users.push(newUser);
-        writeUsers(users);
-      } else {
-        // Di Vercel, Supabase wajib tersedia
-        console.error("Supabase not configured on Vercel");
-        return res.status(500).json({ message: "Database tidak tersedia. Pastikan Supabase dikonfigurasi." });
-      }
-    }
-
-    rateLimitStore.delete(`register:${clientId}`);
-    res.json({ message: "Pendaftaran berhasil" });
-  } catch (error) {
-    console.error("Registration error:", error);
-    res.status(500).json({ message: "Terjadi kesalahan server" });
-  }
-});
-
-app.post("/login", async (req, res) => {
-  try {
-    const clientId = getClientIdentifier(req);
-    const rateLimit = checkRateLimit(`login:${clientId}`, 10, 15 * 60 * 1000);
-
-    if (!rateLimit.allowed) {
-      return res.status(429).json({
-        message: `Terlalu banyak percobaan login. Coba lagi dalam ${Math.ceil(rateLimit.retryAfter / 60)} menit.`,
-        retryAfter: rateLimit.retryAfter,
-      });
-    }
-
-    const { email: rawEmail, password } = req.body;
-    const email = normalizeEmail(rawEmail);
-    
-    // ✨ Cari user di Supabase dulu, fallback ke JSON (hanya jika tidak di Vercel)
-    let user = null;
-    if (supabase) {
-      user = await findUserByEmailSupabase(email);
-    }
-    
-    // Jika tidak ada di Supabase, cek di JSON file (untuk backward compatibility - hanya local)
-    if (!user && !IS_VERCEL) {
-      const users = readUsers();
-      user = findUserByEmail(users, email);
-    }
-
-    if (!user) {
-      return res.status(401).json({ message: "Email atau password salah" });
-    }
-
-    // Handle password hash field name (Supabase pakai password_hash, JSON pakai passwordHash)
-    const passwordHash = user.password_hash || user.passwordHash || "";
-    const ok = await bcrypt.compare(password, passwordHash);
-    if (!ok) {
-      return res.status(401).json({ message: "Email atau password salah" });
-    }
-
-    rateLimitStore.delete(`login:${clientId}`);
-    res.json({ message: "Login berhasil", user: { email } });
-  } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Terjadi kesalahan server" });
-  }
-});
-
-app.post("/save-google-user", async (req, res) => {
-  try {
-    const user = req.body;
-    const email = normalizeEmail(user.email);
-    
-    // ✨ Cek user di Supabase dulu, fallback ke JSON (hanya jika tidak di Vercel)
-    let existingUser = null;
-    if (supabase) {
-      existingUser = await findUserByEmailSupabase(email);
-    }
-    
-    // Jika tidak ada di Supabase, cek di JSON file (hanya local)
-    if (!existingUser && !IS_VERCEL) {
-      const users = readUsers();
-      existingUser = findUserByEmail(users, email);
-    }
-    
-    // Jika user belum ada, simpan ke Supabase atau JSON
-    if (!existingUser) {
-      if (supabase) {
-        const created = await createUserSupabase({
-          email: email,
-          provider: "google",
-          name: user.name || null,
-          picture: user.picture || null
-        });
-        if (!created) {
-          // Fallback ke JSON jika Supabase error (hanya jika tidak di Vercel)
-          if (!IS_VERCEL) {
-            const users = readUsers();
-            users.push(user);
-            writeUsers(users);
-          } else {
-            console.error("Failed to create Google user in Supabase on Vercel");
-            return res.status(500).json({ message: "Gagal menyimpan user. Pastikan Supabase dikonfigurasi dengan benar." });
-          }
-        } else {
-          console.log("✅ Google user created in Supabase:", email);
-        }
-      } else {
-        // Jika Supabase tidak tersedia, pakai JSON file (hanya jika tidak di Vercel)
-        if (!IS_VERCEL) {
-          const users = readUsers();
-          users.push(user);
-          writeUsers(users);
-        } else {
-          console.error("Supabase not configured on Vercel");
-          return res.status(500).json({ message: "Database tidak tersedia. Pastikan Supabase dikonfigurasi." });
-        }
-      }
-    }
-    
-    res.json({ message: "Google user disimpan!" });
-  } catch (error) {
-    console.error("Error saving Google user:", error);
-    res.status(500).json({ message: "Terjadi kesalahan server" });
-  }
-});
+// === Authentication Routes (Handled by routes/auth.js) ===
+// Note: /register, /login, and /save-google-user routes are now in routes/auth.js
 
 // === YouTube API Proxy ===
 app.get("/api/youtube/search", async (req, res) => {
@@ -685,16 +276,16 @@ app.post("/api/openai/chat", async (req, res) => {
     const { messages } = req.body;
 
     if (!Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({ 
-        error: "messages_required", 
-        message: "Array messages diperlukan" 
+      return res.status(400).json({
+        error: "messages_required",
+        message: "Array messages diperlukan"
       });
     }
 
     if (messages.length > 50) {
-      return res.status(400).json({ 
-        error: "too_many_messages", 
-        message: "Terlalu banyak pesan dalam satu request" 
+      return res.status(400).json({
+        error: "too_many_messages",
+        message: "Terlalu banyak pesan dalam satu request"
       });
     }
 
@@ -733,19 +324,19 @@ const CLASSIFY_COOLDOWN_MS = 5000;
 app.post("/classify", async (req, res) => {
   try {
     const apiKey = process.env.OPENAI_API_KEY?.trim();
-    
+
     if (!apiKey) {
       return res.status(500).json({
         error: "missing_api_key",
         message: "OpenAI API key tidak dikonfigurasi. Pastikan OPENAI_API_KEY sudah diset di file .env"
       });
     }
-    
-    const isPlaceholder = apiKey.toLowerCase().includes("your_") || 
-                          apiKey.toLowerCase().includes("example") ||
-                          apiKey.toLowerCase().includes("placeholder") ||
-                          apiKey.length < 20;
-    
+
+    const isPlaceholder = apiKey.toLowerCase().includes("your_") ||
+      apiKey.toLowerCase().includes("example") ||
+      apiKey.toLowerCase().includes("placeholder") ||
+      apiKey.length < 20;
+
     if (isPlaceholder) {
       return res.status(500).json({
         error: "invalid_api_key",
@@ -809,7 +400,18 @@ ATURAN KHUSUS:
 - Jika hanya tangan tanpa objek → "abu-abu"
 - Abaikan tangan, fokus pada objek yang dipegang
 
-Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
+Berikan respons dalam format JSON SAJA tanpa markdown:
+{
+  "category": "hijau" | "merah" | "biru" | "kuning" | "abu-abu",
+  "confidence": 0.0 - 1.0,
+  "bin_name": "Nama Tong (mis: Organik)",
+  "bin_color": "Warna (mis: hijau)",
+  "dominant_class": "Nama benda spesifik (mis: Botol Plastik, Kulit Pisang)",
+  "reason": "Alasan singkat mengapa masuk kategori ini",
+  "fun_fact": "Satu fakta unik/menarik tentang sampah ini (maks 1 kalimat)",
+  "recycling_advice": "Saran singkat cara mengolah/membuang (maks 2 kalimat singkat)",
+  "youtube_query": "Keyword pencarian video tutorial kreatif (mis: 'kerajinan botol plastik bekas', 'cara daur ulang kardus')"
+}
 `;
 
     // Bangun messages (multi-image)
@@ -821,7 +423,7 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.2,
-      max_tokens: 90,
+      max_tokens: 250, // Increased from 90 to accommodate fun_fact and recycling_advice
       messages: [
         { role: "system", content: prompt },
         { role: "user", content: userContent },
@@ -829,19 +431,53 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
     });
 
     const raw = completion.choices?.[0]?.message?.content || "{}";
-    let parsed = { category: "abu-abu", reason: "tidak jelas", confidence: 0.7 };
+    let parsed = {
+      category: "abu-abu",
+      reason: "tidak jelas",
+      confidence: 0.7,
+      fun_fact: null,
+      recycling_advice: null
+    };
 
     try {
-      const m = raw.match(/\{[\s\S]*\}/);
-      if (m) {
-        const o = JSON.parse(m[0]);
+      let jsonStr = raw.match(/\{[\s\S]*\}/)?.[0];
+
+      if (jsonStr) {
+        // Try to fix truncated JSON by adding missing closing quotes and braces
+        // Count opening and closing braces
+        const openBraces = (jsonStr.match(/\{/g) || []).length;
+        const closeBraces = (jsonStr.match(/\}/g) || []).length;
+
+        // If JSON is truncated (missing closing brace)
+        if (openBraces > closeBraces) {
+          // Try to close the last incomplete string if any
+          if (!jsonStr.endsWith('"') && !jsonStr.endsWith('}')) {
+            jsonStr += '"';
+          }
+          // Add missing closing braces
+          jsonStr += '}'.repeat(openBraces - closeBraces);
+        }
+
+        const o = JSON.parse(jsonStr);
         if (typeof o.category === "string") parsed.category = o.category;
         if (typeof o.reason === "string") parsed.reason = o.reason;
         if (typeof o.confidence === "number") {
           parsed.confidence = Math.max(0, Math.min(1, o.confidence));
         }
+        // Extract education fields
+        if (typeof o.fun_fact === "string") parsed.fun_fact = o.fun_fact;
+        if (typeof o.recycling_advice === "string") parsed.recycling_advice = o.recycling_advice;
+        if (typeof o.youtube_query === "string") parsed.youtube_query = o.youtube_query;
+
+        // Also extract dominant_class if available
+        if (typeof o.dominant_class === "string") {
+          parsed.dominant_class = o.dominant_class;
+        }
       }
-    } catch {}
+    } catch (err) {
+      console.warn("⚠️ JSON parsing error:", err.message);
+      console.warn("Raw response:", raw);
+    }
 
     const color = (parsed.category || "abu-abu").toLowerCase();
     const conf = parsed.confidence ?? 0.85;
@@ -856,11 +492,21 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
     const binName = binMap[color] || "Residu";
 
     const decision = {
-      dominant_class: binName,
+      dominant_class: parsed.dominant_class || binName,
       bin: color,
       confidence: conf,
       reason: parsed.reason,
+      fun_fact: parsed.fun_fact,
+      recycling_advice: parsed.recycling_advice,
+      youtube_query: parsed.youtube_query
     };
+
+    // Debug logging untuk melihat apakah education fields ada
+    console.log("📚 AI Response (raw):", raw);
+    console.log("📚 Parsed education data:", {
+      fun_fact: parsed.fun_fact,
+      recycling_advice: parsed.recycling_advice
+    });
 
     const detections = [
       {
@@ -890,25 +536,25 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
     return res.json({ detections, decision });
   } catch (err) {
     classifyBusy = false;
-    
+
     if (err?.status === 429) {
-      return res.status(429).json({ 
-        error: "openai_rate_limit", 
+      return res.status(429).json({
+        error: "openai_rate_limit",
         cooldown_ms: 12000,
         message: "Terlalu banyak permintaan ke OpenAI. Silakan tunggu beberapa saat."
       });
     }
-    
+
     if (err?.message?.includes("API key") || err?.message?.includes("Missing credentials")) {
       console.error("❌ OPENAI_API_KEY error:", err.message);
-      return res.status(500).json({ 
+      return res.status(500).json({
         error: "missing_api_key",
         message: "OpenAI API key tidak valid. Pastikan OPENAI_API_KEY sudah dikonfigurasi di file .env"
       });
     }
-    
+
     console.error("💥 Classification error:", err);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: "classification_error",
       message: err?.message || "Terjadi kesalahan saat memproses deteksi sampah"
     });
@@ -918,23 +564,22 @@ Jawab JSON: {"category":"biru","reason":"kertas di tangan","confidence":0.9}
 });
 
 // === IoT Proxy ===
-const ESP32_HOST = process.env.ESP32_HOST || "http://192.168.1.20";
 const ESP32_TIMEOUT = 10000;
 
 app.get("/api/iot/status", async (req, res) => {
   try {
     console.log(`🔍 Testing ESP32 connection: ${ESP32_HOST}`);
     const startTime = Date.now();
-    
+
     const response = await fetch(`${ESP32_HOST}/status`, {
       method: "GET",
       signal: AbortSignal.timeout(ESP32_TIMEOUT),
     });
 
     const duration = Date.now() - startTime;
-    
+
     if (!response.ok) {
-      return res.status(response.status).json({ 
+      return res.status(response.status).json({
         connected: false,
         error: `ESP32 responded with status ${response.status}`,
         duration: `${duration}ms`
@@ -943,21 +588,21 @@ app.get("/api/iot/status", async (req, res) => {
 
     const data = await response.json();
     console.log(`✅ ESP32 connection successful (${duration}ms)`);
-    
-    return res.json({ 
+
+    return res.json({
       connected: true,
       esp32: data,
       duration: `${duration}ms`,
       host: ESP32_HOST
     });
   } catch (err) {
-    const errorMsg = err.name === 'AbortError' 
+    const errorMsg = err.name === 'AbortError'
       ? "ESP32 timeout - tidak merespons"
       : err.message || "Gagal terhubung ke ESP32";
-    
+
     console.error(`❌ ESP32 connection test failed:`, errorMsg);
-    
-    return res.status(504).json({ 
+
+    return res.status(504).json({
       connected: false,
       error: errorMsg,
       host: ESP32_HOST,
@@ -974,10 +619,10 @@ app.get("/api/iot/status", async (req, res) => {
 
 app.get("/api/iot/open", async (req, res) => {
   const startTime = Date.now(); // Pindahkan ke luar try block
-  
+
   try {
     const binType = req.query.type;
-    
+
     if (!binType) {
       return res.status(400).json({ error: "Parameter 'type' required" });
     }
@@ -985,8 +630,8 @@ app.get("/api/iot/open", async (req, res) => {
     // Validasi bin type
     const validTypes = ["hijau", "merah", "biru", "abu-abu", "kuning"];
     if (!validTypes.includes(binType.toLowerCase())) {
-      return res.status(400).json({ 
-        error: "Invalid bin type. Use: hijau, merah, biru, abu-abu, or kuning" 
+      return res.status(400).json({
+        error: "Invalid bin type. Use: hijau, merah, biru, abu-abu, or kuning"
       });
     }
 
@@ -1004,8 +649,8 @@ app.get("/api/iot/open", async (req, res) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.warn(`⚠️ ESP32 error (${response.status}, ${duration}ms):`, errorText);
-      return res.status(response.status).json({ 
-        error: "ESP32 error", 
+      return res.status(response.status).json({
+        error: "ESP32 error",
         detail: errorText,
         duration: `${duration}ms`
       });
@@ -1013,19 +658,19 @@ app.get("/api/iot/open", async (req, res) => {
 
     const data = await response.json();
     console.log(`✅ ESP32 response (${duration}ms):`, data);
-    
+
     return res.json({
       ...data,
       duration: `${duration}ms`
     });
   } catch (err) {
     const duration = Date.now() - startTime;
-    
+
     if (err.name === 'AbortError') {
       console.error(`⏱️ ESP32 timeout setelah ${duration}ms - IP: ${ESP32_HOST}`);
-      return res.status(504).json({ 
-        error: "ESP32 timeout", 
-        message: `ESP32 tidak merespons dalam ${ESP32_TIMEOUT/1000} detik`,
+      return res.status(504).json({
+        error: "ESP32 timeout",
+        message: `ESP32 tidak merespons dalam ${ESP32_TIMEOUT / 1000} detik`,
         host: ESP32_HOST,
         troubleshooting: [
           "1. Pastikan ESP32 sudah terhubung ke WiFi dan server berjalan",
@@ -1037,10 +682,10 @@ app.get("/api/iot/open", async (req, res) => {
         ]
       });
     }
-    
+
     console.error(`💥 IoT proxy error (${duration}ms):`, err.message);
-    return res.status(500).json({ 
-      error: "iot_connection_error", 
+    return res.status(500).json({
+      error: "iot_connection_error",
       message: err.message || "Gagal terhubung ke ESP32",
       host: ESP32_HOST,
       type: err.name
@@ -1073,7 +718,7 @@ app.get("/api/supabase/test", async (req, res) => {
       return res.status(500).json({
         connected: false,
         error: error.message,
-        hint: error.code === "PGRST116" 
+        hint: error.code === "PGRST116"
           ? "Tabel users mungkin belum dibuat atau kosong (ini normal untuk pertama kali)"
           : "Cek struktur tabel dan permissions di Supabase Dashboard"
       });
@@ -1146,16 +791,16 @@ app.get("/api/supabase/test/detections", async (req, res) => {
 app.get("/api/detections", async (req, res) => {
   try {
     const userEmail = req.query.email || req.headers["x-user-email"];
-    
+
     if (!userEmail) {
-      return res.status(400).json({ 
-        error: "email_required", 
-        message: "Email user diperlukan (query parameter atau header x-user-email)" 
+      return res.status(400).json({
+        error: "email_required",
+        message: "Email user diperlukan (query parameter atau header x-user-email)"
       });
     }
 
     if (!supabase) {
-      return res.status(503).json({ 
+      return res.status(503).json({
         error: "database_not_available",
         message: "Supabase not configured. Using localStorage fallback.",
         detections: []
@@ -1163,15 +808,15 @@ app.get("/api/detections", async (req, res) => {
     }
 
     const detections = await getDetectionsSupabase(userEmail, 50);
-    
-    return res.json({ 
+
+    return res.json({
       detections: detections || [],
       count: detections?.length || 0,
       source: "supabase"
     });
   } catch (err) {
     console.error("Error fetching detections:", err);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: "server_error",
       message: err.message,
       detections: []
@@ -1357,7 +1002,7 @@ app.delete("/api/marketplace/listings/:id", async (req, res) => {
 
     const { id } = req.params;
     const userEmail = req.headers["x-user-email"];
-    
+
     if (!userEmail) {
       return res.status(401).json({
         error: "unauthorized",
@@ -1451,7 +1096,7 @@ app.get("/api/marketplace/listings/:id", async (req, res) => {
       .select("*, images, seller_id") // Explicitly include images and seller_id
       .eq("id", id)
       .single();
-    
+
     // Parse images if it's a JSON string
     if (data && data.images) {
       if (typeof data.images === 'string') {
@@ -1530,12 +1175,12 @@ app.post("/api/marketplace/enhance-image", async (req, res) => {
     try {
       // Get image metadata
       const metadata = await sharp(imageBuffer).metadata();
-      
+
       // Determine optimal dimensions (max 1920x1920, maintain aspect ratio)
       const maxDimension = 1920;
       let width = metadata.width;
       let height = metadata.height;
-      
+
       if (width > maxDimension || height > maxDimension) {
         if (width > height) {
           width = maxDimension;
@@ -1643,11 +1288,11 @@ app.post("/api/marketplace/upload-image", async (req, res) => {
       try {
         const imageBuffer = Buffer.from(base64, 'base64');
         const metadata = await sharp(imageBuffer).metadata();
-        
+
         const maxDimension = 1920;
         let width = metadata.width;
         let height = metadata.height;
-        
+
         if (width > maxDimension || height > maxDimension) {
           if (width > height) {
             width = maxDimension;
@@ -1743,7 +1388,7 @@ app.post("/api/marketplace/enhance-listing", async (req, res) => {
   console.log("🔍 Enhancement endpoint called");
   try {
     const apiKey = process.env.OPENAI_API_KEY?.trim();
-    
+
     if (!apiKey) {
       return res.status(500).json({
         error: "missing_api_key",
@@ -1854,7 +1499,7 @@ HANYA return JSON array, tanpa penjelasan tambahan.`;
     // Extract results
     const enhancedTitle = titleResponse.choices?.[0]?.message?.content?.trim() || title;
     const enhancedDescription = descriptionResponse.choices?.[0]?.message?.content?.trim() || description;
-    
+
     // Parse tags (handle JSON array response)
     let enhancedTags = [...tags];
     try {
@@ -1895,21 +1540,21 @@ HANYA return JSON array, tanpa penjelasan tambahan.`;
     });
   } catch (err) {
     console.error("Error enhancing listing:", err);
-    
+
     if (err?.status === 429) {
       return res.status(429).json({
         error: "rate_limit",
         message: "Terlalu banyak permintaan ke AI. Silakan coba lagi nanti."
       });
     }
-    
+
     if (err?.message?.includes("API key") || err?.message?.includes("Missing credentials")) {
       return res.status(500).json({
         error: "missing_api_key",
         message: "OpenAI API key tidak valid"
       });
     }
-    
+
     return res.status(500).json({
       error: "enhancement_error",
       message: err?.message || "Terjadi kesalahan saat melakukan enhancement"
@@ -2012,7 +1657,7 @@ app.post("/api/marketplace/listings", async (req, res) => {
       // Tetap gunakan user.id, tapi ini mungkin akan error jika foreign key strict
       sellerId = user.id;
     }
-    
+
     const { data, error } = await supabase
       .from("marketplace_listings")
       .insert({
@@ -2129,7 +1774,7 @@ app.post("/api/marketplace/orders", async (req, res) => {
     // Coba dapatkan atau create auth.users.id untuk seller dan buyer
     let sellerId = listing.seller_id;
     let buyerId = buyer.id;
-    
+
     // Dapatkan atau create auth.users.id untuk seller
     const sellerAuthId = await getOrCreateAuthUserId(listing.seller_email);
     if (sellerAuthId) {
@@ -2146,7 +1791,7 @@ app.post("/api/marketplace/orders", async (req, res) => {
       console.warn(`⚠️  Using existing listing.seller_id: ${listing.seller_id}`);
       sellerId = listing.seller_id;
     }
-    
+
     // Dapatkan atau create auth.users.id untuk buyer
     const buyerAuthId = await getOrCreateAuthUserId(userEmail);
     if (buyerAuthId) {
@@ -2550,8 +2195,8 @@ app.post("/api/marketplace/messages", async (req, res) => {
     }
 
     // Tentukan receiver
-    const receiverEmail = order.buyer_email === normalizedEmail 
-      ? order.seller_email 
+    const receiverEmail = order.buyer_email === normalizedEmail
+      ? order.seller_email
       : order.buyer_email;
 
     // Ambil user info untuk sender_id dan receiver_id
@@ -2750,12 +2395,39 @@ app.get("/api/marketplace/leaderboard", async (req, res) => {
         .limit(limitNum);
 
       if (!sellerError && sellerData) {
-        sellerLeaderboard = sellerData.map((stat, index) => ({
-          rank: index + 1,
-          user_email: stat.user_email,
-          total_items_sold: stat.total_items_sold || 0,
-          points_seller: stat.points_seller || 0
-        }));
+        // Ambil user info untuk setiap email
+        const sellerEmails = sellerData.map(s => normalizeEmail(s.user_email)).filter(Boolean);
+
+        let usersMap = new Map();
+        if (sellerEmails.length > 0) {
+          const { data: usersData } = await supabase
+            .from("users")
+            .select("email, name, picture")
+            .in("email", sellerEmails);
+
+          if (usersData) {
+            usersData.forEach(user => {
+              usersMap.set(normalizeEmail(user.email), user);
+            });
+          }
+        }
+
+        sellerLeaderboard = sellerData.map((stat, index) => {
+          const userInfo = usersMap.get(normalizeEmail(stat.user_email));
+          const userName = userInfo?.name ||
+            userInfo?.email?.split("@")[0] ||
+            stat.user_email?.split("@")[0] ||
+            "User";
+
+          return {
+            rank: index + 1,
+            user_email: stat.user_email,
+            user_name: userName,
+            user_picture: userInfo?.picture || null,
+            total_items_sold: stat.total_items_sold || 0,
+            points_seller: stat.points_seller || 0
+          };
+        });
       }
     }
 
@@ -2767,12 +2439,39 @@ app.get("/api/marketplace/leaderboard", async (req, res) => {
         .limit(limitNum);
 
       if (!buyerError && buyerData) {
-        buyerLeaderboard = buyerData.map((stat, index) => ({
-          rank: index + 1,
-          user_email: stat.user_email,
-          total_items_bought: stat.total_items_bought || 0,
-          points_buyer: stat.points_buyer || 0
-        }));
+        // Ambil user info untuk setiap email
+        const buyerEmails = buyerData.map(b => normalizeEmail(b.user_email)).filter(Boolean);
+
+        let usersMap = new Map();
+        if (buyerEmails.length > 0) {
+          const { data: usersData } = await supabase
+            .from("users")
+            .select("email, name, picture")
+            .in("email", buyerEmails);
+
+          if (usersData) {
+            usersData.forEach(user => {
+              usersMap.set(normalizeEmail(user.email), user);
+            });
+          }
+        }
+
+        buyerLeaderboard = buyerData.map((stat, index) => {
+          const userInfo = usersMap.get(normalizeEmail(stat.user_email));
+          const userName = userInfo?.name ||
+            userInfo?.email?.split("@")[0] ||
+            stat.user_email?.split("@")[0] ||
+            "User";
+
+          return {
+            rank: index + 1,
+            user_email: stat.user_email,
+            user_name: userName,
+            user_picture: userInfo?.picture || null,
+            total_items_bought: stat.total_items_bought || 0,
+            points_buyer: stat.points_buyer || 0
+          };
+        });
       }
     }
 

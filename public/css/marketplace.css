@@ -1529,10 +1529,17 @@
   gap: var(--spacing-1);
 }
 
+.ranking-name {
+  font-weight: var(--font-weight-bold);
+  color: var(--neutral-900);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-1);
+}
+
 .ranking-email {
-  font-weight: var(--font-weight-semibold);
-  color: var(--neutral-800);
-  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--neutral-600);
+  font-size: var(--font-size-sm);
 }
 
 .ranking-stats {

@@ -30,7 +30,7 @@ function persistDetectionLabel(label, bin = null, confidence = null) {
       LAST_DETECTIONS_KEY,
       JSON.stringify(recent)
     );
-    
+
     // Simpan ke detectionHistory (format baru dengan detail)
     const historyRaw = window.localStorage.getItem(DETECTION_HISTORY_KEY);
     const detailedHistory = historyRaw ? JSON.parse(historyRaw) : [];
@@ -242,7 +242,7 @@ class WasteDetectionSystem {
     } catch (err) {
       console.error("Error during scan:", err);
       const errorMessage = err?.message || "Gagal melakukan deteksi. Silakan coba lagi.";
-      
+
       if (window.notification) {
         window.notification.error(errorMessage);
       } else {
@@ -299,7 +299,7 @@ class WasteDetectionSystem {
     } catch (error) {
       console.error("Error processing upload:", error);
       const errorMessage = error?.message || "Gagal memproses gambar. Silakan coba lagi.";
-      
+
       if (window.notification) {
         window.notification.error(errorMessage);
       } else {
@@ -639,34 +639,34 @@ class WasteDetectionSystem {
       // Ambil user email untuk disimpan ke Supabase
       const user = getStoredUser();
       const userEmail = user?.email || null;
-      
+
       const res = await fetch("/classify", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "x-user-email": userEmail || "" // Tambahkan header untuk userEmail
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           images,
           userEmail: userEmail // Tambahkan userEmail di body juga
         }),
         signal: controller.signal,
       });
-      
+
       const text = await res.text();
       let errorData;
-      
+
       try {
         errorData = JSON.parse(text);
       } catch {
         // Jika response bukan JSON, buat error message dari text
         throw new Error(text || `Server error: ${res.status}`);
       }
-      
+
       if (!res.ok) {
         // Cek apakah error response memiliki message
         const errorMessage = errorData?.message || errorData?.error || `Server error: ${res.status}`;
-        
+
         // Handle specific error types
         if (errorData?.error === "missing_api_key") {
           throw new Error("OpenAI API key tidak ditemukan. Silakan hubungi administrator untuk mengkonfigurasi API key.");
@@ -675,17 +675,17 @@ class WasteDetectionSystem {
         } else if (errorData?.error === "cooldown" || errorData?.error === "server_busy") {
           throw new Error("Server sedang sibuk. Silakan tunggu beberapa saat.");
         }
-        
+
         throw new Error(errorMessage);
       }
-      
+
       return errorData;
     } catch (err) {
       // Handle AbortError (timeout)
       if (err.name === "AbortError") {
         throw new Error("Request timeout. Silakan coba lagi atau gunakan gambar yang lebih kecil.");
       }
-      
+
       // Re-throw error yang sudah di-format
       throw err;
     } finally {
@@ -738,6 +738,18 @@ class WasteDetectionSystem {
     persistDetectionLabel(labelSource, bin, confidence);
 
     console.log("✅ Detection result:", decision);
+
+    // 📚 Display Education Card (Fun Fact)
+    this.displayEducationCard(decision);
+
+    // 🎬 Display Cinema Ticket (Video Tutorial Link)
+    this.displayCinemaTicket(decision);
+
+    // 🔊 Voice feedback - announce detection result
+    if (window.themeManager) {
+      window.themeManager.announceDetection(decision);
+    }
+
     // Panggil ESP32 jika confidence cukup tinggi
     const SHOULD_OPEN = typeof confidence === "number" && confidence >= 0.6;
     if (SHOULD_OPEN) {
@@ -749,6 +761,92 @@ class WasteDetectionSystem {
         hardwareBinType = "hijau"; // Kertas → Hijau
       }
       this.openBin(hardwareBinType);
+    }
+  }
+
+  displayEducationCard(decision) {
+    const educationCard = document.getElementById("educationCard");
+    const funFactText = document.getElementById("funFactText");
+    const recyclingTipsContainer = document.getElementById("recyclingTipsContainer");
+    const recyclingAdviceText = document.getElementById("recyclingAdviceText");
+
+    // Ambil fun_fact dan recycling_advice dari decision
+    const funFact = decision?.fun_fact;
+    const recyclingAdvice = decision?.recycling_advice;
+
+    let hasContent = false;
+
+    // Tampilkan Fun Fact jika ada
+    if (funFact && funFact.trim()) {
+      funFactText.textContent = funFact;
+      hasContent = true;
+    } else {
+      funFactText.textContent = ""; // Clear content if no fun fact
+    }
+
+    // Tampilkan Recycling Tips jika ada
+    if (recyclingAdvice && recyclingAdvice.trim()) {
+      recyclingAdviceText.textContent = recyclingAdvice;
+      recyclingTipsContainer.style.display = "flex";
+      hasContent = true;
+    } else {
+      recyclingTipsContainer.style.display = "none";
+      recyclingAdviceText.textContent = ""; // Clear content if no advice
+    }
+
+    // Tampilkan atau sembunyikan card
+    if (hasContent) {
+      educationCard.style.display = "block";
+
+      // Tambahkan animasi fade-in
+      educationCard.style.opacity = "0";
+      setTimeout(() => {
+        educationCard.style.transition = "opacity 0.5s ease-in";
+        educationCard.style.opacity = "1";
+      }, 100);
+    } else {
+      educationCard.style.display = "none";
+    }
+  }
+
+  displayCinemaTicket(decision) {
+    const cinemaTicket = document.getElementById("cinemaTicket");
+    const cinemaLink = document.getElementById("cinemaLink");
+    const cinemaDescription = document.getElementById("cinemaDescription");
+
+    // Ambil youtube_query dari decision
+    const youtubeQuery = decision?.youtube_query;
+    const dominantClass = decision?.dominant_class;
+
+    if (youtubeQuery && youtubeQuery.trim()) {
+      // Build URL to katalog page with search parameter
+      // Add timestamp to prevent caching issues
+      const timestamp = Date.now();
+      const searchUrl = `katalog.html?search=${encodeURIComponent(youtubeQuery)}&t=${timestamp}`;
+
+      console.log("🎬 Cinema Ticket - YouTube Query:", youtubeQuery);
+      console.log("🎬 Cinema Ticket - Generated URL:", searchUrl);
+
+      // Update link
+      cinemaLink.href = searchUrl;
+
+      // Update description
+      if (dominantClass) {
+        cinemaDescription.textContent = `Lihat tutorial kreatif untuk ${dominantClass}`;
+      } else {
+        cinemaDescription.textContent = "Lihat cara kreatif mengolah sampah ini";
+      }
+
+      // Show ticket with animation
+      cinemaTicket.style.display = "block";
+      cinemaTicket.style.opacity = "0";
+      setTimeout(() => {
+        cinemaTicket.style.transition = "opacity 0.5s ease-in";
+        cinemaTicket.style.opacity = "1";
+      }, 200);
+    } else {
+      // Hide if no youtube query
+      cinemaTicket.style.display = "none";
     }
   }
 
@@ -780,28 +878,28 @@ class WasteDetectionSystem {
       // Gunakan proxy endpoint untuk menghindari CORS issue
       const url = `${this.IOT_PROXY_URL}?type=${encodeURIComponent(binType)}`;
       console.log(`📡 Mengirim ke IoT (via proxy): ${url}`);
-      
-      const r = await fetch(url, { 
+
+      const r = await fetch(url, {
         method: "GET",
         signal: AbortSignal.timeout(5000) // timeout 5 detik
       });
-      
+
       if (!r.ok) {
         const errorData = await r.json().catch(() => ({ error: "Unknown error" }));
         console.warn(`⚠️ IoT error (${r.status}):`, errorData);
         this.showIOTNotification(errorData.message || "Gagal membuka tong sampah", "error");
         return;
       }
-      
+
       const result = await r.json();
       console.log("✅ IoT response:", result);
-      
+
       // Tampilkan notifikasi sukses
-      const binName = result.binName || 
+      const binName = result.binName ||
         (binType === "hijau" ? "Organik" :
-         binType === "merah" ? "B3" :
-         binType === "biru" ? "Anorganik" :
-         binType === "abu-abu" ? "Residu" : binType);
+          binType === "merah" ? "B3" :
+            binType === "biru" ? "Anorganik" :
+              binType === "abu-abu" ? "Residu" : binType);
       this.showIOTNotification(`Tong ${binName} dibuka!`, "success");
     } catch (e) {
       if (e.name === 'AbortError') {
@@ -840,12 +938,12 @@ class WasteDetectionSystem {
       align-items: center;
       gap: 10px;
     `;
-    
+
     const icon = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
     notification.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-    
+
     document.body.appendChild(notification);
-    
+
     // Tambahkan CSS animation jika belum ada
     if (!document.getElementById("iot-notification-styles")) {
       const style = document.createElement("style");
@@ -874,7 +972,7 @@ class WasteDetectionSystem {
       `;
       document.head.appendChild(style);
     }
-    
+
     // Hapus setelah 3 detik
     setTimeout(() => {
       notification.style.animation = "slideOutRight 0.3s ease";

@@ -1,0 +1,222 @@
+/* Dark Mode Styles */
+:root {
+  /* Light mode colors (default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --bg-card: #ffffff;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --border-color: #e0e0e0;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(0, 0, 0, 0.15);
+  
+  /* Accent colors */
+  --accent-primary: #3498db;
+  --accent-success: #27ae60;
+  --accent-warning: #f39c12;
+  --accent-danger: #e74c3c;
+}
+
+[data-theme="dark"] {
+  /* Dark mode colors */
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-card: #0f3460;
+  --text-primary: #eaeaea;
+  --text-secondary: #a8a8a8;
+  --border-color: #2a2a3e;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-hover: rgba(0, 0, 0, 0.5);
+  
+  /* Accent colors (slightly adjusted for dark mode) */
+  --accent-primary: #5dade2;
+  --accent-success: #52be80;
+  --accent-warning: #f5b041;
+  --accent-danger: #ec7063;
+}
+
+/* Apply theme colors to body and common elements */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card,
+.waste-bin,
+.detection-result,
+.camera-container,
+.video-container {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover,
+.waste-bin:hover {
+  box-shadow: 0 4px 16px var(--shadow-hover);
+}
+
+/* Input fields */
+input,
+textarea,
+select {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-primary);
+}
+
+/* Buttons */
+button {
+  transition: all 0.3s ease;
+}
+
+/* Dark mode toggle button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px var(--shadow-hover);
+}
+
+.theme-toggle i {
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+/* Hide/show icons based on theme */
+[data-theme="light"] .theme-toggle .fa-moon {
+  display: block;
+}
+
+[data-theme="light"] .theme-toggle .fa-sun {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .fa-moon {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .fa-sun {
+  display: block;
+}
+
+/* Notification adjustments for dark mode */
+[data-theme="dark"] .notification {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-left-color: var(--accent-primary);
+}
+
+/* Table styles for dark mode */
+table {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+thead {
+  background-color: var(--bg-secondary);
+}
+
+tbody tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Modal styles for dark mode */
+.modal-content {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.modal-header {
+  border-bottom-color: var(--border-color);
+}
+
+.modal-footer {
+  border-top-color: var(--border-color);
+}
+
+/* Scrollbar for dark mode */
+[data-theme="dark"]::-webkit-scrollbar {
+  width: 12px;
+}
+
+[data-theme="dark"]::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"]::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 6px;
+}
+
+[data-theme="dark"]::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Voice feedback button */
+.voice-toggle {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.voice-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px var(--shadow-hover);
+}
+
+.voice-toggle i {
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.voice-toggle.active {
+  background: var(--accent-success);
+  border-color: var(--accent-success);
+}
+
+.voice-toggle.active i {
+  color: white;
+}
+
+/* Smooth transitions for all theme changes */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
