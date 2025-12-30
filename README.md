@@ -68,7 +68,7 @@ SampahKuPilah/
 │   ├── script.js               # Script login/register
 │   ├── register.js             # Script registrasi
 │   └── camera-detection.js     # Script deteksi sampah (main)
-├── server.js                   # Server Node.js dengan OpenAI API
+├── app/                        # Next.js App Router (API routes)
 ├── users.json                  # Database pengguna
 ├── package.json                # Dependencies Node.js
 ├── env.example                 # Template environment variables
@@ -97,7 +97,7 @@ SampahKuPilah/
    ```bash
    npm start
    # atau
-   node server.js
+   npm run dev
    ```
 
 4. **Akses Aplikasi**

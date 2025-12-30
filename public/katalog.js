@@ -1,7 +1,7 @@
 (() => {
   const LAST_DETECTIONS_KEY = "sampahKuPilah:lastDetections";
   const DEFAULT_SEARCH_QUERY = "cara daur ulang sampah rumah tangga";
-  // ✅ Security Fix: API key dipindahkan ke server (server.js)
+  // Security Fix: API key dipindahkan ke server (Next.js API route)
   // Gunakan server proxy endpoint untuk YouTube API
   const YOUTUBE_SEARCH_URL = "/api/youtube/search";
   const MAX_YOUTUBE_RESULTS = 6;

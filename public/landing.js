@@ -1,5 +1,5 @@
 const USER_STORAGE_KEY = "sampahKuPilahUser";
-// ✅ Security Fix: API key dipindahkan ke server (server.js)
+// Security Fix: API key dipindahkan ke server (Next.js API route)
 // Tidak ada lagi API key di client-side untuk keamanan
 function getStoredUser() {
   try {

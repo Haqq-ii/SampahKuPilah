@@ -77,8 +77,8 @@ class WasteDetectionSystem {
     this.init();
 
     // --- ESP32 / Servo config
-    // Gunakan proxy endpoint di server.js untuk menghindari CORS issue
-    this.IOT_PROXY_URL = "/api/iot/open"; // Proxy melalui server.js
+    // Gunakan proxy endpoint API untuk menghindari CORS issue
+    this.IOT_PROXY_URL = "/api/iot/open"; // Proxy melalui Next.js API route
     this.OPEN_COOLDOWN_MS = 6000;
     this._lastOpenAt = 0;
   }
