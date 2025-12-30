@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function initGoogleSignIn() {
     google.accounts.id.initialize({
-      client_id: '193386058226-mcu6f5slagc9s4d3h7rdh3brfvir51lu.apps.googleusercontent.com', // <-- Ganti dengan Client ID kamu
+      client_id: '493653215915-ljtfgmg57f2si5jqggtro166jpbqibko.apps.googleusercontent.com', // <-- Ganti dengan Client ID kamu
       callback: handleCredentialResponse
     });
     google.accounts.id.renderButton(
