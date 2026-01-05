@@ -76,11 +76,6 @@ class WasteDetectionSystem {
     this.isProcessing = false;
     this.init();
 
-    // --- ESP32 / Servo config
-    // Gunakan proxy endpoint API untuk menghindari CORS issue
-    this.IOT_PROXY_URL = "/api/iot/open"; // Proxy melalui Next.js API route
-    this.OPEN_COOLDOWN_MS = 6000;
-    this._lastOpenAt = 0;
   }
 
   init() {
@@ -750,18 +745,7 @@ class WasteDetectionSystem {
       window.themeManager.announceDetection(decision);
     }
 
-    // Panggil ESP32 jika confidence cukup tinggi
-    const SHOULD_OPEN = typeof confidence === "number" && confidence >= 0.6;
-    if (SHOULD_OPEN) {
-      // Mapping baru: Anorganik(kuning) → biru, Kertas(biru) → hijau
-      let hardwareBinType = bin;
-      if (bin === "kuning") {
-        hardwareBinType = "biru"; // Anorganik → Biru
-      } else if (bin === "biru") {
-        hardwareBinType = "hijau"; // Kertas → Hijau
-      }
-      this.openBin(hardwareBinType);
-    }
+
   }
 
   displayEducationCard(decision) {
@@ -850,145 +834,7 @@ class WasteDetectionSystem {
     }
   }
 
-  async openBin(binType) {
-    const now = Date.now();
-    if (now - this._lastOpenAt < this.OPEN_COOLDOWN_MS) return; // anti-spam
-    this._lastOpenAt = now;
 
-    // Jika binType tidak diberikan, coba ambil dari UI
-    if (!binType) {
-      const binContainer = document.getElementById("recommendedBin");
-      const currentBin = binContainer?.querySelector(".waste-bin");
-      if (currentBin) {
-        if (currentBin.classList.contains("organic")) binType = "hijau";
-        else if (currentBin.classList.contains("inorganic")) binType = "biru";
-        else if (currentBin.classList.contains("hazardous")) binType = "merah";
-        else if (currentBin.classList.contains("paper")) binType = "hijau"; // Kertas → Hijau
-        else if (currentBin.classList.contains("residual")) binType = "abu-abu";
-      }
-    }
-
-    // Validasi binType
-    if (!binType || !["hijau", "merah", "biru", "abu-abu"].includes(binType.toLowerCase())) {
-      console.warn("⚠️ Bin type tidak valid atau tidak diketahui:", binType);
-      return;
-    }
-
-    try {
-      // Gunakan proxy endpoint untuk menghindari CORS issue
-      const url = `${this.IOT_PROXY_URL}?type=${encodeURIComponent(binType)}`;
-      console.log(`📡 Mengirim ke IoT (via proxy): ${url}`);
-
-      const r = await fetch(url, {
-        method: "GET",
-        signal: AbortSignal.timeout(5000) // timeout 5 detik
-      });
-
-      if (!r.ok) {
-        const errorData = await r.json().catch(() => ({ error: "Unknown error" }));
-        console.warn(`⚠️ IoT error (${r.status}):`, errorData);
-        this.showIOTNotification(errorData.message || "Gagal membuka tong sampah", "error");
-        return;
-      }
-
-      const result = await r.json();
-      console.log("✅ IoT response:", result);
-
-      // Tampilkan notifikasi sukses
-      const binName = result.binName ||
-        (binType === "hijau" ? "Organik" :
-          binType === "merah" ? "B3" :
-            binType === "biru" ? "Anorganik" :
-              binType === "abu-abu" ? "Residu" : binType);
-      this.showIOTNotification(`Tong ${binName} dibuka!`, "success");
-    } catch (e) {
-      if (e.name === 'AbortError') {
-        console.error("⏱️ IoT timeout - periksa koneksi server ke ESP32");
-        this.showIOTNotification("Timeout: Periksa koneksi server ke ESP32", "error");
-      } else {
-        console.error("❌ IoT tidak bisa dihubungi:", e);
-        this.showIOTNotification("Gagal terhubung ke IoT device", "error");
-      }
-    }
-  }
-
-  showIOTNotification(message, type = "info") {
-    // Hapus notifikasi sebelumnya jika ada
-    const existing = document.querySelector(".iot-notification");
-    if (existing) existing.remove();
-
-    // Buat elemen notifikasi
-    const notification = document.createElement("div");
-    notification.className = "iot-notification";
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${type === "success" ? "#4CAF50" : type === "error" ? "#f44336" : "#2196F3"};
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      z-index: 10000;
-      font-size: 14px;
-      font-weight: 500;
-      max-width: 300px;
-      animation: slideInRight 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    `;
-
-    const icon = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
-    notification.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-
-    document.body.appendChild(notification);
-
-    // Tambahkan CSS animation jika belum ada
-    if (!document.getElementById("iot-notification-styles")) {
-      const style = document.createElement("style");
-      style.id = "iot-notification-styles";
-      style.textContent = `
-        @keyframes slideInRight {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        @keyframes slideOutRight {
-          from {
-            transform: translateX(0);
-            opacity: 1;
-          }
-          to {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Hapus setelah 3 detik
-    setTimeout(() => {
-      notification.style.animation = "slideOutRight 0.3s ease";
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
-  }
-
-  async closeBin() {
-    try {
-      const r = await fetch(`${this.ESP_HOST}/close`, { method: "GET" });
-      if (!r.ok) console.warn("ESP32 /close gagal:", r.status);
-      else console.log("✅ ESP32 bin CLOSE");
-    } catch (e) {
-      console.error("ESP32 tidak bisa dihubungi:", e);
-    }
-  }
 
   renderUnknownBin() {
     const binContainer = document.getElementById("recommendedBin");
